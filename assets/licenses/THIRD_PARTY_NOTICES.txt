@@ -25,8 +25,9 @@
    Copyright Google / Adobe / Noto contributors, SIL Open Font License 1.1.
    Source: https://github.com/notofonts/noto-cjk
    Included: Noto-Sans-OFL.txt.
-   Modified: common Simplified Chinese GB2312 characters and punctuation subset,
-   renamed Youyue Sans, converted to WOFF2, embedded in index.html.
+Modified: common Simplified Chinese GB2312 characters and punctuation subset,
+renamed Youyue Sans, converted to WOFF2. The published site serves the font
+from assets/fonts/; the standalone local HTML embeds the same font.
    Uncovered rare characters fall back to system fonts.
 
 User-provided raster assets and branding are not licensed by the above projects.
