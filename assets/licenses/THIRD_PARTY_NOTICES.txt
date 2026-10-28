@@ -1,0 +1,38 @@
+优悦教育工牌生成工作台 · 开源组件说明
+
+1. Cropper.js 1.6.2
+   Copyright Chen Fengyuan, MIT License.
+   Source: https://github.com/fengyuanchen/cropperjs
+   Distribution: library and complete MIT text are embedded in index.html.
+
+2. ONNX Runtime Web 1.20.1
+   Copyright Microsoft Corporation, MIT License.
+   Source: https://github.com/microsoft/onnxruntime/tree/v1.20.1
+   Included: ONNX-Runtime-MIT.txt, ONNX-Runtime-ThirdPartyNotices.txt.
+   Runtime .js, .mjs and .wasm files are unmodified official npm artifacts.
+
+3. MODNet / Xenova ONNX conversion
+   MODNet authors: Zhanghan Ke et al.; ONNX conversion: Xenova.
+   License: Apache License 2.0.
+   Source: https://github.com/ZHKKKe/MODNet
+   Model: https://huggingface.co/Xenova/modnet
+   Pinned source revision: 7aaa8a2.
+   Distributed filename: assets/ai/modnet.onnx (full precision).
+   SHA256: 07c308cf0fc7e6e8b2065a12ed7fc07e1de8febb7dc7839d7b7f15dd66584df9
+   Included: MODNet-Apache-2.0.txt.
+
+4. Noto Sans CJK Medium / Youyue Sans subset
+   Copyright Google / Adobe / Noto contributors, SIL Open Font License 1.1.
+   Source: https://github.com/notofonts/noto-cjk
+   Included: Noto-Sans-OFL.txt.
+   Modified: common Simplified Chinese GB2312 characters and punctuation subset,
+   renamed Youyue Sans, converted to WOFF2, embedded in index.html.
+   Uncovered rare characters fall back to system fonts.
+
+User-provided raster assets and branding are not licensed by the above projects.
+No Fangzheng proprietary font file is included. Default text raster artwork is
+provided by the user; edited text uses the OFL font subset.
+
+Employee photos are processed on the employee's device. Model and runtime files
+are fetched from this website only; images are not sent to an image processing API.
+Local integration code: 维护源码/横版功能.js, 纯色背景清理.js, 人像抠像Worker.js.
