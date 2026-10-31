@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="namecard-version" content="2026.10.29.2">
-<meta name="description" content="优悦教育职员老师工牌生成站，支持二维码裁切、排版调整与版式切换。">
-<title>优悦教育 · 职员老师工牌生成站</title>
+<meta name="namecard-version" content="2026.10.31.2">
+<meta name="description" content="优悦教育设计素材生成网站，支持二维码裁切、排版调整与版式切换。">
+<title>优悦教育 · 设计素材生成网站</title>
 <style id="coreStyle">:root {
   --bg-base:#0d0d10; --bg-panel:#16161a; --bg-inner:#202026; --bg-input:#121216;
   --border-color:#2c2c35; --border-highlight:#42424f; --text-main:#f3f3f7; --text-muted:#9696a4;
@@ -311,6 +311,44 @@ canvas { width:100%; height:100%; display:block; }
 .landscape-controls { scrollbar-color:var(--ui-scrollbar) transparent; }
 @media (max-width:620px) { .theme-toolbar { margin-bottom:-8px; } .theme-toggle { min-height:36px; padding:7px 12px; font-size:11px; } }
 
+.progress-photo-card + .progress-photo-card { margin-top:22px; padding-top:20px; border-top:1px solid var(--border-color); }
+.progress-photo-heading { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:12px; }
+.progress-photo-heading strong { font-size:13px; color:var(--text-main); }
+.progress-photo-heading button { font-size:11px; padding:7px 9px; }
+.progress-crop-preview { display:block; width:100%; height:auto; aspect-ratio:590/320; border:1px dashed var(--border-highlight); border-radius:9px; background:#fff; cursor:grab; touch-action:none; user-select:none; -webkit-user-select:none; }
+.progress-crop-preview.is-dragging { cursor:grabbing; border-color:var(--accent-red); }
+.progress-crop-preview:focus-visible { outline:2px solid #ff6570; outline-offset:3px; }
+.progress-controls .control-group { margin:0; }
+.progress-controls .control-item + .control-item { margin-top:15px; }
+@media (min-width:1051px) { .progress-controls { max-height:900px; overflow:auto; scrollbar-width:thin; scrollbar-color:#575765 transparent; padding-right:3px; } }
+@media (max-width:1050px) { .progress-controls { display:flex; } }
+
+.format-selector-label { display:flex; align-items:center; justify-content:space-between; gap:12px; color:var(--text-muted); font-size:11px; line-height:1.6; margin-bottom:8px; }
+.format-selector-label span { font-size:10px; }
+.preview-tabs button { display:flex; align-items:center; justify-content:center; gap:8px; min-width:0; padding:12px 6px; }
+.preview-tabs button .layout-icon { margin:0; flex-shrink:0; width:18px; }
+.preview-tabs button .portrait-icon { height:26px; }
+.preview-tabs button .landscape-icon { height:15px; }
+.preview-tabs button .format-copy { display:flex; flex-direction:column; align-items:center; gap:4px; min-width:0; margin:0; color:inherit; font-size:inherit; }
+.format-copy strong { font-size:12px; font-weight:600; line-height:1.5; }
+.format-copy small { font-size:10px; font-weight:400; color:var(--text-muted); white-space:nowrap; line-height:1.5; }
+@media(max-width:620px) {
+  .preview-tabs button .layout-icon { display:none; }
+  .preview-tabs button { padding:10px 3px; gap:0; }
+  .format-copy strong { font-size:11px; }
+  .format-copy small { font-size:8px; }
+}
+@media(max-width:360px) {
+  .format-copy strong { font-size:10px; white-space:nowrap; }
+}
+
+
+.export-fallback{width:100%;max-width:520px;color:var(--text-muted);font-size:12px;line-height:1.8;} .export-fallback summary{cursor:pointer;text-align:center;} .export-fallback img{display:block;width:100%;height:auto;margin-top:12px;} .export-fallback a{display:inline-block;padding:8px 12px;margin:10px 0;color:var(--text-main);border:1px solid var(--border-highlight);border-radius:7px;}
+
+.theme-toolbar {justify-content:space-between;align-items:center;gap:12px;}
+#headerLogo {width:158px;height:auto;display:block;border-radius:7px;flex-shrink:0;}
+.preview-tabs button {min-width:0;line-height:1.5;}
+@media(max-width:420px){#headerLogo{width:130px}.preview-tabs button{font-size:10px;padding:9px 3px;}}
 </style>
 <!-- Cropper.js 1.6.2 — https://github.com/fengyuanchen/cropperjs
 The MIT License (MIT)
@@ -352,14 +390,14 @@ THE SOFTWARE.
 </head>
 <body>
 <div class="workspace" id="appRoot">
-<div class="theme-toolbar" aria-label="页面外观">
+<div class="theme-toolbar" aria-label="页面外观"><img id="headerLogo" src="assets/images/progress-logo-bfe48d01ddd3.png" alt="优悦教育" width="158" height="60">
   <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="true" aria-label="当前为夜间模式，切换到日间模式" onclick="toggleTheme()">
     <span class="theme-toggle-icon" id="themeToggleIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20.2 14.2A8.5 8.5 0 0 1 9.8 3.8a8.5 8.5 0 1 0 10.4 10.4Z"></path></svg></span>
     <span id="themeToggleText">夜间模式</span>
   </button>
 </div>
 
-  <header class="kv-banner" id="kvBanner"><img id="kvImage" src="assets/images/kv-d6fbee23ef75.png" decoding="async" width="2662" height="320" alt="优悦教育职员老师工牌生成站"></header>
+  <header class="kv-banner" id="kvBanner"><img id="kvImage" src="assets/images/kv-c3ce6e59a266.png" decoding="async" width="2662" height="320" alt="优悦教育设计素材生成网站"></header>
   <main class="workflow-grid" id="workflowWorkspace" data-template="portrait" aria-label="工牌生成工作台">
     <svg class="workflow-links" id="workflowLinks" aria-hidden="true" focusable="false"></svg>
     <section class="left-column" aria-label="信息与版式">
@@ -402,6 +440,16 @@ THE SOFTWARE.
   </div>
   <p class="card-note">默认内容沿用原稿字样；修改后使用内置开源黑体排版，长文本会自动适配。</p>
 </div>
+<div class="progress-info" data-template-pane="progress" hidden>
+  <div class="card-header"><span>学员进步案例</span><span class="badge">横版</span></div>
+  <div class="field"><label for="pc_name">学生姓名 <small>可用星号隐去部分姓名</small></label><input id="pc_name" value="叶**同学" maxlength="20" oninput="renderBadge()"></div>
+  <div class="field"><label for="pc_stage">学段</label><input id="pc_stage" value="xxxxxx" maxlength="24" placeholder="例如：初三" oninput="renderBadge()"></div>
+  <div class="field"><label for="pc_subject">学科</label><input id="pc_subject" value="xxxxxx" maxlength="24" placeholder="例如：数学" oninput="renderBadge()"></div>
+  <div class="field"><label for="pc_previous">进步前信息</label><input id="pc_previous" value="97分提升至" maxlength="32" oninput="renderBadge()"></div>
+  <div class="field"><label for="pc_result">进步后信息</label><input id="pc_result" value="107分" maxlength="24" oninput="renderBadge()"></div>
+  <p class="card-note">默认姓名和成绩沿用设计稿字样；修改后使用开源黑体并自动适配宽度。各项大小和位置可在右侧调整。</p>
+</div>
+
 
       </section>
       <section class="card workflow-node" id="mediaNode" aria-label="图片素材">
@@ -440,28 +488,42 @@ THE SOFTWARE.
   </div>
   <p class="card-note">照片在浏览器内处理，不上传服务器。首次抠像需加载模型；头发与复杂背景可用右侧边缘微调。缺失的身体不会自动补画。</p>
 </div>
+<div class="progress-media" data-template-pane="progress" hidden>
+  <div class="card-header"><span>成长前后截图</span><span class="badge">固定画框</span></div>
+  <div class="progress-photo-card">
+    <div class="progress-photo-heading"><strong>成长前</strong><button type="button" class="chip-btn" onclick="document.getElementById('pc_beforeFile').click()">上传成长前截图</button></div>
+    <canvas class="progress-crop-preview" id="pc_beforePreview" width="590" height="320" tabindex="0" aria-label="成长前截图构图，可拖动，或用方向键移动"></canvas>
+    <input type="file" class="file-input-hidden" id="pc_beforeFile" accept="image/png,image/jpeg,image/webp,.png,.jpg,.jpeg,.webp" onchange="handleProgressUpload(this,'before')">
+    <p class="qr-status" id="pc_beforeStatus" role="status">当前为设计稿示例截图。</p>
+    <button type="button" class="chip-btn" onclick="resetProgressPhoto('before')">恢复成长前示例</button>
+  </div>
+  <div class="progress-photo-card">
+    <div class="progress-photo-heading"><strong>成长后</strong><button type="button" class="chip-btn" onclick="document.getElementById('pc_afterFile').click()">上传成长后截图</button></div>
+    <canvas class="progress-crop-preview" id="pc_afterPreview" width="590" height="320" tabindex="0" aria-label="成长后截图构图，可拖动，或用方向键移动"></canvas>
+    <input type="file" class="file-input-hidden" id="pc_afterFile" accept="image/png,image/jpeg,image/webp,.png,.jpg,.jpeg,.webp" onchange="handleProgressUpload(this,'after')">
+    <p class="qr-status" id="pc_afterStatus" role="status">当前为设计稿示例截图。</p>
+    <button type="button" class="chip-btn" onclick="resetProgressPhoto('after')">恢复成长后示例</button>
+  </div>
+  <p class="card-note">支持 JPG、PNG、WebP。图片始终裁切填满成品白框，不会拉伸；可在此拖动构图，或用右侧缩放和位置滑块调整。需要左右移动时，可先放大图片。处理在本机完成。</p>
+</div>
+
 
       </section>
-      <section class="card workflow-node template-card" id="templateNode" aria-labelledby="templateHeading">
-        <div class="card-header"><span id="templateHeading">选择生成版式</span><span class="badge">2 种版式</span></div>
-        <fieldset class="template-options"><legend class="sr-only">生成版式</legend>
-          <label class="layout-choice"><input type="radio" name="template" value="portrait" checked onchange="selectTemplate(this.value)"><span class="layout-icon portrait-icon" aria-hidden="true"></span><span class="layout-copy"><strong>竖版员工名牌</strong><small>638 × 1004 px</small></span><span class="choice-dot" aria-hidden="true"></span></label>
-          <label class="layout-choice"><input type="radio" name="template" value="landscape" onchange="selectTemplate(this.value)"><span class="layout-icon landscape-icon" aria-hidden="true"></span><span class="layout-copy"><strong>横版教师介绍</strong><small>1760 × 1240 px</small></span><span class="choice-dot" aria-hidden="true"></span></label>
-        </fieldset>
-        <p class="card-note">切换版式时，预览和两侧面板同步切换。竖版已填内容会保留。</p>
-      </section>
+      
     </section>
     <section class="result-node workflow-node" id="resultNode" aria-labelledby="resultHeading">
       <div class="result-header"><div><span class="eyebrow">OUTPUT</span><h1 id="resultHeading">生成结果</h1></div><span class="live-indicator"><i></i>实时预览</span></div>
-      <div class="preview-tabs" role="tablist" aria-label="预览版式">
-        <button type="button" role="tab" id="portraitTab" aria-controls="previewPanel" aria-selected="true" tabindex="0" data-preview-template="portrait" onclick="selectTemplate('portrait')">竖版名牌</button>
-        <button type="button" role="tab" id="landscapeTab" aria-controls="previewPanel" aria-selected="false" tabindex="-1" data-preview-template="landscape" onclick="selectTemplate('landscape')">横版教师介绍</button>
+      <p class="format-selector-label">选择生成版式 <span>3 种版式</span></p><div class="preview-tabs" role="tablist" aria-label="选择生成版式">
+        <button type="button" role="tab" id="portraitTab" aria-controls="previewPanel" aria-selected="true" tabindex="0" data-preview-template="portrait" onclick="selectTemplate('portrait')"><span class="layout-icon portrait-icon" aria-hidden="true"></span><span class="format-copy"><strong>竖版员工名牌</strong><small>638 × 1004 px</small></span></button>
+        <button type="button" role="tab" id="landscapeTab" aria-controls="previewPanel" aria-selected="false" tabindex="-1" data-preview-template="landscape" onclick="selectTemplate('landscape')"><span class="layout-icon landscape-icon" aria-hidden="true"></span><span class="format-copy"><strong>横版教师介绍</strong><small>1760 × 1240 px</small></span></button>
+<button type="button" role="tab" id="progressTab" aria-controls="previewPanel" aria-selected="false" tabindex="-1" data-preview-template="progress" onclick="selectTemplate('progress')"><span class="layout-icon landscape-icon" aria-hidden="true"></span><span class="format-copy"><strong>学员进步案例</strong><small>1760 × 1240 px</small></span></button>
       </div>
       <div class="canvas-viewport" id="previewPanel" role="tabpanel" aria-labelledby="portraitTab">
         <div class="stage-meta"><span class="stage-tag" id="stageTag">638 × 1004 px</span><span class="stage-format" id="stageFormat">竖版员工名牌</span></div>
         <div class="preview-paper-area"><div class="canvas-frame" id="canvasFrame"><canvas id="badgeCanvas" width="638" height="1004" aria-label="名牌预览"></canvas></div></div>
-        <p class="render-status" id="renderStatus" role="status" hidden></p><button type="button" class="small-btn" id="retryLandscapeBtn" onclick="ensureLandscapeReady()" hidden>重新加载横版素材</button><p class="preview-note" id="previewNote" hidden>默认字样与底图来自你的设计稿 · 修改文字后使用开源替代字体</p>
+        <p class="render-status" id="renderStatus" role="status" hidden></p><button type="button" class="small-btn" id="retryLandscapeBtn" onclick="activeTemplate==='progress'?ensureProgressReady():ensureLandscapeReady()" hidden>重新加载素材</button><p class="preview-note" id="previewNote" hidden>默认字样与底图来自你的设计稿 · 修改文字后使用开源替代字体</p>
         <button type="button" class="btn-export" id="exportBtn" onclick="exportBadgePng()">导出高清名牌图片 (PNG)</button>
+<details id="exportFallback" class="export-fallback" hidden><summary>没有开始下载？展开上次导出图片</summary><p id="exportFileName"></p><a id="exportSaveLink" download>保存 PNG 图片</a><p>手机也可长按下方图片保存。</p><img id="exportPreviewImage" alt="上次导出的图片预览"></details>
       </div>
     </section>
     <aside class="adjust-sidebar workflow-node" id="adjustNode" aria-label="当前版式排版参数">
@@ -519,9 +581,46 @@ THE SOFTWARE.
           <button type="button" class="reset-btn" onclick="resetSliders()">恢复默认排版参数</button>
         </div>
       <div class="adjust-content landscape-controls" data-template-pane="landscape" hidden><h3>横版排版调整</h3><p class="adjust-help">1760 × 1240 px · 教师介绍模板<br>先上传职业照，再按需微调。</p><details class="control-group" open><summary>人物大小与位置</summary><div class="control-item"><div class="label-row"><label for="ls_photoScale">人物缩放</label><b id="ls_photoScaleVal">100</b></div><input type="range" id="ls_photoScale" aria-label="人物缩放" min="50" max="170" step="1" value="100" oninput="updateLandscapeControls()"></div><div class="control-item"><div class="label-row"><label for="ls_photoX">人物左右偏移</label><b id="ls_photoXVal">0</b></div><input type="range" id="ls_photoX" aria-label="人物左右偏移" min="-350" max="350" step="1" value="0" oninput="updateLandscapeControls()"></div><div class="control-item"><div class="label-row"><label for="ls_photoY">人物上下偏移</label><b id="ls_photoYVal">0</b></div><input type="range" id="ls_photoY" aria-label="人物上下偏移" min="-250" max="350" step="1" value="0" oninput="updateLandscapeControls()"></div><label class="check-row"><input type="checkbox" id="lsFlip" onchange="renderBadge()">人物左右镜像</label><label class="check-row"><input type="checkbox" id="lsCurveClip" checked onchange="renderBadge()">按底部弧形裁切</label></details><details class="control-group" open><summary>抠像边缘微调</summary><div class="control-item"><div class="label-row"><label for="ls_edge">边缘收紧</label><b id="ls_edgeVal">50</b></div><input type="range" id="ls_edge" aria-label="边缘收紧" min="0" max="100" step="1" value="50" oninput="rebuildPortrait()"></div><div class="control-item"><div class="label-row"><label for="ls_feather">边缘羽化</label><b id="ls_featherVal">0.6</b></div><input type="range" id="ls_feather" aria-label="边缘羽化" min="0" max="3" step="0.1" value="0.6" oninput="rebuildPortrait()"></div><label class="check-row"><input type="checkbox" id="lsWhiteCleanup" checked onchange="rebuildPortrait()">清理外轮廓白边（保护浅色衣服）</label></details><details class="control-group"><summary>姓名与称谓</summary><div class="control-item"><div class="label-row"><label for="ls_nameSize">姓名字号</label><b id="ls_nameSizeVal">64</b></div><input type="range" id="ls_nameSize" aria-label="姓名字号" min="36" max="100" step="1" value="64" oninput="updateLandscapeControls()"></div><div class="control-item"><div class="label-row"><label for="ls_nameX">姓名左右偏移</label><b id="ls_nameXVal">0</b></div><input type="range" id="ls_nameX" aria-label="姓名左右偏移" min="-80" max="260" step="1" value="0" oninput="updateLandscapeControls()"></div><div class="control-item"><div class="label-row"><label for="ls_nameY">姓名上下偏移</label><b id="ls_nameYVal">0</b></div><input type="range" id="ls_nameY" aria-label="姓名上下偏移" min="-120" max="180" step="1" value="0" oninput="updateLandscapeControls()"></div></details><details class="control-group"><summary>授课特色与经验</summary><div class="control-item"><div class="label-row"><label for="ls_experienceSize">经验字号</label><b id="ls_experienceSizeVal">38</b></div><input type="range" id="ls_experienceSize" aria-label="经验字号" min="24" max="60" step="1" value="38" oninput="updateLandscapeControls()"></div><div class="control-item"><div class="label-row"><label for="ls_experienceX">经验左右偏移</label><b id="ls_experienceXVal">0</b></div><input type="range" id="ls_experienceX" aria-label="经验左右偏移" min="-80" max="220" step="1" value="0" oninput="updateLandscapeControls()"></div><div class="control-item"><div class="label-row"><label for="ls_experienceY">经验上下偏移</label><b id="ls_experienceYVal">0</b></div><input type="range" id="ls_experienceY" aria-label="经验上下偏移" min="-100" max="180" step="1" value="0" oninput="updateLandscapeControls()"></div></details><details class="control-group"><summary>人物介绍</summary><div class="control-item"><div class="label-row"><label for="ls_introSize">介绍字号</label><b id="ls_introSizeVal">32</b></div><input type="range" id="ls_introSize" aria-label="介绍字号" min="20" max="48" step="1" value="32" oninput="updateLandscapeControls()"></div><div class="control-item"><div class="label-row"><label for="ls_introX">介绍左右偏移</label><b id="ls_introXVal">0</b></div><input type="range" id="ls_introX" aria-label="介绍左右偏移" min="-80" max="220" step="1" value="0" oninput="updateLandscapeControls()"></div><div class="control-item"><div class="label-row"><label for="ls_introY">介绍上下偏移</label><b id="ls_introYVal">0</b></div><input type="range" id="ls_introY" aria-label="介绍上下偏移" min="-160" max="100" step="1" value="0" oninput="updateLandscapeControls()"></div><div class="field" style="margin-top:16px;margin-bottom:0"><label for="lsIntroHighlights">需要标红的文字</label><textarea id="lsIntroHighlights" rows="2" maxlength="220" placeholder="例如：5000+，每行填写一个词或短语" oninput="renderBadge()">5000+</textarea><p class="card-note" style="margin-top:0">每行一个词或短语；清空后人物介绍全部显示灰色。</p></div></details><details class="control-group"><summary>教学理念</summary><div class="control-item"><div class="label-row"><label for="ls_quoteSize">理念字号</label><b id="ls_quoteSizeVal">52</b></div><input type="range" id="ls_quoteSize" aria-label="理念字号" min="28" max="72" step="1" value="52" oninput="updateLandscapeControls()"></div><div class="control-item"><div class="label-row"><label for="ls_quoteX">理念左右偏移</label><b id="ls_quoteXVal">0</b></div><input type="range" id="ls_quoteX" aria-label="理念左右偏移" min="-150" max="40" step="1" value="0" oninput="updateLandscapeControls()"></div><div class="control-item"><div class="label-row"><label for="ls_quoteY">理念上下偏移</label><b id="ls_quoteYVal">0</b></div><input type="range" id="ls_quoteY" aria-label="理念上下偏移" min="-180" max="220" step="1" value="0" oninput="updateLandscapeControls()"></div></details><button type="button" class="reset-btn" onclick="resetLandscapeLayout()">恢复横版默认排版</button></div>
+<div class="adjust-content progress-controls" data-template-pane="progress" hidden><h3>案例排版与截图调整</h3><p class="adjust-help">1760 × 1240 px · 学员进步案例<br>截图只在固定白框中缩放、移动。</p>
+<details class="control-group" open><summary>成长前截图</summary>
+<div class="control-item"><div class="label-row"><label for="pc_beforeZoom">成长前截图缩放</label><b id="pc_beforeZoomVal">100%</b></div><input id="pc_beforeZoom" type="range" min="100" max="300" value="100" aria-label="成长前截图缩放" oninput="updateProgressControls()"></div>
+<div class="control-item"><div class="label-row"><label for="pc_beforeX">成长前截图左右移动</label><b id="pc_beforeXVal">0</b></div><input id="pc_beforeX" type="range" min="-100" max="100" value="0" aria-label="成长前截图左右移动" oninput="updateProgressControls()"></div>
+<div class="control-item"><div class="label-row"><label for="pc_beforeY">成长前截图上下移动</label><b id="pc_beforeYVal">0</b></div><input id="pc_beforeY" type="range" min="-100" max="100" value="0" aria-label="成长前截图上下移动" oninput="updateProgressControls()"></div>
+<button type="button" class="chip-btn" onclick="resetProgressCrop('before')">居中并恢复缩放</button></details>
+<details class="control-group" open><summary>成长后截图</summary>
+<div class="control-item"><div class="label-row"><label for="pc_afterZoom">成长后截图缩放</label><b id="pc_afterZoomVal">100%</b></div><input id="pc_afterZoom" type="range" min="100" max="300" value="100" aria-label="成长后截图缩放" oninput="updateProgressControls()"></div>
+<div class="control-item"><div class="label-row"><label for="pc_afterX">成长后截图左右移动</label><b id="pc_afterXVal">0</b></div><input id="pc_afterX" type="range" min="-100" max="100" value="0" aria-label="成长后截图左右移动" oninput="updateProgressControls()"></div>
+<div class="control-item"><div class="label-row"><label for="pc_afterY">成长后截图上下移动</label><b id="pc_afterYVal">0</b></div><input id="pc_afterY" type="range" min="-100" max="100" value="0" aria-label="成长后截图上下移动" oninput="updateProgressControls()"></div>
+<button type="button" class="chip-btn" onclick="resetProgressCrop('after')">居中并恢复缩放</button></details>
+<details class="control-group"><summary>学生姓名</summary>
+<div class="control-item"><div class="label-row"><label for="pc_nameSize">学生姓名字号</label><b id="pc_nameSizeVal">64px</b></div><input id="pc_nameSize" type="range" min="28" max="90" value="64" aria-label="学生姓名字号" oninput="updateProgressControls()"></div>
+<div class="control-item"><div class="label-row"><label for="pc_nameX">学生姓名左右偏移</label><b id="pc_nameXVal">0</b></div><input id="pc_nameX" type="range" min="-140" max="140" value="0" aria-label="学生姓名左右偏移" oninput="updateProgressControls()"></div>
+<div class="control-item"><div class="label-row"><label for="pc_nameY">学生姓名上下偏移</label><b id="pc_nameYVal">0</b></div><input id="pc_nameY" type="range" min="-120" max="120" value="0" aria-label="学生姓名上下偏移" oninput="updateProgressControls()"></div>
+</details>
+<details class="control-group"><summary>学段</summary>
+<div class="control-item"><div class="label-row"><label for="pc_stageSize">学段字号</label><b id="pc_stageSizeVal">30px</b></div><input id="pc_stageSize" type="range" min="16" max="48" value="30" aria-label="学段字号" oninput="updateProgressControls()"></div>
+<div class="control-item"><div class="label-row"><label for="pc_stageX">学段左右偏移</label><b id="pc_stageXVal">0</b></div><input id="pc_stageX" type="range" min="-100" max="130" value="0" aria-label="学段左右偏移" oninput="updateProgressControls()"></div>
+<div class="control-item"><div class="label-row"><label for="pc_stageY">学段上下偏移</label><b id="pc_stageYVal">0</b></div><input id="pc_stageY" type="range" min="-100" max="100" value="0" aria-label="学段上下偏移" oninput="updateProgressControls()"></div>
+</details>
+<details class="control-group"><summary>学科</summary>
+<div class="control-item"><div class="label-row"><label for="pc_subjectSize">学科字号</label><b id="pc_subjectSizeVal">30px</b></div><input id="pc_subjectSize" type="range" min="16" max="48" value="30" aria-label="学科字号" oninput="updateProgressControls()"></div>
+<div class="control-item"><div class="label-row"><label for="pc_subjectX">学科左右偏移</label><b id="pc_subjectXVal">0</b></div><input id="pc_subjectX" type="range" min="-100" max="130" value="0" aria-label="学科左右偏移" oninput="updateProgressControls()"></div>
+<div class="control-item"><div class="label-row"><label for="pc_subjectY">学科上下偏移</label><b id="pc_subjectYVal">0</b></div><input id="pc_subjectY" type="range" min="-100" max="100" value="0" aria-label="学科上下偏移" oninput="updateProgressControls()"></div>
+</details>
+<details class="control-group"><summary>进步前信息</summary>
+<div class="control-item"><div class="label-row"><label for="pc_previousSize">进步前信息字号</label><b id="pc_previousSizeVal">47px</b></div><input id="pc_previousSize" type="range" min="20" max="70" value="47" aria-label="进步前信息字号" oninput="updateProgressControls()"></div>
+<div class="control-item"><div class="label-row"><label for="pc_previousX">进步前信息左右偏移</label><b id="pc_previousXVal">0</b></div><input id="pc_previousX" type="range" min="-150" max="150" value="0" aria-label="进步前信息左右偏移" oninput="updateProgressControls()"></div>
+<div class="control-item"><div class="label-row"><label for="pc_previousY">进步前信息上下偏移</label><b id="pc_previousYVal">0</b></div><input id="pc_previousY" type="range" min="-120" max="120" value="0" aria-label="进步前信息上下偏移" oninput="updateProgressControls()"></div>
+</details>
+<details class="control-group"><summary>进步后信息</summary>
+<div class="control-item"><div class="label-row"><label for="pc_resultSize">进步后信息字号</label><b id="pc_resultSizeVal">144px</b></div><input id="pc_resultSize" type="range" min="48" max="190" value="144" aria-label="进步后信息字号" oninput="updateProgressControls()"></div>
+<div class="control-item"><div class="label-row"><label for="pc_resultX">进步后信息左右偏移</label><b id="pc_resultXVal">0</b></div><input id="pc_resultX" type="range" min="-150" max="150" value="0" aria-label="进步后信息左右偏移" oninput="updateProgressControls()"></div>
+<div class="control-item"><div class="label-row"><label for="pc_resultY">进步后信息上下偏移</label><b id="pc_resultYVal">0</b></div><input id="pc_resultY" type="range" min="-120" max="120" value="0" aria-label="进步后信息上下偏移" oninput="updateProgressControls()"></div>
+</details>
+<button type="button" class="reset-btn" onclick="resetProgressLayout()">恢复案例默认排版</button></div>
     </aside>
   </main>
-  <footer class="workspace-footer"><span>优悦教育 · 工牌生成工作台</span><span>版本 2026.10.29 · 图标兼容版</span><span><a href="assets/licenses/THIRD_PARTY_NOTICES.txt" style="color:inherit">开源组件说明</a></span></footer>
+  <footer class="workspace-footer"><span>优悦教育 · 工牌生成工作台</span><span>版本 2026.10.31 · 界面精简版</span><span><a href="assets/licenses/THIRD_PARTY_NOTICES.txt" style="color:inherit">开源组件说明</a></span></footer>
 </div>
 <dialog id="cropDialog" class="crop-dialog" aria-labelledby="cropTitle" aria-describedby="cropHelp">
     <div class="crop-heading"><h2 id="cropTitle">裁切二维码图片</h2><button type="button" class="chip-btn" onclick="cancelQrCrop()" aria-label="关闭裁切窗口">关闭</button></div>
@@ -535,7 +634,7 @@ THE SOFTWARE.
     <div class="crop-actions"><button type="button" class="chip-btn" onclick="cancelQrCrop()">取消</button><button type="button" class="btn-pill" id="applyCropBtn" onclick="applyQrCrop()" disabled>应用裁切</button></div>
   </dialog>
 <script id="embeddedAssets">window.EMBEDDED_BG_DATA = "assets/images/portrait-background-5b7e707abd72.png";
-window.EMBEDDED_KV_DATA = "assets/images/kv-d6fbee23ef75.png";</script>
+window.EMBEDDED_KV_DATA = "assets/images/kv-c3ce6e59a266.png";</script>
 <script id="cropperScript">/*!
  * Cropper.js v1.6.2
  * https://fengyuanchen.github.io/cropperjs
@@ -547,12 +646,14 @@ window.EMBEDDED_KV_DATA = "assets/images/kv-d6fbee23ef75.png";</script>
  */
 !function(t,e){"object"==typeof exports&&"undefined"!=typeof module?module.exports=e():"function"==typeof define&&define.amd?define(e):(t="undefined"!=typeof globalThis?globalThis:t||self).Cropper=e()}(this,function(){"use strict";function C(e,t){var i,a=Object.keys(e);return Object.getOwnPropertySymbols&&(i=Object.getOwnPropertySymbols(e),t&&(i=i.filter(function(t){return Object.getOwnPropertyDescriptor(e,t).enumerable})),a.push.apply(a,i)),a}function S(a){for(var t=1;t<arguments.length;t++){var n=null!=arguments[t]?arguments[t]:{};t%2?C(Object(n),!0).forEach(function(t){var e,i;e=a,i=n[t=t],(t=D(t))in e?Object.defineProperty(e,t,{value:i,enumerable:!0,configurable:!0,writable:!0}):e[t]=i}):Object.getOwnPropertyDescriptors?Object.defineProperties(a,Object.getOwnPropertyDescriptors(n)):C(Object(n)).forEach(function(t){Object.defineProperty(a,t,Object.getOwnPropertyDescriptor(n,t))})}return a}function D(t){t=function(t,e){if("object"!=typeof t||!t)return t;var i=t[Symbol.toPrimitive];if(void 0===i)return("string"===e?String:Number)(t);if("object"!=typeof(i=i.call(t,e||"default")))return i;throw new TypeError("@@toPrimitive must return a primitive value.")}(t,"string");return"symbol"==typeof t?t:t+""}function j(t){return(j="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t})(t)}function A(t,e){for(var i=0;i<e.length;i++){var a=e[i];a.enumerable=a.enumerable||!1,a.configurable=!0,"value"in a&&(a.writable=!0),Object.defineProperty(t,D(a.key),a)}}function P(t){return function(t){if(Array.isArray(t))return a(t)}(t)||function(t){if("undefined"!=typeof Symbol&&null!=t[Symbol.iterator]||null!=t["@@iterator"])return Array.from(t)}(t)||function(t,e){var i;if(t)return"string"==typeof t?a(t,e):"Map"===(i="Object"===(i=Object.prototype.toString.call(t).slice(8,-1))&&t.constructor?t.constructor.name:i)||"Set"===i?Array.from(t):"Arguments"===i||/^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(i)?a(t,e):void 0}(t)||function(){throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}()}function a(t,e){(null==e||e>t.length)&&(e=t.length);for(var i=0,a=new Array(e);i<e;i++)a[i]=t[i];return a}var t="undefined"!=typeof window&&void 0!==window.document,h=t?window:{},e=!(!t||!h.document.documentElement)&&"ontouchstart"in h.document.documentElement,i=t&&"PointerEvent"in h,c="cropper",I="all",U="crop",q="move",$="zoom",B="e",k="w",O="s",T="n",E="ne",W="nw",H="se",N="sw",Q="".concat(c,"-crop"),K="".concat(c,"-disabled"),L="".concat(c,"-hidden"),Z="".concat(c,"-hide"),G="".concat(c,"-invisible"),n="".concat(c,"-modal"),V="".concat(c,"-move"),d="".concat(c,"Action"),m="".concat(c,"Preview"),F="crop",J="move",_="none",tt="crop",et="cropend",it="cropmove",at="cropstart",nt="dblclick",ot=i?"pointerdown":e?"touchstart":"mousedown",ht=i?"pointermove":e?"touchmove":"mousemove",rt=i?"pointerup pointercancel":e?"touchend touchcancel":"mouseup",st="zoom",ct="image/jpeg",dt=/^e|w|s|n|se|sw|ne|nw|all|crop|move|zoom$/,lt=/^data:/,pt=/^data:image\/jpeg;base64,/,mt=/^img|canvas$/i,ut={viewMode:0,dragMode:F,initialAspectRatio:NaN,aspectRatio:NaN,data:null,preview:"",responsive:!0,restore:!0,checkCrossOrigin:!0,checkOrientation:!0,modal:!0,guides:!0,center:!0,highlight:!0,background:!0,autoCrop:!0,autoCropArea:.8,movable:!0,rotatable:!0,scalable:!0,zoomable:!0,zoomOnTouch:!0,zoomOnWheel:!0,wheelZoomRatio:.1,cropBoxMovable:!0,cropBoxResizable:!0,toggleDragModeOnDblclick:!0,minCanvasWidth:0,minCanvasHeight:0,minCropBoxWidth:0,minCropBoxHeight:0,minContainerWidth:200,minContainerHeight:100,ready:null,cropstart:null,cropmove:null,cropend:null,crop:null,zoom:null},gt=Number.isNaN||h.isNaN;function p(t){return"number"==typeof t&&!gt(t)}function ft(t){return 0<t&&t<1/0}function vt(t){return void 0===t}function o(t){return"object"===j(t)&&null!==t}var wt=Object.prototype.hasOwnProperty;function u(t){if(!o(t))return!1;try{var e=t.constructor,i=e.prototype;return e&&i&&wt.call(i,"isPrototypeOf")}catch(t){return!1}}function l(t){return"function"==typeof t}var bt=Array.prototype.slice;function yt(t){return Array.from?Array.from(t):bt.call(t)}function z(i,a){return i&&l(a)&&(Array.isArray(i)||p(i.length)?yt(i).forEach(function(t,e){a.call(i,t,e,i)}):o(i)&&Object.keys(i).forEach(function(t){a.call(i,i[t],t,i)})),i}var g=Object.assign||function(i){for(var t=arguments.length,e=new Array(1<t?t-1:0),a=1;a<t;a++)e[a-1]=arguments[a];return o(i)&&0<e.length&&e.forEach(function(e){o(e)&&Object.keys(e).forEach(function(t){i[t]=e[t]})}),i},xt=/\.\d*(?:0|9){12}\d*$/;function Y(t,e){e=1<arguments.length&&void 0!==e?e:1e11;return xt.test(t)?Math.round(t*e)/e:t}var Mt=/^width|height|left|top|marginLeft|marginTop$/;function f(t,e){var i=t.style;z(e,function(t,e){Mt.test(e)&&p(t)&&(t="".concat(t,"px")),i[e]=t})}function v(t,e){var i;e&&(p(t.length)?z(t,function(t){v(t,e)}):t.classList?t.classList.add(e):(i=t.className.trim())?i.indexOf(e)<0&&(t.className="".concat(i," ").concat(e)):t.className=e)}function X(t,e){e&&(p(t.length)?z(t,function(t){X(t,e)}):t.classList?t.classList.remove(e):0<=t.className.indexOf(e)&&(t.className=t.className.replace(e,"")))}function r(t,e,i){e&&(p(t.length)?z(t,function(t){r(t,e,i)}):(i?v:X)(t,e))}var Ct=/([a-z\d])([A-Z])/g;function Dt(t){return t.replace(Ct,"$1-$2").toLowerCase()}function Bt(t,e){return o(t[e])?t[e]:t.dataset?t.dataset[e]:t.getAttribute("data-".concat(Dt(e)))}function w(t,e,i){o(i)?t[e]=i:t.dataset?t.dataset[e]=i:t.setAttribute("data-".concat(Dt(e)),i)}var kt,Ot,Tt=/\s\s*/,Et=(Ot=!1,t&&(kt=!1,i=function(){},e=Object.defineProperty({},"once",{get:function(){return Ot=!0,kt},set:function(t){kt=t}}),h.addEventListener("test",i,e),h.removeEventListener("test",i,e)),Ot);function s(i,t,a,e){var n=3<arguments.length&&void 0!==e?e:{},o=a;t.trim().split(Tt).forEach(function(t){var e;Et||(e=i.listeners)&&e[t]&&e[t][a]&&(o=e[t][a],delete e[t][a],0===Object.keys(e[t]).length&&delete e[t],0===Object.keys(e).length)&&delete i.listeners,i.removeEventListener(t,o,n)})}function b(o,t,h,e){var r=3<arguments.length&&void 0!==e?e:{},s=h;t.trim().split(Tt).forEach(function(a){var t,n;r.once&&!Et&&(t=o.listeners,s=function(){delete n[a][h],o.removeEventListener(a,s,r);for(var t=arguments.length,e=new Array(t),i=0;i<t;i++)e[i]=arguments[i];h.apply(o,e)},(n=void 0===t?{}:t)[a]||(n[a]={}),n[a][h]&&o.removeEventListener(a,n[a][h],r),n[a][h]=s,o.listeners=n),o.addEventListener(a,s,r)})}function y(t,e,i){var a;return l(Event)&&l(CustomEvent)?a=new CustomEvent(e,{detail:i,bubbles:!0,cancelable:!0}):(a=document.createEvent("CustomEvent")).initCustomEvent(e,!0,!0,i),t.dispatchEvent(a)}function Wt(t){t=t.getBoundingClientRect();return{left:t.left+(window.pageXOffset-document.documentElement.clientLeft),top:t.top+(window.pageYOffset-document.documentElement.clientTop)}}var Ht=h.location,Nt=/^(\w+:)\/\/([^:/?#]*):?(\d*)/i;function Lt(t){t=t.match(Nt);return null!==t&&(t[1]!==Ht.protocol||t[2]!==Ht.hostname||t[3]!==Ht.port)}function zt(t){var e="timestamp=".concat((new Date).getTime());return t+(-1===t.indexOf("?")?"?":"&")+e}function x(t){var e=t.rotate,i=t.scaleX,a=t.scaleY,n=t.translateX,t=t.translateY,o=[],n=(p(n)&&0!==n&&o.push("translateX(".concat(n,"px)")),p(t)&&0!==t&&o.push("translateY(".concat(t,"px)")),p(e)&&0!==e&&o.push("rotate(".concat(e,"deg)")),p(i)&&1!==i&&o.push("scaleX(".concat(i,")")),p(a)&&1!==a&&o.push("scaleY(".concat(a,")")),o.length?o.join(" "):"none");return{WebkitTransform:n,msTransform:n,transform:n}}function M(t,e){var i=t.pageX,t=t.pageY,a={endX:i,endY:t};return e?a:S({startX:i,startY:t},a)}function R(t,e){var i,a=t.aspectRatio,n=t.height,t=t.width,e=1<arguments.length&&void 0!==e?e:"contain",o=ft(t),h=ft(n);return o&&h?(i=n*a,"contain"===e&&t<i||"cover"===e&&i<t?n=t/a:t=n*a):o?n=t/a:h&&(t=n*a),{width:t,height:n}}var Yt=String.fromCharCode;var Xt=/^data:.*,/;function Rt(t){var e,i,a,n,o,h,r,s=new DataView(t);try{if(255===s.getUint8(0)&&216===s.getUint8(1))for(var c=s.byteLength,d=2;d+1<c;){if(255===s.getUint8(d)&&225===s.getUint8(d+1)){i=d;break}d+=1}if(a=i&&(n=i+10,"Exif"===function(t,e,i){var a="";i+=e;for(var n=e;n<i;n+=1)a+=Yt(t.getUint8(n));return a}(s,i+4,4))&&((r=18761===(o=s.getUint16(n)))||19789===o)&&42===s.getUint16(n+2,r)&&8<=(h=s.getUint32(n+4,r))?n+h:a)for(var l,p=s.getUint16(a,r),m=0;m<p;m+=1)if(l=a+12*m+2,274===s.getUint16(l,r)){l+=8,e=s.getUint16(l,r),s.setUint16(l,1,r);break}}catch(t){e=1}return e}var t={render:function(){this.initContainer(),this.initCanvas(),this.initCropBox(),this.renderCanvas(),this.cropped&&this.renderCropBox()},initContainer:function(){var t=this.element,e=this.options,i=this.container,a=this.cropper,n=Number(e.minContainerWidth),e=Number(e.minContainerHeight),n=(v(a,L),X(t,L),{width:Math.max(i.offsetWidth,0<=n?n:200),height:Math.max(i.offsetHeight,0<=e?e:100)});f(a,{width:(this.containerData=n).width,height:n.height}),v(t,L),X(a,L)},initCanvas:function(){var t=this.containerData,e=this.imageData,i=this.options.viewMode,a=Math.abs(e.rotate)%180==90,n=a?e.naturalHeight:e.naturalWidth,a=a?e.naturalWidth:e.naturalHeight,e=n/a,o=t.width,h=t.height,e=(t.height*e>t.width?3===i?o=t.height*e:h=t.width/e:3===i?h=t.width/e:o=t.height*e,{aspectRatio:e,naturalWidth:n,naturalHeight:a,width:o,height:h});this.canvasData=e,this.limited=1===i||2===i,this.limitCanvas(!0,!0),e.width=Math.min(Math.max(e.width,e.minWidth),e.maxWidth),e.height=Math.min(Math.max(e.height,e.minHeight),e.maxHeight),e.left=(t.width-e.width)/2,e.top=(t.height-e.height)/2,e.oldLeft=e.left,e.oldTop=e.top,this.initialCanvasData=g({},e)},limitCanvas:function(t,e){var i=this.options,a=this.containerData,n=this.canvasData,o=this.cropBoxData,h=i.viewMode,r=n.aspectRatio,s=this.cropped&&o;t&&(t=Number(i.minCanvasWidth)||0,i=Number(i.minCanvasHeight)||0,1<h?(t=Math.max(t,a.width),i=Math.max(i,a.height),3===h&&(t<i*r?t=i*r:i=t/r)):0<h&&(t?t=Math.max(t,s?o.width:0):i?i=Math.max(i,s?o.height:0):s&&((t=o.width)<(i=o.height)*r?t=i*r:i=t/r)),t=(r=R({aspectRatio:r,width:t,height:i})).width,i=r.height,n.minWidth=t,n.minHeight=i,n.maxWidth=1/0,n.maxHeight=1/0),e&&((s?0:1)<h?(r=a.width-n.width,t=a.height-n.height,n.minLeft=Math.min(0,r),n.minTop=Math.min(0,t),n.maxLeft=Math.max(0,r),n.maxTop=Math.max(0,t),s&&this.limited&&(n.minLeft=Math.min(o.left,o.left+(o.width-n.width)),n.minTop=Math.min(o.top,o.top+(o.height-n.height)),n.maxLeft=o.left,n.maxTop=o.top,2===h)&&(n.width>=a.width&&(n.minLeft=Math.min(0,r),n.maxLeft=Math.max(0,r)),n.height>=a.height)&&(n.minTop=Math.min(0,t),n.maxTop=Math.max(0,t))):(n.minLeft=-n.width,n.minTop=-n.height,n.maxLeft=a.width,n.maxTop=a.height))},renderCanvas:function(t,e){var i,a,n,o,h=this.canvasData,r=this.imageData;e&&(e={width:r.naturalWidth*Math.abs(r.scaleX||1),height:r.naturalHeight*Math.abs(r.scaleY||1),degree:r.rotate||0},r=e.width,o=e.height,e=e.degree,i=90==(e=Math.abs(e)%180)?{width:o,height:r}:(a=e%90*Math.PI/180,i=Math.sin(a),n=r*(a=Math.cos(a))+o*i,r=r*i+o*a,90<e?{width:r,height:n}:{width:n,height:r}),a=h.width*((o=i.width)/h.naturalWidth),n=h.height*((e=i.height)/h.naturalHeight),h.left-=(a-h.width)/2,h.top-=(n-h.height)/2,h.width=a,h.height=n,h.aspectRatio=o/e,h.naturalWidth=o,h.naturalHeight=e,this.limitCanvas(!0,!1)),(h.width>h.maxWidth||h.width<h.minWidth)&&(h.left=h.oldLeft),(h.height>h.maxHeight||h.height<h.minHeight)&&(h.top=h.oldTop),h.width=Math.min(Math.max(h.width,h.minWidth),h.maxWidth),h.height=Math.min(Math.max(h.height,h.minHeight),h.maxHeight),this.limitCanvas(!1,!0),h.left=Math.min(Math.max(h.left,h.minLeft),h.maxLeft),h.top=Math.min(Math.max(h.top,h.minTop),h.maxTop),h.oldLeft=h.left,h.oldTop=h.top,f(this.canvas,g({width:h.width,height:h.height},x({translateX:h.left,translateY:h.top}))),this.renderImage(t),this.cropped&&this.limited&&this.limitCropBox(!0,!0)},renderImage:function(t){var e=this.canvasData,i=this.imageData,a=i.naturalWidth*(e.width/e.naturalWidth),n=i.naturalHeight*(e.height/e.naturalHeight);g(i,{width:a,height:n,left:(e.width-a)/2,top:(e.height-n)/2}),f(this.image,g({width:i.width,height:i.height},x(g({translateX:i.left,translateY:i.top},i)))),t&&this.output()},initCropBox:function(){var t=this.options,e=this.canvasData,i=t.aspectRatio||t.initialAspectRatio,t=Number(t.autoCropArea)||.8,a={width:e.width,height:e.height};i&&(e.height*i>e.width?a.height=a.width/i:a.width=a.height*i),this.cropBoxData=a,this.limitCropBox(!0,!0),a.width=Math.min(Math.max(a.width,a.minWidth),a.maxWidth),a.height=Math.min(Math.max(a.height,a.minHeight),a.maxHeight),a.width=Math.max(a.minWidth,a.width*t),a.height=Math.max(a.minHeight,a.height*t),a.left=e.left+(e.width-a.width)/2,a.top=e.top+(e.height-a.height)/2,a.oldLeft=a.left,a.oldTop=a.top,this.initialCropBoxData=g({},a)},limitCropBox:function(t,e){var i,a,n=this.options,o=this.containerData,h=this.canvasData,r=this.cropBoxData,s=this.limited,c=n.aspectRatio;t&&(t=Number(n.minCropBoxWidth)||0,n=Number(n.minCropBoxHeight)||0,i=s?Math.min(o.width,h.width,h.width+h.left,o.width-h.left):o.width,a=s?Math.min(o.height,h.height,h.height+h.top,o.height-h.top):o.height,t=Math.min(t,o.width),n=Math.min(n,o.height),c&&(t&&n?t<n*c?n=t/c:t=n*c:t?n=t/c:n&&(t=n*c),i<a*c?a=i/c:i=a*c),r.minWidth=Math.min(t,i),r.minHeight=Math.min(n,a),r.maxWidth=i,r.maxHeight=a),e&&(s?(r.minLeft=Math.max(0,h.left),r.minTop=Math.max(0,h.top),r.maxLeft=Math.min(o.width,h.left+h.width)-r.width,r.maxTop=Math.min(o.height,h.top+h.height)-r.height):(r.minLeft=0,r.minTop=0,r.maxLeft=o.width-r.width,r.maxTop=o.height-r.height))},renderCropBox:function(){var t=this.options,e=this.containerData,i=this.cropBoxData;(i.width>i.maxWidth||i.width<i.minWidth)&&(i.left=i.oldLeft),(i.height>i.maxHeight||i.height<i.minHeight)&&(i.top=i.oldTop),i.width=Math.min(Math.max(i.width,i.minWidth),i.maxWidth),i.height=Math.min(Math.max(i.height,i.minHeight),i.maxHeight),this.limitCropBox(!1,!0),i.left=Math.min(Math.max(i.left,i.minLeft),i.maxLeft),i.top=Math.min(Math.max(i.top,i.minTop),i.maxTop),i.oldLeft=i.left,i.oldTop=i.top,t.movable&&t.cropBoxMovable&&w(this.face,d,i.width>=e.width&&i.height>=e.height?q:I),f(this.cropBox,g({width:i.width,height:i.height},x({translateX:i.left,translateY:i.top}))),this.cropped&&this.limited&&this.limitCanvas(!0,!0),this.disabled||this.output()},output:function(){this.preview(),y(this.element,tt,this.getData())}},i={initPreview:function(){var t=this.element,i=this.crossOrigin,e=this.options.preview,a=i?this.crossOriginUrl:this.url,n=t.alt||"The image to preview",o=document.createElement("img");i&&(o.crossOrigin=i),o.src=a,o.alt=n,this.viewBox.appendChild(o),this.viewBoxImage=o,e&&("string"==typeof(o=e)?o=t.ownerDocument.querySelectorAll(e):e.querySelector&&(o=[e]),z(this.previews=o,function(t){var e=document.createElement("img");w(t,m,{width:t.offsetWidth,height:t.offsetHeight,html:t.innerHTML}),i&&(e.crossOrigin=i),e.src=a,e.alt=n,e.style.cssText='display:block;width:100%;height:auto;min-width:0!important;min-height:0!important;max-width:none!important;max-height:none!important;image-orientation:0deg!important;"',t.innerHTML="",t.appendChild(e)}))},resetPreview:function(){z(this.previews,function(e){var i=Bt(e,m),i=(f(e,{width:i.width,height:i.height}),e.innerHTML=i.html,e),e=m;if(o(i[e]))try{delete i[e]}catch(t){i[e]=void 0}else if(i.dataset)try{delete i.dataset[e]}catch(t){i.dataset[e]=void 0}else i.removeAttribute("data-".concat(Dt(e)))})},preview:function(){var h=this.imageData,t=this.canvasData,e=this.cropBoxData,r=e.width,s=e.height,c=h.width,d=h.height,l=e.left-t.left-h.left,p=e.top-t.top-h.top;this.cropped&&!this.disabled&&(f(this.viewBoxImage,g({width:c,height:d},x(g({translateX:-l,translateY:-p},h)))),z(this.previews,function(t){var e=Bt(t,m),i=e.width,e=e.height,a=i,n=e,o=1;r&&(n=s*(o=i/r)),s&&e<n&&(a=r*(o=e/s),n=e),f(t,{width:a,height:n}),f(t.getElementsByTagName("img")[0],g({width:c*o,height:d*o},x(g({translateX:-l*o,translateY:-p*o},h))))}))}},e={bind:function(){var t=this.element,e=this.options,i=this.cropper;l(e.cropstart)&&b(t,at,e.cropstart),l(e.cropmove)&&b(t,it,e.cropmove),l(e.cropend)&&b(t,et,e.cropend),l(e.crop)&&b(t,tt,e.crop),l(e.zoom)&&b(t,st,e.zoom),b(i,ot,this.onCropStart=this.cropStart.bind(this)),e.zoomable&&e.zoomOnWheel&&b(i,"wheel",this.onWheel=this.wheel.bind(this),{passive:!1,capture:!0}),e.toggleDragModeOnDblclick&&b(i,nt,this.onDblclick=this.dblclick.bind(this)),b(t.ownerDocument,ht,this.onCropMove=this.cropMove.bind(this)),b(t.ownerDocument,rt,this.onCropEnd=this.cropEnd.bind(this)),e.responsive&&b(window,"resize",this.onResize=this.resize.bind(this))},unbind:function(){var t=this.element,e=this.options,i=this.cropper;l(e.cropstart)&&s(t,at,e.cropstart),l(e.cropmove)&&s(t,it,e.cropmove),l(e.cropend)&&s(t,et,e.cropend),l(e.crop)&&s(t,tt,e.crop),l(e.zoom)&&s(t,st,e.zoom),s(i,ot,this.onCropStart),e.zoomable&&e.zoomOnWheel&&s(i,"wheel",this.onWheel,{passive:!1,capture:!0}),e.toggleDragModeOnDblclick&&s(i,nt,this.onDblclick),s(t.ownerDocument,ht,this.onCropMove),s(t.ownerDocument,rt,this.onCropEnd),e.responsive&&s(window,"resize",this.onResize)}},St={resize:function(){var t,e,i,a,n,o,h;this.disabled||(t=this.options,a=this.container,e=this.containerData,i=a.offsetWidth/e.width,a=a.offsetHeight/e.height,1!=(n=Math.abs(i-1)>Math.abs(a-1)?i:a)&&(t.restore&&(o=this.getCanvasData(),h=this.getCropBoxData()),this.render(),t.restore)&&(this.setCanvasData(z(o,function(t,e){o[e]=t*n})),this.setCropBoxData(z(h,function(t,e){h[e]=t*n}))))},dblclick:function(){var t,e;this.disabled||this.options.dragMode===_||this.setDragMode((t=this.dragBox,e=Q,(t.classList?t.classList.contains(e):-1<t.className.indexOf(e))?J:F))},wheel:function(t){var e=this,i=Number(this.options.wheelZoomRatio)||.1,a=1;this.disabled||(t.preventDefault(),this.wheeling)||(this.wheeling=!0,setTimeout(function(){e.wheeling=!1},50),t.deltaY?a=0<t.deltaY?1:-1:t.wheelDelta?a=-t.wheelDelta/120:t.detail&&(a=0<t.detail?1:-1),this.zoom(-a*i,t))},cropStart:function(t){var e,i=t.buttons,a=t.button;this.disabled||("mousedown"===t.type||"pointerdown"===t.type&&"mouse"===t.pointerType)&&(p(i)&&1!==i||p(a)&&0!==a||t.ctrlKey)||(i=this.options,e=this.pointers,t.changedTouches?z(t.changedTouches,function(t){e[t.identifier]=M(t)}):e[t.pointerId||0]=M(t),a=1<Object.keys(e).length&&i.zoomable&&i.zoomOnTouch?$:Bt(t.target,d),dt.test(a)&&!1!==y(this.element,at,{originalEvent:t,action:a})&&(t.preventDefault(),this.action=a,this.cropping=!1,a===U)&&(this.cropping=!0,v(this.dragBox,n)))},cropMove:function(t){var e,i=this.action;!this.disabled&&i&&(e=this.pointers,t.preventDefault(),!1!==y(this.element,it,{originalEvent:t,action:i}))&&(t.changedTouches?z(t.changedTouches,function(t){g(e[t.identifier]||{},M(t,!0))}):g(e[t.pointerId||0]||{},M(t,!0)),this.change(t))},cropEnd:function(t){var e,i;this.disabled||(e=this.action,i=this.pointers,t.changedTouches?z(t.changedTouches,function(t){delete i[t.identifier]}):delete i[t.pointerId||0],e&&(t.preventDefault(),Object.keys(i).length||(this.action=""),this.cropping&&(this.cropping=!1,r(this.dragBox,n,this.cropped&&this.options.modal)),y(this.element,et,{originalEvent:t,action:e})))}},jt={change:function(t){function e(t){switch(t){case B:f+D.x>y&&(D.x=y-f);break;case k:p+D.x<w&&(D.x=w-p);break;case T:m+D.y<b&&(D.y=b-m);break;case O:v+D.y>x&&(D.y=x-v)}}var i,a,o,n=this.options,h=this.canvasData,r=this.containerData,s=this.cropBoxData,c=this.pointers,d=this.action,l=n.aspectRatio,p=s.left,m=s.top,u=s.width,g=s.height,f=p+u,v=m+g,w=0,b=0,y=r.width,x=r.height,M=!0,C=(!l&&t.shiftKey&&(l=u&&g?u/g:1),this.limited&&(w=s.minLeft,b=s.minTop,y=w+Math.min(r.width,h.width,h.left+h.width),x=b+Math.min(r.height,h.height,h.top+h.height)),c[Object.keys(c)[0]]),D={x:C.endX-C.startX,y:C.endY-C.startY};switch(d){case I:p+=D.x,m+=D.y;break;case B:0<=D.x&&(y<=f||l&&(m<=b||x<=v))?M=!1:(e(B),(u+=D.x)<0&&(d=k,p-=u=-u),l&&(m+=(s.height-(g=u/l))/2));break;case T:D.y<=0&&(m<=b||l&&(p<=w||y<=f))?M=!1:(e(T),g-=D.y,m+=D.y,g<0&&(d=O,m-=g=-g),l&&(p+=(s.width-(u=g*l))/2));break;case k:D.x<=0&&(p<=w||l&&(m<=b||x<=v))?M=!1:(e(k),u-=D.x,p+=D.x,u<0&&(d=B,p-=u=-u),l&&(m+=(s.height-(g=u/l))/2));break;case O:0<=D.y&&(x<=v||l&&(p<=w||y<=f))?M=!1:(e(O),(g+=D.y)<0&&(d=T,m-=g=-g),l&&(p+=(s.width-(u=g*l))/2));break;case E:if(l){if(D.y<=0&&(m<=b||y<=f)){M=!1;break}e(T),g-=D.y,m+=D.y,u=g*l}else e(T),e(B),!(0<=D.x)||f<y?u+=D.x:D.y<=0&&m<=b&&(M=!1),(!(D.y<=0)||b<m)&&(g-=D.y,m+=D.y);u<0&&g<0?(d=N,m-=g=-g,p-=u=-u):u<0?(d=W,p-=u=-u):g<0&&(d=H,m-=g=-g);break;case W:if(l){if(D.y<=0&&(m<=b||p<=w)){M=!1;break}e(T),g-=D.y,m+=D.y,p+=s.width-(u=g*l)}else e(T),e(k),!(D.x<=0)||w<p?(u-=D.x,p+=D.x):D.y<=0&&m<=b&&(M=!1),(!(D.y<=0)||b<m)&&(g-=D.y,m+=D.y);u<0&&g<0?(d=H,m-=g=-g,p-=u=-u):u<0?(d=E,p-=u=-u):g<0&&(d=N,m-=g=-g);break;case N:if(l){if(D.x<=0&&(p<=w||x<=v)){M=!1;break}e(k),u-=D.x,p+=D.x,g=u/l}else e(O),e(k),!(D.x<=0)||w<p?(u-=D.x,p+=D.x):0<=D.y&&x<=v&&(M=!1),(!(0<=D.y)||v<x)&&(g+=D.y);u<0&&g<0?(d=E,m-=g=-g,p-=u=-u):u<0?(d=H,p-=u=-u):g<0&&(d=W,m-=g=-g);break;case H:if(l){if(0<=D.x&&(y<=f||x<=v)){M=!1;break}e(B),g=(u+=D.x)/l}else e(O),e(B),!(0<=D.x)||f<y?u+=D.x:0<=D.y&&x<=v&&(M=!1),(!(0<=D.y)||v<x)&&(g+=D.y);u<0&&g<0?(d=W,m-=g=-g,p-=u=-u):u<0?(d=N,p-=u=-u):g<0&&(d=E,m-=g=-g);break;case q:this.move(D.x,D.y),M=!1;break;case $:this.zoom((a=S({},i=c),o=0,z(i,function(n,t){delete a[t],z(a,function(t){var e=Math.abs(n.startX-t.startX),i=Math.abs(n.startY-t.startY),a=Math.abs(n.endX-t.endX),t=Math.abs(n.endY-t.endY),e=Math.sqrt(e*e+i*i),i=(Math.sqrt(a*a+t*t)-e)/e;Math.abs(i)>Math.abs(o)&&(o=i)})}),o),t),M=!1;break;case U:D.x&&D.y?(i=Wt(this.cropper),p=C.startX-i.left,m=C.startY-i.top,u=s.minWidth,g=s.minHeight,0<D.x?d=0<D.y?H:E:D.x<0&&(p-=u,d=0<D.y?N:W),D.y<0&&(m-=g),this.cropped||(X(this.cropBox,L),this.cropped=!0,this.limited&&this.limitCropBox(!0,!0))):M=!1}M&&(s.width=u,s.height=g,s.left=p,s.top=m,this.action=d,this.renderCropBox()),z(c,function(t){t.startX=t.endX,t.startY=t.endY})}},At={crop:function(){return!this.ready||this.cropped||this.disabled||(this.cropped=!0,this.limitCropBox(!0,!0),this.options.modal&&v(this.dragBox,n),X(this.cropBox,L),this.setCropBoxData(this.initialCropBoxData)),this},reset:function(){return this.ready&&!this.disabled&&(this.imageData=g({},this.initialImageData),this.canvasData=g({},this.initialCanvasData),this.cropBoxData=g({},this.initialCropBoxData),this.renderCanvas(),this.cropped)&&this.renderCropBox(),this},clear:function(){return this.cropped&&!this.disabled&&(g(this.cropBoxData,{left:0,top:0,width:0,height:0}),this.cropped=!1,this.renderCropBox(),this.limitCanvas(!0,!0),this.renderCanvas(),X(this.dragBox,n),v(this.cropBox,L)),this},replace:function(e){var t=1<arguments.length&&void 0!==arguments[1]&&arguments[1];return!this.disabled&&e&&(this.isImg&&(this.element.src=e),t?(this.url=e,this.image.src=e,this.ready&&(this.viewBoxImage.src=e,z(this.previews,function(t){t.getElementsByTagName("img")[0].src=e}))):(this.isImg&&(this.replaced=!0),this.options.data=null,this.uncreate(),this.load(e))),this},enable:function(){return this.ready&&this.disabled&&(this.disabled=!1,X(this.cropper,K)),this},disable:function(){return this.ready&&!this.disabled&&(this.disabled=!0,v(this.cropper,K)),this},destroy:function(){var t=this.element;return t[c]&&(t[c]=void 0,this.isImg&&this.replaced&&(t.src=this.originalUrl),this.uncreate()),this},move:function(t){var e=1<arguments.length&&void 0!==arguments[1]?arguments[1]:t,i=this.canvasData,a=i.left,i=i.top;return this.moveTo(vt(t)?t:a+Number(t),vt(e)?e:i+Number(e))},moveTo:function(t){var e=1<arguments.length&&void 0!==arguments[1]?arguments[1]:t,i=this.canvasData,a=!1;return t=Number(t),e=Number(e),this.ready&&!this.disabled&&this.options.movable&&(p(t)&&(i.left=t,a=!0),p(e)&&(i.top=e,a=!0),a)&&this.renderCanvas(!0),this},zoom:function(t,e){var i=this.canvasData;return t=Number(t),this.zoomTo(i.width*(t=t<0?1/(1-t):1+t)/i.naturalWidth,null,e)},zoomTo:function(t,e,i){var a,n,o,h=this.options,r=this.canvasData,s=r.width,c=r.height,d=r.naturalWidth,l=r.naturalHeight;if(0<=(t=Number(t))&&this.ready&&!this.disabled&&h.zoomable){h=d*t,l=l*t;if(!1===y(this.element,st,{ratio:t,oldRatio:s/d,originalEvent:i}))return this;i?(t=this.pointers,d=Wt(this.cropper),t=t&&Object.keys(t).length?(o=n=a=0,z(t,function(t){var e=t.startX,t=t.startY;a+=e,n+=t,o+=1}),{pageX:a/=o,pageY:n/=o}):{pageX:i.pageX,pageY:i.pageY},r.left-=(h-s)*((t.pageX-d.left-r.left)/s),r.top-=(l-c)*((t.pageY-d.top-r.top)/c)):u(e)&&p(e.x)&&p(e.y)?(r.left-=(h-s)*((e.x-r.left)/s),r.top-=(l-c)*((e.y-r.top)/c)):(r.left-=(h-s)/2,r.top-=(l-c)/2),r.width=h,r.height=l,this.renderCanvas(!0)}return this},rotate:function(t){return this.rotateTo((this.imageData.rotate||0)+Number(t))},rotateTo:function(t){return p(t=Number(t))&&this.ready&&!this.disabled&&this.options.rotatable&&(this.imageData.rotate=t%360,this.renderCanvas(!0,!0)),this},scaleX:function(t){var e=this.imageData.scaleY;return this.scale(t,p(e)?e:1)},scaleY:function(t){var e=this.imageData.scaleX;return this.scale(p(e)?e:1,t)},scale:function(t){var e=1<arguments.length&&void 0!==arguments[1]?arguments[1]:t,i=this.imageData,a=!1;return t=Number(t),e=Number(e),this.ready&&!this.disabled&&this.options.scalable&&(p(t)&&(i.scaleX=t,a=!0),p(e)&&(i.scaleY=e,a=!0),a)&&this.renderCanvas(!0,!0),this},getData:function(){var i,a,t=0<arguments.length&&void 0!==arguments[0]&&arguments[0],e=this.options,n=this.imageData,o=this.canvasData,h=this.cropBoxData;return this.ready&&this.cropped?(i={x:h.left-o.left,y:h.top-o.top,width:h.width,height:h.height},a=n.width/n.naturalWidth,z(i,function(t,e){i[e]=t/a}),t&&(o=Math.round(i.y+i.height),h=Math.round(i.x+i.width),i.x=Math.round(i.x),i.y=Math.round(i.y),i.width=h-i.x,i.height=o-i.y)):i={x:0,y:0,width:0,height:0},e.rotatable&&(i.rotate=n.rotate||0),e.scalable&&(i.scaleX=n.scaleX||1,i.scaleY=n.scaleY||1),i},setData:function(t){var e,i=this.options,a=this.imageData,n=this.canvasData,o={};return this.ready&&!this.disabled&&u(t)&&(e=!1,i.rotatable&&p(t.rotate)&&t.rotate!==a.rotate&&(a.rotate=t.rotate,e=!0),i.scalable&&(p(t.scaleX)&&t.scaleX!==a.scaleX&&(a.scaleX=t.scaleX,e=!0),p(t.scaleY))&&t.scaleY!==a.scaleY&&(a.scaleY=t.scaleY,e=!0),e&&this.renderCanvas(!0,!0),i=a.width/a.naturalWidth,p(t.x)&&(o.left=t.x*i+n.left),p(t.y)&&(o.top=t.y*i+n.top),p(t.width)&&(o.width=t.width*i),p(t.height)&&(o.height=t.height*i),this.setCropBoxData(o)),this},getContainerData:function(){return this.ready?g({},this.containerData):{}},getImageData:function(){return this.sized?g({},this.imageData):{}},getCanvasData:function(){var e=this.canvasData,i={};return this.ready&&z(["left","top","width","height","naturalWidth","naturalHeight"],function(t){i[t]=e[t]}),i},setCanvasData:function(t){var e=this.canvasData,i=e.aspectRatio;return this.ready&&!this.disabled&&u(t)&&(p(t.left)&&(e.left=t.left),p(t.top)&&(e.top=t.top),p(t.width)?(e.width=t.width,e.height=t.width/i):p(t.height)&&(e.height=t.height,e.width=t.height*i),this.renderCanvas(!0)),this},getCropBoxData:function(){var t,e=this.cropBoxData;return(t=this.ready&&this.cropped?{left:e.left,top:e.top,width:e.width,height:e.height}:t)||{}},setCropBoxData:function(t){var e,i,a=this.cropBoxData,n=this.options.aspectRatio;return this.ready&&this.cropped&&!this.disabled&&u(t)&&(p(t.left)&&(a.left=t.left),p(t.top)&&(a.top=t.top),p(t.width)&&t.width!==a.width&&(e=!0,a.width=t.width),p(t.height)&&t.height!==a.height&&(i=!0,a.height=t.height),n&&(e?a.height=a.width/n:i&&(a.width=a.height*n)),this.renderCropBox()),this},getCroppedCanvas:function(){var t,e,i,a,n,o,h,r,s,c,d,l,p,m,u,g,f,v,w,b,y,x,M,C,D,B,k,O=0<arguments.length&&void 0!==arguments[0]?arguments[0]:{};return this.ready&&window.HTMLCanvasElement?(B=this.canvasData,u=this.image,l=this.imageData,a=B,v=O,g=l.aspectRatio,e=l.naturalWidth,n=l.naturalHeight,c=void 0===(c=l.rotate)?0:c,d=void 0===(d=l.scaleX)?1:d,l=void 0===(l=l.scaleY)?1:l,i=a.aspectRatio,r=a.naturalWidth,a=a.naturalHeight,h=void 0===(h=v.fillColor)?"transparent":h,p=void 0===(p=v.imageSmoothingEnabled)||p,m=void 0===(m=v.imageSmoothingQuality)?"low":m,o=void 0===(o=v.maxWidth)?1/0:o,k=void 0===(k=v.maxHeight)?1/0:k,t=void 0===(t=v.minWidth)?0:t,v=void 0===(v=v.minHeight)?0:v,w=document.createElement("canvas"),f=w.getContext("2d"),s=R({aspectRatio:i,width:o,height:k}),i=R({aspectRatio:i,width:t,height:v},"cover"),r=Math.min(s.width,Math.max(i.width,r)),s=Math.min(s.height,Math.max(i.height,a)),i=R({aspectRatio:g,width:o,height:k}),a=R({aspectRatio:g,width:t,height:v},"cover"),o=Math.min(i.width,Math.max(a.width,e)),k=Math.min(i.height,Math.max(a.height,n)),g=[-o/2,-k/2,o,k],w.width=Y(r),w.height=Y(s),f.fillStyle=h,f.fillRect(0,0,r,s),f.save(),f.translate(r/2,s/2),f.rotate(c*Math.PI/180),f.scale(d,l),f.imageSmoothingEnabled=p,f.imageSmoothingQuality=m,f.drawImage.apply(f,[u].concat(P(g.map(function(t){return Math.floor(Y(t))})))),f.restore(),t=w,this.cropped?(e=(v=this.getData(O.rounded)).x,i=v.y,a=v.width,n=v.height,1!=(o=t.width/Math.floor(B.naturalWidth))&&(e*=o,i*=o,a*=o,n*=o),h=R({aspectRatio:k=a/n,width:O.maxWidth||1/0,height:O.maxHeight||1/0}),r=R({aspectRatio:k,width:O.minWidth||0,height:O.minHeight||0},"cover"),c=(s=R({aspectRatio:k,width:O.width||(1!=o?t.width:a),height:O.height||(1!=o?t.height:n)})).width,d=s.height,c=Math.min(h.width,Math.max(r.width,c)),d=Math.min(h.height,Math.max(r.height,d)),p=(l=document.createElement("canvas")).getContext("2d"),l.width=Y(c),l.height=Y(d),p.fillStyle=O.fillColor||"transparent",p.fillRect(0,0,c,d),m=O.imageSmoothingEnabled,u=O.imageSmoothingQuality,p.imageSmoothingEnabled=void 0===m||m,u&&(p.imageSmoothingQuality=u),g=t.width,f=t.height,w=i,(v=e)<=-a||g<v?C=x=b=v=0:v<=0?(x=-v,v=0,C=b=Math.min(g,a+v)):v<=g&&(x=0,C=b=Math.min(a,g-v)),b<=0||w<=-n||f<w?D=M=y=w=0:w<=0?(M=-w,w=0,D=y=Math.min(f,n+w)):w<=f&&(M=0,D=y=Math.min(n,f-w)),B=[v,w,b,y],0<C&&0<D&&B.push(x*(k=c/a),M*k,C*k,D*k),p.drawImage.apply(p,[t].concat(P(B.map(function(t){return Math.floor(Y(t))})))),l):t):null},setAspectRatio:function(t){var e=this.options;return this.disabled||vt(t)||(e.aspectRatio=Math.max(0,t)||NaN,this.ready&&(this.initCropBox(),this.cropped)&&this.renderCropBox()),this},setDragMode:function(t){var e,i,a=this.options,n=this.dragBox,o=this.face;return this.ready&&!this.disabled&&(i=a.movable&&t===J,a.dragMode=t=(e=t===F)||i?t:_,w(n,d,t),r(n,Q,e),r(n,V,i),a.cropBoxMovable||(w(o,d,t),r(o,Q,e),r(o,V,i))),this}},Pt=h.Cropper,It=function(){function n(t){var e=1<arguments.length&&void 0!==arguments[1]?arguments[1]:{},i=this,a=n;if(!(i instanceof a))throw new TypeError("Cannot call a class as a function");if(!t||!mt.test(t.tagName))throw new Error("The first argument is required and must be an <img> or <canvas> element.");this.element=t,this.options=g({},ut,u(e)&&e),this.cropped=!1,this.disabled=!1,this.pointers={},this.ready=!1,this.reloading=!1,this.replaced=!1,this.sized=!1,this.sizing=!1,this.init()}return t=n,i=[{key:"noConflict",value:function(){return window.Cropper=Pt,n}},{key:"setDefaults",value:function(t){g(ut,u(t)&&t)}}],(e=[{key:"init",value:function(){var t,e=this.element,i=e.tagName.toLowerCase();if(!e[c]){if(e[c]=this,"img"===i){if(this.isImg=!0,t=e.getAttribute("src")||"",!(this.originalUrl=t))return;t=e.src}else"canvas"===i&&window.HTMLCanvasElement&&(t=e.toDataURL());this.load(t)}}},{key:"load",value:function(t){var e,i,a,n,o,h,r=this;t&&(this.url=t,this.imageData={},e=this.element,(i=this.options).rotatable||i.scalable||(i.checkOrientation=!1),i.checkOrientation&&window.ArrayBuffer?lt.test(t)?pt.test(t)?this.read((h=(h=t).replace(Xt,""),a=atob(h),h=new ArrayBuffer(a.length),z(n=new Uint8Array(h),function(t,e){n[e]=a.charCodeAt(e)}),h)):this.clone():(o=new XMLHttpRequest,h=this.clone.bind(this),this.reloading=!0,(this.xhr=o).onabort=h,o.onerror=h,o.ontimeout=h,o.onprogress=function(){o.getResponseHeader("content-type")!==ct&&o.abort()},o.onload=function(){r.read(o.response)},o.onloadend=function(){r.reloading=!1,r.xhr=null},i.checkCrossOrigin&&Lt(t)&&e.crossOrigin&&(t=zt(t)),o.open("GET",t,!0),o.responseType="arraybuffer",o.withCredentials="use-credentials"===e.crossOrigin,o.send()):this.clone())}},{key:"read",value:function(t){var e=this.options,i=this.imageData,a=Rt(t),n=0,o=1,h=1;1<a&&(this.url=function(t,e){for(var i=[],a=new Uint8Array(t);0<a.length;)i.push(Yt.apply(null,yt(a.subarray(0,8192)))),a=a.subarray(8192);return"data:".concat(e,";base64,").concat(btoa(i.join("")))}(t,ct),n=(t=function(t){var e=0,i=1,a=1;switch(t){case 2:i=-1;break;case 3:e=-180;break;case 4:a=-1;break;case 5:e=90,a=-1;break;case 6:e=90;break;case 7:e=90,i=-1;break;case 8:e=-90}return{rotate:e,scaleX:i,scaleY:a}}(a)).rotate,o=t.scaleX,h=t.scaleY),e.rotatable&&(i.rotate=n),e.scalable&&(i.scaleX=o,i.scaleY=h),this.clone()}},{key:"clone",value:function(){var t=this.element,e=this.url,i=t.crossOrigin,a=e,n=(this.options.checkCrossOrigin&&Lt(e)&&(i=i||"anonymous",a=zt(e)),this.crossOrigin=i,this.crossOriginUrl=a,document.createElement("img"));i&&(n.crossOrigin=i),n.src=a||e,n.alt=t.alt||"The image to crop",(this.image=n).onload=this.start.bind(this),n.onerror=this.stop.bind(this),v(n,Z),t.parentNode.insertBefore(n,t.nextSibling)}},{key:"start",value:function(){function t(t,e){g(a.imageData,{naturalWidth:t,naturalHeight:e,aspectRatio:t/e}),a.initialImageData=g({},a.imageData),a.sizing=!1,a.sized=!0,a.build()}var e,i,a=this,n=this.image,o=(n.onload=null,n.onerror=null,this.sizing=!0,h.navigator&&/(?:iPad|iPhone|iPod).*?AppleWebKit/i.test(h.navigator.userAgent));n.naturalWidth&&!o?t(n.naturalWidth,n.naturalHeight):(e=document.createElement("img"),i=document.body||document.documentElement,(this.sizingImage=e).onload=function(){t(e.width,e.height),o||i.removeChild(e)},e.src=n.src,o||(e.style.cssText="left:0;max-height:none!important;max-width:none!important;min-height:0!important;min-width:0!important;opacity:0;position:absolute;top:0;z-index:-1;",i.appendChild(e)))}},{key:"stop",value:function(){var t=this.image;t.onload=null,t.onerror=null,t.parentNode.removeChild(t),this.image=null}},{key:"build",value:function(){var t,e,i,a,n,o,h,r,s;this.sized&&!this.ready&&(t=this.element,e=this.options,i=this.image,a=t.parentNode,(n=document.createElement("div")).innerHTML='<div class="cropper-container" touch-action="none"><div class="cropper-wrap-box"><div class="cropper-canvas"></div></div><div class="cropper-drag-box"></div><div class="cropper-crop-box"><span class="cropper-view-box"></span><span class="cropper-dashed dashed-h"></span><span class="cropper-dashed dashed-v"></span><span class="cropper-center"></span><span class="cropper-face"></span><span class="cropper-line line-e" data-cropper-action="e"></span><span class="cropper-line line-n" data-cropper-action="n"></span><span class="cropper-line line-w" data-cropper-action="w"></span><span class="cropper-line line-s" data-cropper-action="s"></span><span class="cropper-point point-e" data-cropper-action="e"></span><span class="cropper-point point-n" data-cropper-action="n"></span><span class="cropper-point point-w" data-cropper-action="w"></span><span class="cropper-point point-s" data-cropper-action="s"></span><span class="cropper-point point-ne" data-cropper-action="ne"></span><span class="cropper-point point-nw" data-cropper-action="nw"></span><span class="cropper-point point-sw" data-cropper-action="sw"></span><span class="cropper-point point-se" data-cropper-action="se"></span></div></div>',o=(n=n.querySelector(".".concat(c,"-container"))).querySelector(".".concat(c,"-canvas")),h=n.querySelector(".".concat(c,"-drag-box")),s=(r=n.querySelector(".".concat(c,"-crop-box"))).querySelector(".".concat(c,"-face")),this.container=a,this.cropper=n,this.canvas=o,this.dragBox=h,this.cropBox=r,this.viewBox=n.querySelector(".".concat(c,"-view-box")),this.face=s,o.appendChild(i),v(t,L),a.insertBefore(n,t.nextSibling),X(i,Z),this.initPreview(),this.bind(),e.initialAspectRatio=Math.max(0,e.initialAspectRatio)||NaN,e.aspectRatio=Math.max(0,e.aspectRatio)||NaN,e.viewMode=Math.max(0,Math.min(3,Math.round(e.viewMode)))||0,v(r,L),e.guides||v(r.getElementsByClassName("".concat(c,"-dashed")),L),e.center||v(r.getElementsByClassName("".concat(c,"-center")),L),e.background&&v(n,"".concat(c,"-bg")),e.highlight||v(s,G),e.cropBoxMovable&&(v(s,V),w(s,d,I)),e.cropBoxResizable||(v(r.getElementsByClassName("".concat(c,"-line")),L),v(r.getElementsByClassName("".concat(c,"-point")),L)),this.render(),this.ready=!0,this.setDragMode(e.dragMode),e.autoCrop&&this.crop(),this.setData(e.data),l(e.ready)&&b(t,"ready",e.ready,{once:!0}),y(t,"ready"))}},{key:"unbuild",value:function(){var t;this.ready&&(this.ready=!1,this.unbind(),this.resetPreview(),(t=this.cropper.parentNode)&&t.removeChild(this.cropper),X(this.element,L))}},{key:"uncreate",value:function(){this.ready?(this.unbuild(),this.ready=!1,this.cropped=!1):this.sizing?(this.sizingImage.onload=null,this.sizing=!1,this.sized=!1):this.reloading?(this.xhr.onabort=null,this.xhr.abort()):this.image&&this.stop()}}])&&A(t.prototype,e),i&&A(t,i),Object.defineProperty(t,"prototype",{writable:!1}),t;var t,e,i}();return g(It.prototype,t,i,e,St,jt,At),It});</script>
 <script id="landscapeAssets">window.LANDSCAPE_ASSETS = {"background": "assets/images/landscape-background-ccd0a6a8da21.png", "name": "assets/images/landscape-name-03ec210d566e.png", "intro": "assets/images/landscape-intro-b2ea2d92474e.png", "quote": "assets/images/landscape-quote-86fd1d70452b.png", "person": "assets/images/landscape-person-a323a05db400.png"};</script>
+<script id="progressAssets">window.CASE_ASSETS = {"background": "assets/images/progress-background-c16fb1eaa688.png", "name": "assets/images/progress-name-f0b3067816f9.png", "info": "assets/images/progress-info-423c4803aa5c.png", "previous": "assets/images/progress-previous-5e93f41ae0f2.png", "result": "assets/images/progress-result-b3a13b486233.png", "before": "assets/images/progress-before-45a5986d71fb.png", "after": "assets/images/progress-after-2354405a0610.png", "logo": "assets/images/progress-logo-bfe48d01ddd3.png"};</script>
 <script id="coreScript">
     // Each template owns its canvas dimensions and panels. Add landscape fields only
     // to data-template-pane="landscape"; portrait form values stay mounted on switch.
     var TEMPLATES = Object.freeze({
       portrait: { label: '竖版员工名牌', width: 638, height: 1004, blank: false },
-      landscape: { label: '横版教师介绍', width: 1760, height: 1240, blank: false }
+      landscape: { label: '横版教师介绍', width: 1760, height: 1240, blank: false },
+      progress: { label: '学员进步案例', width: 1760, height: 1240, blank: false }
     });
     var activeTemplate = 'portrait';
 
@@ -715,6 +816,7 @@ window.EMBEDDED_KV_DATA = "assets/images/kv-d6fbee23ef75.png";</script>
       if (canvas.height !== template.height) canvas.height = template.height;
       var ctx = canvas.getContext('2d');
       if (activeTemplate === 'landscape') { renderLandscape(ctx); return; }
+      if (activeTemplate === 'progress') { renderProgress(ctx); return; }
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       // 1. 如果已上传或固化了你的图2原版底图，100%使用你的原版底图（含原版Logo）
@@ -793,13 +895,11 @@ window.EMBEDDED_KV_DATA = "assets/images/kv-d6fbee23ef75.png";</script>
     function selectTemplate(key) {
       if (!TEMPLATES[key]) return;
       activeTemplate = key;
+      document.getElementById('exportFallback').hidden=true;
       var template = TEMPLATES[key];
       document.getElementById('workflowWorkspace').dataset.template = key;
       document.querySelectorAll('[data-template-pane]').forEach(function(pane) {
         pane.hidden = pane.dataset.templatePane !== key;
-      });
-      document.querySelectorAll('input[name="template"]').forEach(function(input) {
-        input.checked = input.value === key;
       });
       document.querySelectorAll('[data-preview-template]').forEach(function(tab) {
         var selected = tab.dataset.previewTemplate === key;
@@ -809,32 +909,36 @@ window.EMBEDDED_KV_DATA = "assets/images/kv-d6fbee23ef75.png";</script>
       document.getElementById('previewPanel').setAttribute('aria-labelledby', key + 'Tab');
       document.getElementById('stageTag').textContent = template.width + ' × ' + template.height + ' px';
       document.getElementById('stageFormat').textContent = template.label;
-      document.getElementById('canvasFrame').classList.toggle('is-landscape', key === 'landscape');
-      document.getElementById('previewNote').hidden = key !== 'landscape';
+      document.getElementById('canvasFrame').classList.toggle('is-landscape', key !== 'portrait');
+      document.getElementById('previewNote').hidden = key === 'portrait';
+      document.getElementById('previewNote').textContent = key==='progress'?'截图裁切填满固定白框，可在左侧拖动构图、右侧微调。':'默认字样与底图来自你的设计稿 · 修改文字后使用开源替代字体';
       document.getElementById('badgeCanvas').setAttribute('aria-label', template.label + '预览');
-      document.getElementById('exportBtn').textContent = key === 'landscape' ? '导出横版教师介绍 (PNG)' : '导出高清名牌图片 (PNG)';
+      document.getElementById('exportBtn').textContent = key === 'progress' ? '导出学员进步案例 (PNG)' : key === 'landscape' ? '导出横版教师介绍 (PNG)' : '导出高清名牌图片 (PNG)';
       document.getElementById('exportBtn').disabled = !!portraitBusy && key === 'landscape';
       if(key==='landscape')ensureLandscapeReady();
+      if(key==='progress')ensureProgressReady();
       updateLandscapeLoadStatus();
       renderBadge();
       pulseResult();
       scheduleWorkflowLinks();
     }
 
-    async function exportBadgePng() {
+    function exportBadgePng() {
       var requestedTemplate=activeTemplate;
-      if(requestedTemplate==='landscape'){
-        if(portraitBusy){setPortraitStatus('人物正在处理，请完成后再导出。');return;}
-        if(!await ensureLandscapeReady())return;
-        await loadLandscapeFont();
-      }
-      if(activeTemplate!==requestedTemplate)return;
+      if(document.getElementById('exportBtn').disabled)return;
       renderBadge();
       var canvas=document.getElementById('badgeCanvas');
-      var name=requestedTemplate==='landscape'?lsText('lsName'):document.getElementById('nameInput').value.trim();
+      var name=requestedTemplate==='progress'?document.getElementById('pc_name').value.trim():requestedTemplate==='landscape'?lsText('lsName'):document.getElementById('nameInput').value.trim();
       var link=document.createElement('a');
-      link.download=(requestedTemplate==='landscape'?'横版教师介绍_':'员工名牌_')+(name||'未命名')+'.png';
-      link.href=canvas.toDataURL('image/png');link.click();
+      link.download=(requestedTemplate==='progress'?'学员进步案例_':requestedTemplate==='landscape'?'横版教师介绍_':'员工名牌_')+(name||'未命名')+'.png';
+      // Keep the download anchor in the document for Safari. Retain data URL
+      // export so its final click does not wait for another asynchronous callback.
+      var png=canvas.toDataURL('image/png');link.href=png;
+      var fallback=document.getElementById('exportFallback');fallback.hidden=false;
+      document.getElementById('exportPreviewImage').src=png;
+      var save=document.getElementById('exportSaveLink');save.href=png;save.download=link.download;
+      document.getElementById('exportFileName').textContent=link.download;
+      document.body.appendChild(link);link.click();link.remove();
     }
 
     var pulseTimer;
@@ -855,7 +959,7 @@ window.EMBEDDED_KV_DATA = "assets/images/kv-d6fbee23ef75.png";</script>
     function initializeWorkflowLinks() {
       var svg = document.getElementById('workflowLinks');
       var ns = 'http://www.w3.org/2000/svg';
-      [ ['infoNode', 0.26], ['mediaNode', 0.5], ['templateNode', 0.77], ['adjustNode', 0.5] ].forEach(function(item, index) {
+      [ ['infoNode', 0.26], ['mediaNode', 0.5], ['adjustNode', 0.5] ].forEach(function(item, index) {
         var group = document.createElementNS(ns, 'g');
         var base = document.createElementNS(ns, 'path'); base.setAttribute('class', 'wire-base');
         var flow = document.createElementNS(ns, 'path'); flow.setAttribute('class', 'wire-travel');
@@ -867,7 +971,7 @@ window.EMBEDDED_KV_DATA = "assets/images/kv-d6fbee23ef75.png";</script>
       });
       if (typeof ResizeObserver !== 'undefined') {
         var observer = new ResizeObserver(scheduleWorkflowLinks);
-        ['workflowWorkspace', 'infoNode', 'mediaNode', 'templateNode', 'resultNode', 'adjustNode'].forEach(function(id) { observer.observe(document.getElementById(id)); });
+        ['workflowWorkspace', 'infoNode', 'mediaNode', 'resultNode', 'adjustNode'].forEach(function(id) { var node=document.getElementById(id);if(node)observer.observe(node); });
       }
       window.addEventListener('resize', scheduleWorkflowLinks, { passive: true });
       window.addEventListener('scroll', scheduleWorkflowLinks, { passive: true });
@@ -972,7 +1076,7 @@ var portraitSource=null, portraitMatte=null, portraitCanvas=null, portraitBounds
 var portraitReject=null, portraitTimeout=0;
 var portraitJob=0, portraitWorker=null, portraitBusy=false, portraitPendingSource=null;
 var assetBase = new URL(location.pathname.endsWith('/index.html') || location.pathname.endsWith('/') ? 'assets/' : 'GitHub发布包/assets/', document.baseURI).href;
-var landscapeFontReady=null, landscapeInitPromise=null, landscapeLoadError='';
+var landscapeFontReady=null, landscapeFontSettled=false, landscapeInitPromise=null, landscapeLoadError='';
 var landscapeFontFallback=false, landscapeDropBound=false;
 
 // The portrait screen never waits for the horizontal artwork or web font.
@@ -983,17 +1087,19 @@ function loadLandscapeFont() {
     var timer=setTimeout(function(){landscapeFontFallback=true;updateLandscapeLoadStatus();resolve();},12000);
     document.fonts.load('500 32px "YouyueNoto"').then(function(fonts){
       clearTimeout(timer);landscapeFontFallback=!fonts.length;resolve();
-      if(landscapeReady){renderBadge();updateLandscapeLoadStatus();}
+      if(landscapeReady||(activeTemplate==='progress'&&progressReady)){renderBadge();updateLandscapeLoadStatus();}
     },function(){clearTimeout(timer);landscapeFontFallback=true;updateLandscapeLoadStatus();resolve();});
   });
+  landscapeFontReady=landscapeFontReady.then(function(){landscapeFontSettled=true;updateLandscapeLoadStatus();});
   return landscapeFontReady;
 }
 function updateLandscapeLoadStatus() {
+  if(activeTemplate==='progress'){updateProgressStatus();return;}
   var status=document.getElementById('renderStatus'), retry=document.getElementById('retryLandscapeBtn');
-  var message=landscapeLoadError||(!landscapeReady&&landscapeInitPromise?'正在加载横版素材…':landscapeReady&&landscapeFontFallback?'字体暂未加载完成，修改文字时先使用系统字体。':'');
+  var message=landscapeLoadError||(!landscapeReady&&landscapeInitPromise?'正在加载横版素材…':landscapeReady&&!landscapeFontSettled?'正在准备字体，完成后即可导出…':landscapeReady&&landscapeFontFallback?'字体暂未加载完成，修改文字时先使用系统字体。':'');
   status.textContent=message;status.hidden=activeTemplate!=='landscape'||!message;
   retry.hidden=activeTemplate!=='landscape'||!landscapeLoadError;
-  document.getElementById('exportBtn').disabled=activeTemplate==='landscape'&&(!landscapeReady||portraitBusy);
+  document.getElementById('exportBtn').disabled=activeTemplate==='landscape'&&(!landscapeReady||!landscapeFontSettled||portraitBusy);
 }
 function ensureLandscapeReady() {
   if(landscapeReady){updateLandscapeLoadStatus();return Promise.resolve(true);}
@@ -1156,7 +1262,7 @@ function setPortraitBusy(busy) {
   portraitBusy=busy;
   ['retryPortraitBtn','useOriginalBtn','downloadPortraitBtn'].forEach(function(id){document.getElementById(id).disabled=busy;});
   document.getElementById('cancelPortraitBtn').hidden=!busy;
-  document.getElementById('exportBtn').disabled=activeTemplate==='landscape'&&(busy||!landscapeReady);
+  if(activeTemplate==='landscape')document.getElementById('exportBtn').disabled=busy||!landscapeReady||!landscapeFontSettled;
 }
 function cancelPortraitJob(quiet) {
   ++portraitJob;clearTimeout(portraitTimeout);
@@ -1234,6 +1340,199 @@ function usePortraitOriginal() {cancelPortraitJob(true);var source=portraitPendi
 async function restoreExamplePortrait(){if(!await ensureLandscapeReady())return;cancelPortraitJob(true);portraitPendingSource=null;portraitSource=null;portraitMatte=null;portraitCanvas=trimPortrait(landscapeImages.person);resetLandscapeLayout();updatePortraitThumbnail();setPortraitStatus('已恢复示例人物，填写内容保持不变。');}
 function downloadPortraitCutout(){if(!portraitCanvas)return;var a=document.createElement('a');a.download='人物透明图_'+(lsText('lsName')||'未命名')+'.png';a.href=portraitCanvas.toDataURL('image/png');a.click();}
 
+/* 学员进步案例。照片使用固定白框的 cover 构图，所有处理均在当前浏览器。 */
+var PC_DEFAULT_TEXT={name:'叶**同学',stage:'xxxxxx',subject:'xxxxxx',previous:'97分提升至',result:'107分'};
+var PC_DEFAULTS={nameSize:64,nameX:0,nameY:0,stageSize:30,stageX:0,stageY:0,subjectSize:30,subjectX:0,subjectY:0,previousSize:47,previousX:0,previousY:0,resultSize:144,resultX:0,resultY:0,beforeZoom:100,beforeX:0,beforeY:0,afterZoom:100,afterX:0,afterY:0};
+var PC_BOXES={before:{x:1016,y:363,width:590,height:320},after:{x:1016,y:740,width:590,height:320}};
+var progressImages={},progressBackground=null,progressReady=false,progressFontSettled=false;
+var progressInitPromise=null,progressLoadError='',progressBusy=false,progressCropBound=false;
+var progressPhotos={before:{image:null,version:0,pending:false},after:{image:null,version:0,pending:false}};
+function pcText(key){var el=document.getElementById('pc_'+key);return el?el.value.trim():'';}
+function pcValue(key){var el=document.getElementById('pc_'+key);return el?Number(el.value):PC_DEFAULTS[key];}
+function pcClamp(value,min,max){return Math.max(min,Math.min(max,value));}
+function updateProgressStatus(){
+  if(activeTemplate!=='progress')return;
+  var message=progressLoadError||(!progressReady?'正在加载案例素材…':!progressFontSettled?'正在准备案例字体…':progressBusy?'正在读取截图，完成后即可导出。':typeof landscapeFontFallback!=='undefined'&&landscapeFontFallback?'字体暂未加载完成，修改文字时先使用系统字体。':'');
+  var status=document.getElementById('renderStatus');status.textContent=message;status.hidden=!message;
+  document.getElementById('retryLandscapeBtn').hidden=!progressLoadError;
+  document.getElementById('exportBtn').disabled=!progressReady||!progressFontSettled||progressBusy;
+}
+function ensureProgressReady(){
+  if(progressReady&&progressFontSettled){updateProgressStatus();return Promise.resolve(true);}
+  if(progressInitPromise)return progressInitPromise;
+  progressLoadError='';
+  var fontReady=loadLandscapeFont().then(function(){progressFontSettled=true;if(progressReady){renderBadge();updateProgressStatus();}});
+  progressInitPromise=Promise.all(Object.keys(window.CASE_ASSETS).map(function(key){
+    return loadLandscapeImage(window.CASE_ASSETS[key]).then(function(image){progressImages[key]=image;});
+  })).then(function(){
+    progressBackground=makeProgressBackground(progressImages.background);
+    ['before','after'].forEach(function(kind){if(!progressPhotos[kind].image)progressPhotos[kind].image=progressImages[kind];});
+    progressReady=true;bindProgressCrops();updateProgressControls();renderBadge();updateProgressStatus();
+    return fontReady.then(function(){updateProgressStatus();return true;});
+  }).catch(function(error){
+    progressInitPromise=null;progressLoadError='案例素材加载失败，请检查网络后重试。'+(error.message||'');updateProgressStatus();return false;
+  });
+  updateProgressStatus();return progressInitPromise;
+}
+function makeProgressBackground(image){
+  var canvas=document.createElement('canvas');canvas.width=1763;canvas.height=1240;
+  var ctx=canvas.getContext('2d');ctx.drawImage(image,0,0,1763,1240);
+  // Only the fixed “同学” glyphs are removed, so the complete name can move.
+  // The unlettered background is a smooth warm gradient; sample its two sides.
+  var x=350,y=382,width=140,height=74,patch=ctx.getImageData(x,y,width,height);
+  var left=ctx.getImageData(346,y,5,height).data,right=ctx.getImageData(490,y,5,height).data;
+  for(var row=0;row<height;row++){
+    var a=[0,0,0],b=[0,0,0];
+    for(var n=0;n<5;n++)for(var c=0;c<3;c++){a[c]+=left[(row*5+n)*4+c]/5;b[c]+=right[(row*5+n)*4+c]/5;}
+    for(var col=0;col<width;col++){
+      var t=col/(width-1),fade=Math.min(1,col/3,(width-1-col)/3,row/3,(height-1-row)/3),i=(row*width+col)*4;
+      for(var c=0;c<3;c++)patch.data[i+c]=Math.round(patch.data[i+c]*(1-fade)+(a[c]*(1-t)+b[c]*t)*fade);
+    }
+  }
+  ctx.putImageData(patch,x,y);return canvas;
+}
+// Positive offsets move the image right/down; overflow is always clamped inside.
+function progressCoverGeometry(image,box,zoom,offsetX,offsetY){
+  var iw=image.naturalWidth||image.width,ih=image.naturalHeight||image.height;
+  var scale=Math.max(box.width/iw,box.height/ih)*pcClamp(zoom,100,300)/100;
+  var width=iw*scale,height=ih*scale,overX=Math.max(0,width-box.width),overY=Math.max(0,height-box.height);
+  return {x:box.x-overX/2+overX/2*pcClamp(offsetX,-100,100)/100,y:box.y-overY/2+overY/2*pcClamp(offsetY,-100,100)/100,width:width,height:height,overX:overX,overY:overY};
+}
+function drawProgressPhoto(ctx,kind,box){
+  var image=progressPhotos[kind].image;
+  ctx.save();ctx.beginPath();ctx.rect(box.x,box.y,box.width,box.height);ctx.clip();
+  ctx.fillStyle='#ffffff';ctx.fillRect(box.x,box.y,box.width,box.height);
+  if(image){var g=progressCoverGeometry(image,box,pcValue(kind+'Zoom'),pcValue(kind+'X'),pcValue(kind+'Y'));ctx.drawImage(image,g.x,g.y,g.width,g.height);}
+  ctx.restore();
+}
+function pcDrawText(ctx,text,x,y,size,maxWidth,color,weight,maxHeight){
+  if(!text)return;
+  var measured;
+  do{ctx.font=(weight||500)+' '+size+'px "YouyueNoto",sans-serif';measured=ctx.measureText(text);if((measured.width<=maxWidth&&size<=(maxHeight||1000))||size<=12)break;size--; }while(true);
+  ctx.fillStyle=color;ctx.textAlign='left';ctx.textBaseline='alphabetic';
+  var ascent=Number.isFinite(measured.actualBoundingBoxAscent)?measured.actualBoundingBoxAscent:size*.86;
+  ctx.fillText(text,x,y+ascent,maxWidth);
+}
+function renderProgress(ctx){
+  ctx.fillStyle='#fff8ec';ctx.fillRect(0,0,1760,1240);
+  if(!progressReady)return;
+  ctx.save();ctx.scale(1760/1763,1);ctx.drawImage(progressBackground,0,0);
+  var name=pcText('name'),nx=210+pcValue('nameX'),ny=386+pcValue('nameY'),ns=pcValue('nameSize');
+  if(name===PC_DEFAULT_TEXT.name){var sc=ns/64;ctx.drawImage(progressImages.name,nx,ny,276*sc,65*sc);}
+  else pcDrawText(ctx,name,nx,ny,ns,340,'#77321f',900,90);
+  ['stage','subject'].forEach(function(key,index){
+    var text=pcText(key),x=328+pcValue(key+'X'),y=513+index*54+pcValue(key+'Y'),size=pcValue(key+'Size');
+    if(text===PC_DEFAULT_TEXT[key]&&progressImages.info){var sourceY=index?54:0;ctx.drawImage(progressImages.info,119,sourceY,167,28,x,y,167*size/30,28*size/30);}
+    else pcDrawText(ctx,text,x,y,size,167,'#77321f',500,42);
+  });
+  var previous=pcText('previous'),px=316+pcValue('previousX'),py=750+pcValue('previousY'),ps=pcValue('previousSize');
+  if(previous===PC_DEFAULT_TEXT.previous){var scale=ps/47;ctx.drawImage(progressImages.previous,px,py,253*scale,47*scale);}
+  else pcDrawText(ctx,previous,px,py,ps,370,'#3b3b3b',500,70);
+  var result=pcText('result'),rx=267+pcValue('resultX'),ry=811+pcValue('resultY'),rs=pcValue('resultSize');
+  if(result===PC_DEFAULT_TEXT.result){var scale=rs/144;ctx.drawImage(progressImages.result,rx,ry,396*scale,162*scale);}
+  else pcDrawText(ctx,result,rx,ry,rs,420,'#e62a30',900,162);
+  drawProgressPhoto(ctx,'before',PC_BOXES.before);drawProgressPhoto(ctx,'after',PC_BOXES.after);ctx.restore();
+}
+function updateProgressControls(){
+  Object.keys(PC_DEFAULTS).forEach(function(key){var output=document.getElementById('pc_'+key+'Val');if(output)output.textContent=pcValue(key)+(key.indexOf('Zoom')>=0?'%':key.indexOf('Size')>=0?'px':'');});
+  if(progressReady)updateProgressPreviews();renderBadge();
+}
+function updateProgressPreviews(){
+  ['before','after'].forEach(function(kind){var canvas=document.getElementById('pc_'+kind+'Preview');if(canvas)drawProgressPhoto(canvas.getContext('2d'),kind,{x:0,y:0,width:590,height:320});});
+}
+function resetProgressCrop(kind){
+  ['Zoom','X','Y'].forEach(function(part){document.getElementById('pc_'+kind+part).value=PC_DEFAULTS[kind+part];});updateProgressControls();
+}
+function resetProgressLayout(){
+  Object.keys(PC_DEFAULTS).forEach(function(key){document.getElementById('pc_'+key).value=PC_DEFAULTS[key];});updateProgressControls();
+}
+function setProgressPhotoStatus(kind,message){document.getElementById('pc_'+kind+'Status').textContent=message;}
+function updateProgressBusy(){progressBusy=progressPhotos.before.pending||progressPhotos.after.pending;updateProgressStatus();}
+function releaseProgressCanvas(image){if(image&&image.nodeName==='CANVAS'){image.width=1;image.height=1;}}
+async function resetProgressPhoto(kind){
+  if(!await ensureProgressReady())return;
+  var state=progressPhotos[kind];state.version++;state.pending=false;var old=state.image;state.image=progressImages[kind];
+  resetProgressCrop(kind);releaseProgressCanvas(old);setProgressPhotoStatus(kind,'已恢复设计稿示例截图。');updateProgressBusy();
+}
+function handleProgressUpload(input,kind){var file=input.files&&input.files[0];input.value='';if(file)readProgressPhoto(file,kind);}
+// Reject oversized PNG/JPEG dimensions before Safari decodes the full image.
+function readProgressDimensions(file){return new Promise(function(resolve,reject){
+  var reader=new FileReader();reader.onerror=function(){reject(new Error('图片文件无法读取。'));};
+  reader.onload=function(){
+    var bytes=new Uint8Array(reader.result),v=new DataView(reader.result);
+    if(bytes.length>=24&&v.getUint32(0)===0x89504e47&&v.getUint32(4)===0x0d0a1a0a){resolve({width:v.getUint32(16),height:v.getUint32(20)});return;}
+    if(bytes.length>=4&&bytes[0]===255&&bytes[1]===216){
+      var p=2;
+      while(p+8<bytes.length){
+        if(bytes[p]!==255){p++;continue;}
+        while(p<bytes.length&&bytes[p]===255)p++;
+        var marker=bytes[p++];if(marker===217||marker===218)break;
+        if(marker===1||(marker>=208&&marker<=215))continue;
+        if(p+2>bytes.length)break;var length=v.getUint16(p);if(length<2||p+length>bytes.length)break;
+        if([192,193,194,195,197,198,199,201,202,203,205,206,207].indexOf(marker)>=0&&length>=7){resolve({height:v.getUint16(p+3),width:v.getUint16(p+5)});return;}
+        p+=length;
+      }
+    }
+    resolve(null);
+  };
+  reader.readAsArrayBuffer(file.slice(0,256*1024));
+});}
+async function readProgressPhoto(file,kind){
+  var state=progressPhotos[kind],version=++state.version;
+  var extension=/\.(png|jpe?g|webp)$/i.test(file.name||'');
+  if(!['image/png','image/jpeg','image/webp'].includes(file.type)&&!(file.type===''&&extension)){state.pending=false;updateProgressBusy();setProgressPhotoStatus(kind,'请选择 JPG、PNG 或 WebP 图片。上一张截图已保留。');return;}
+  if(file.size>20*1024*1024){state.pending=false;updateProgressBusy();setProgressPhotoStatus(kind,'图片过大，请选择小于 20 MB 的截图。上一张截图已保留。');return;}
+  state.pending=true;updateProgressBusy();setProgressPhotoStatus(kind,'正在读取截图…');
+  var url=null,resized=null;
+  try{
+    if(!await ensureProgressReady())throw new Error('案例素材尚未就绪。');
+    if(version!==state.version)return;
+    var dimensions=await readProgressDimensions(file);
+    if(version!==state.version)return;
+    if(dimensions&&dimensions.width*dimensions.height>50000000)throw new Error('图片像素过大，请先缩小图片。');
+    url=URL.createObjectURL(file);var image;
+    try{image=await loadLandscapeImage(url);}catch(error){throw new Error(error.message.indexOf('超时')>=0?'图片读取超时，请重试。':'图片文件无法解码，请更换有效的 JPG、PNG 或 WebP 图片。');}
+    if(version!==state.version)return;
+    var width=image.naturalWidth||image.width,height=image.naturalHeight||image.height;
+    if(width<16||height<16)throw new Error('图片尺寸过小，请选择清晰截图。');
+    if(width*height>50000000)throw new Error('图片像素过大，请先缩小图片。');
+    var scale=Math.min(1,2400/Math.max(width,height));resized=document.createElement('canvas');resized.width=Math.max(1,Math.round(width*scale));resized.height=Math.max(1,Math.round(height*scale));
+    var ctx=resized.getContext('2d');ctx.fillStyle='#ffffff';ctx.fillRect(0,0,resized.width,resized.height);ctx.drawImage(image,0,0,resized.width,resized.height);
+    if(version!==state.version)return;
+    var old=state.image;state.image=resized;resized=null;resetProgressCrop(kind);releaseProgressCanvas(old);
+    setProgressPhotoStatus(kind,'截图已嵌入白框。可拖动此预览，或在右侧放大、调整位置。');
+  }catch(error){if(version===state.version)setProgressPhotoStatus(kind,'读取失败：'+(error.message||'图片无法读取')+' 上一张截图已保留。');}
+  finally{if(url)URL.revokeObjectURL(url);if(resized)releaseProgressCanvas(resized);if(version===state.version){state.pending=false;updateProgressBusy();}}
+}
+function bindProgressCrops(){
+  if(progressCropBound)return;progressCropBound=true;
+  ['before','after'].forEach(function(kind){
+    var canvas=document.getElementById('pc_'+kind+'Preview'),drag=null;
+    canvas.addEventListener('pointerdown',function(event){
+      if(!progressReady||event.isPrimary===false||event.button>0)return;
+      drag={id:event.pointerId,x:event.clientX,y:event.clientY,startX:pcValue(kind+'X'),startY:pcValue(kind+'Y')};
+      try{canvas.setPointerCapture(event.pointerId);}catch(ignore){}canvas.classList.add('is-dragging');
+    });
+    canvas.addEventListener('pointermove',function(event){
+      if(!drag||drag.id!==event.pointerId)return;event.preventDefault();
+      var image=progressPhotos[kind].image,box={x:0,y:0,width:590,height:320},g=progressCoverGeometry(image,box,pcValue(kind+'Zoom'),0,0),rect=canvas.getBoundingClientRect();
+      if(g.overX>0.01)document.getElementById('pc_'+kind+'X').value=pcClamp(drag.startX+(event.clientX-drag.x)*590/rect.width/g.overX*200,-100,100);
+      if(g.overY>0.01)document.getElementById('pc_'+kind+'Y').value=pcClamp(drag.startY+(event.clientY-drag.y)*320/rect.height/g.overY*200,-100,100);
+      updateProgressControls();
+    },{passive:false});
+    function endDrag(){drag=null;canvas.classList.remove('is-dragging');}
+    canvas.addEventListener('pointerup',endDrag);canvas.addEventListener('pointercancel',endDrag);canvas.addEventListener('lostpointercapture',endDrag);
+    canvas.addEventListener('keydown',function(event){
+      var axis=event.key==='ArrowLeft'||event.key==='ArrowRight'?'X':event.key==='ArrowUp'||event.key==='ArrowDown'?'Y':'';
+      if(!axis)return;event.preventDefault();var delta=event.key==='ArrowLeft'||event.key==='ArrowUp'?-5:5;
+      document.getElementById('pc_'+kind+axis).value=pcClamp(pcValue(kind+axis)+delta,-100,100);updateProgressControls();
+    });
+    ['dragenter','dragover'].forEach(function(type){canvas.addEventListener(type,function(event){event.preventDefault();canvas.classList.add('is-dragging');});});
+    canvas.addEventListener('dragleave',function(){canvas.classList.remove('is-dragging');});
+    canvas.addEventListener('drop',function(event){event.preventDefault();endDrag();var file=event.dataTransfer&&event.dataTransfer.files[0];if(file)readProgressPhoto(file,kind);});
+  });
+}
+
 /* Only changes application chrome. The artwork canvas and exports remain intact. */
 var THEME_STORAGE_KEY = 'youyue-namecard-theme';
 function applyTheme(theme, savePreference) {
@@ -1266,7 +1565,7 @@ function toggleTheme() {
   applyTheme(document.documentElement.dataset.theme === 'light' ? 'dark' : 'light', true);
 }
 
-/* Three input nodes converge on a single result junction. This declaration
+/* Two input nodes converge on a single result junction. This declaration
    replaces the original drawWorkflowLinks; existing observers keep scheduling it. */
 function drawWorkflowLinks() {
   var root = document.getElementById('workflowWorkspace');
@@ -1280,7 +1579,7 @@ function drawWorkflowLinks() {
   svg.setAttribute('viewBox', '0 0 ' + bounds.width + ' ' + bounds.height);
   var stacked = window.matchMedia('(max-width: 1050px)').matches;
 
-  // Both coordinates are calculated once: all three paths share exactly this
+  // Both coordinates are calculated once: both input paths share exactly this
   // endpoint even after sticky scrolling, resizing or switching template size.
   var junctionX = result.left - bounds.left - 3;
   var junctionY = result.top - bounds.top + result.height / 2;
@@ -1333,7 +1632,9 @@ function drawWorkflowLinks() {
         tab.addEventListener('keydown', function(event) {
           if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
           event.preventDefault();
-          var key = event.key === 'Home' ? 'portrait' : event.key === 'End' ? 'landscape' : (activeTemplate === 'portrait' ? 'landscape' : 'portrait');
+          var keys=['portrait','landscape','progress'];
+          var index=keys.indexOf(event.currentTarget.dataset.previewTemplate);
+          var key=event.key==='Home'?keys[0]:event.key==='End'?keys[2]:keys[(index+(event.key==='ArrowRight'?1:2))%3];
           selectTemplate(key);
           document.getElementById(key + 'Tab').focus();
         });
