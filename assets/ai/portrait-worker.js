@@ -13,7 +13,7 @@ async function loadModel(id) {
     const reader = response.body && response.body.getReader();
     let model;
     if (reader) {
-      const total = Number(response.headers.get('Content-Length')) || 25868279;
+      const total = Number(response.headers.get('Content-Length')) || 25888640;
       const chunks=[]; let received=0;
       while (true) {
         const {done,value}=await reader.read(); if(done)break;
@@ -34,10 +34,11 @@ self.onmessage = async ({data}) => {
     const session=await loadModel(id);
     self.postMessage({id,type:'progress',progress:85,message:'正在识别人像与发丝边缘…'});
     const tensor=new ort.Tensor('float32',pixels,[1,3,height,width]);
+    const started=performance.now();
     const result=await session.run({[session.inputNames[0]]:tensor});
     const output=result[session.outputNames[0]];
     const mask=new Float32Array(output.data);
-    self.postMessage({id,type:'result',mask,width:output.dims[3],height:output.dims[2]},[mask.buffer]);
+    self.postMessage({id,type:'result',mask,inferenceMs:performance.now()-started,width:output.dims[3],height:output.dims[2]},[mask.buffer]);
     tensor.dispose();Object.values(result).forEach(t=>t.dispose());
   } catch(error) {self.postMessage({id,type:'error',message:error.message||String(error)});}
 };

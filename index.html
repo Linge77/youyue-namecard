@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="namecard-version" content="2026.10.31.2">
+<meta name="namecard-version" content="2026.10.31.3">
 <meta name="description" content="优悦教育设计素材生成网站，支持二维码裁切、排版调整与版式切换。">
 <title>优悦教育 · 设计素材生成网站</title>
 <style id="coreStyle">:root {
@@ -477,6 +477,7 @@ THE SOFTWARE.
   <label class="portrait-upload" for="landscapePhotoInput"><img id="landscapePhotoThumb" alt="当前人物透明预览"><span>点击上传或拖入职业照</span></label>
   <input type="file" class="file-input-hidden" id="landscapePhotoInput" accept="image/png,image/jpeg,image/webp" onchange="handleLandscapePhoto(this)">
   <label class="check-row"><input type="checkbox" id="autoCutout" checked>上传后自动去除背景</label>
+  <div class="field" style="margin-top:14px"><label for="portraitQuality">抠像精度</label><select id="portraitQuality" style="width:100%;padding:10px;border-radius:8px;background:var(--bg-input);color:var(--text-main);border:1px solid var(--border-color)"><option value="detail" selected>精细 · 保持原来的效果</option><option value="balanced">均衡 · 较快</option><option value="fast">快速 · 适合手机预览</option></select><p class="card-note">较快模式可能减少发丝细节。更改后点击“重新抠像”生效。</p></div>
   <progress id="portraitProgress" max="100" value="0" hidden aria-label="人像处理进度"></progress>
   <p class="qr-status" id="portraitStatus" role="status">当前为示例人物。建议上传清晰、单人、完整头顶的半身职业照。</p>
   <div class="portrait-actions">
@@ -620,7 +621,7 @@ THE SOFTWARE.
 <button type="button" class="reset-btn" onclick="resetProgressLayout()">恢复案例默认排版</button></div>
     </aside>
   </main>
-  <footer class="workspace-footer"><span>优悦教育 · 工牌生成工作台</span><span>版本 2026.10.31 · 界面精简版</span><span><a href="assets/licenses/THIRD_PARTY_NOTICES.txt" style="color:inherit">开源组件说明</a></span></footer>
+  <footer class="workspace-footer"><span>优悦教育 · 工牌生成工作台</span><span>版本 2026.10.31 · 抠像体验优化版</span><span><a href="assets/licenses/THIRD_PARTY_NOTICES.txt" style="color:inherit">开源组件说明</a></span></footer>
 </div>
 <dialog id="cropDialog" class="crop-dialog" aria-labelledby="cropTitle" aria-describedby="cropHelp">
     <div class="crop-heading"><h2 id="cropTitle">裁切二维码图片</h2><button type="button" class="chip-btn" onclick="cancelQrCrop()" aria-label="关闭裁切窗口">关闭</button></div>
@@ -1073,7 +1074,7 @@ var LS_DEFAULTS = {
 };
 var landscapeImages={}, landscapeReady=false, landscapeCurve=null;
 var portraitSource=null, portraitMatte=null, portraitCanvas=null, portraitBounds=null;
-var portraitReject=null, portraitTimeout=0;
+var portraitReject=null, portraitTimeout=0, portraitIdleTimer=0, portraitStageTimer=0;
 var portraitJob=0, portraitWorker=null, portraitBusy=false, portraitPendingSource=null;
 var assetBase = new URL(location.pathname.endsWith('/index.html') || location.pathname.endsWith('/') ? 'assets/' : 'GitHub发布包/assets/', document.baseURI).href;
 var landscapeFontReady=null, landscapeFontSettled=false, landscapeInitPromise=null, landscapeLoadError='';
@@ -1267,7 +1268,10 @@ function setPortraitBusy(busy) {
 function cancelPortraitJob(quiet) {
   ++portraitJob;clearTimeout(portraitTimeout);
   if(portraitReject){portraitReject(new Error('已取消'));portraitReject=null;}
-  if(portraitWorker){portraitWorker.terminate();portraitWorker=null;}
+  clearInterval(portraitStageTimer);clearTimeout(portraitIdleTimer);
+  // Retain a completed session for the next photo; only active work is cancelled.
+  if(portraitBusy&&portraitWorker){portraitWorker.terminate();portraitWorker=null;}
+  if(portraitWorker)portraitIdleTimer=setTimeout(function(){if(!portraitBusy&&portraitWorker){portraitWorker.terminate();portraitWorker=null;}},120000);
   setPortraitBusy(false);document.getElementById('portraitProgress').hidden=true;
   if(!quiet)setPortraitStatus('处理已取消，保留当前人物。');
 }
@@ -1303,27 +1307,33 @@ async function runPortraitMatte(source) {
   var previous={source:portraitSource,matte:portraitMatte,canvas:portraitCanvas};
   portraitPendingSource=source;setPortraitBusy(true);setPortraitStatus('准备识别人像…',2);
   try {
+    var started=performance.now(),stageStarted=started,stageMessage='准备识别人像…';
+    var mode=document.getElementById('portraitQuality').value;
+    var shortSide=mode==='fast'?256:mode==='balanced'?384:512,maxSide=shortSide*2;
     var ratio=source.width/source.height,w,h;
-    if(ratio<1){w=512;h=Math.ceil(512/ratio/32)*32;}else{h=512;w=Math.ceil(512*ratio/32)*32;}
-    if(Math.max(w,h)>1024){var resize=1024/Math.max(w,h);w=Math.max(32,Math.round(w*resize/32)*32);h=Math.max(32,Math.round(h*resize/32)*32);}
+    if(ratio<1){w=shortSide;h=Math.ceil(shortSide/ratio/32)*32;}else{h=shortSide;w=Math.ceil(shortSide*ratio/32)*32;}
+    if(Math.max(w,h)>maxSide){var resize=maxSide/Math.max(w,h);w=Math.max(32,Math.round(w*resize/32)*32);h=Math.max(32,Math.round(h*resize/32)*32);}
     var input=document.createElement('canvas');input.width=w;input.height=h;var ix=input.getContext('2d');ix.fillStyle='#ffffff';ix.fillRect(0,0,w,h);ix.drawImage(source,0,0,w,h);
     var rgba=ix.getImageData(0,0,w,h).data,pixels=new Float32Array(w*h*3);
     for(var i=0;i<w*h;i++){pixels[i]=rgba[i*4]/127.5-1;pixels[w*h+i]=rgba[i*4+1]/127.5-1;pixels[2*w*h+i]=rgba[i*4+2]/127.5-1;}
-    var worker=portraitWorker=new Worker(new URL('ai/portrait-worker.js',assetBase).href);
+    var worker=portraitWorker||(portraitWorker=new Worker(new URL('ai/portrait-worker.js?v=20261031-matte1',assetBase).href));
+    portraitStageTimer=setInterval(function(){if(version===portraitJob)setPortraitStatus(stageMessage+'（本阶段已用 '+Math.floor((performance.now()-stageStarted)/1000)+' 秒）',document.getElementById('portraitProgress').value);},1000);
     var result=await new Promise(function(resolve,reject){
       portraitReject=reject;
-      var timeout=portraitTimeout=setTimeout(function(){worker.terminate();reject(new Error('模型加载超时，可稍后重试。'));},150000);
-      worker.onerror=function(e){clearTimeout(timeout);reject(new Error(e.message||'抠像组件未能加载，请检查 assets 文件夹。'));};
-      worker.onmessage=function(event){var data=event.data;if(data.id!==version)return;if(data.type==='progress'){setPortraitStatus(data.message,data.progress);}else{clearTimeout(timeout);if(data.type==='error')reject(new Error(data.message));else if(data.type==='result')resolve(data);}};
+      var timeout=portraitTimeout=setTimeout(function(){worker.terminate();if(portraitWorker===worker)portraitWorker=null;reject(new Error(stageMessage+'耗时过长，请选择较快模式重试。'));},150000);
+      worker.onerror=function(e){clearTimeout(timeout);worker.terminate();if(portraitWorker===worker)portraitWorker=null;reject(new Error(e.message||'抠像组件未能加载，请检查 assets 文件夹。'));};
+      worker.onmessage=function(event){var data=event.data;if(data.id!==version)return;if(data.type==='progress'){if(stageMessage!==data.message){stageMessage=data.message;stageStarted=performance.now();}setPortraitStatus(data.message,data.progress);}else{clearTimeout(timeout);if(data.type==='error')reject(new Error(data.message));else if(data.type==='result')resolve(data);}};
       worker.postMessage({id:version,width:w,height:h,pixels:pixels},[pixels.buffer]);
     });
     if(version!==portraitJob)return;
     portraitSource=source;
     var matte=document.createElement('canvas');matte.width=result.width;matte.height=result.height;var mx=matte.getContext('2d'),md=mx.createImageData(matte.width,matte.height);
     for(var i=0;i<result.mask.length;i++){md.data[i*4]=md.data[i*4+1]=md.data[i*4+2]=255;md.data[i*4+3]=Math.round(Math.max(0,Math.min(1,result.mask[i]))*255);}
-    mx.putImageData(md,0,0);portraitMatte=matte;rebuildPortrait();setPortraitStatus('自动抠像完成，已按弧形底部自然收口。可微调人物大小、位置与边缘。');
+    mx.putImageData(md,0,0);portraitMatte=matte;rebuildPortrait();setPortraitStatus('自动抠像完成 · 总用时 '+((performance.now()-started)/1000).toFixed(1)+' 秒，识别 '+(result.inferenceMs/1000).toFixed(1)+' 秒。可微调人物大小、位置与边缘。');
   }catch(error){if(version===portraitJob){portraitSource=previous.source;portraitMatte=previous.matte;portraitCanvas=previous.canvas;setPortraitStatus('抠像未完成，保留上一张人物。'+error.message+' 可重试或选择“使用原图”。');}}
-  finally {if(version===portraitJob){clearTimeout(portraitTimeout);portraitReject=null;if(portraitWorker)portraitWorker.terminate();portraitWorker=null;setPortraitBusy(false);document.getElementById('portraitProgress').hidden=true;}}
+  finally {if(version===portraitJob){clearTimeout(portraitTimeout);portraitReject=null;clearInterval(portraitStageTimer);
+    // Release the engine after two idle minutes to limit mobile memory use.
+    portraitIdleTimer=setTimeout(function(){if(!portraitBusy&&portraitWorker){portraitWorker.terminate();portraitWorker=null;}},120000);setPortraitBusy(false);document.getElementById('portraitProgress').hidden=true;}}
 }
 function rebuildPortrait() {
   if(!portraitMatte||!portraitSource){updateLandscapeControls();return;}
