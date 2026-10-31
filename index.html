@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-login-state="locked">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="namecard-version" content="2026.10.31.4">
+<meta name="namecard-version" content="2026.10.31.7">
 <meta name="description" content="优悦教育设计素材生成网站，支持二维码裁切、排版调整与版式切换。">
 <title>优悦教育 · 设计素材生成网站</title>
 <style id="coreStyle">:root {
@@ -349,6 +349,120 @@ canvas { width:100%; height:100%; display:block; }
 #headerLogo {width:158px;height:auto;display:block;border-radius:7px;flex-shrink:0;}
 .preview-tabs button {min-width:0;line-height:1.5;}
 @media(max-width:420px){#headerLogo{width:130px}.preview-tabs button{font-size:10px;padding:9px 3px;}}
+/* Desktop uses one 2922×1500 design surface. Every control shares its transform. */
+.login-screen {
+  position:fixed;inset:0;z-index:1000;width:100%;height:100vh;height:100dvh;
+  overflow:hidden;background:#fff2ef;color:#101010;color-scheme:light;
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.login-screen[hidden]{display:none!important}
+.login-screen,.login-screen *{box-sizing:border-box}
+.login-screen:focus{outline:none}
+.login-stage {
+  position:absolute;left:var(--login-offset-x,0px);top:var(--login-offset-y,0px);width:2922px;height:1500px;overflow:hidden;
+  transform:scale(var(--login-scale,.5));transform-origin:top left;
+  visibility:hidden;
+}
+.login-screen[data-fit-ready] .login-stage{visibility:visible}
+.login-reference{position:absolute;inset:0;display:block;width:2922px;height:1500px;pointer-events:none}
+.login-reference img{display:block;width:2922px;height:1500px}
+.login-art{display:none}
+.login-panel{position:absolute;left:1896px;top:0;width:1026px;height:1500px}
+.login-form{position:absolute;inset:0;width:1026px;height:1500px;margin:0}
+.login-heading,.login-form h2,.login-help,.login-sr-only {
+  position:absolute!important;width:1px;height:1px;margin:-1px;padding:0;border:0;
+  overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;
+}
+.login-fields{position:absolute;left:165px;top:563px;width:696px;display:grid;gap:33px;margin:0}
+.login-field{position:relative;width:100%;height:112px}
+.login-field input{
+  display:block;width:100%;min-width:0;height:112px;margin:0;padding:0 40px;
+  border:1px solid transparent;border-radius:10px;outline:none;background:#fff;color:#242424;
+  -webkit-appearance:none;appearance:none;font-family:inherit;font-size:34px;line-height:1.5;font-weight:500;
+}
+.login-field input::placeholder{color:#c5c5c5;opacity:1;font-weight:600}
+.login-screen[data-cover-ready] .login-field input:placeholder-shown{background:transparent}
+.login-screen[data-cover-ready] .login-field input::placeholder{color:transparent}
+.login-field input:focus{border-color:#ff3654;box-shadow:0 0 0 3px #ff15391a}
+.login-field input[aria-invalid="true"]{border-color:#c52338}
+.login-password-field{height:113px}
+.login-password-field input{height:113px;padding-right:80px}
+.login-password-toggle{
+  position:absolute;right:15px;top:50%;transform:translateY(-50%);display:grid;place-items:center;
+  width:52px;height:52px;padding:0;margin:0;border:0;border-radius:7px;background:transparent;color:#8e8e8e;
+  cursor:pointer;-webkit-tap-highlight-color:transparent;
+}
+.login-password-toggle svg{width:30px;height:30px}
+.login-password-toggle:hover{color:#ee1640;background:#fff2f2}
+.login-options{position:absolute;left:165px;top:828px;width:696px;height:32px;display:flex;align-items:center;margin:0}
+.login-remember{display:inline-flex;align-items:center;gap:10px;color:#79716f;font-size:18px;line-height:1.5;cursor:pointer}
+.login-remember input{width:22px;height:22px;margin:0;accent-color:#ff0f2c;cursor:pointer}
+.login-submit {
+  position:absolute;left:165px;top:868px;width:696px;height:112px;margin:0;padding:0 20px;
+  border:0;border-radius:9px;background:#ff0f2c;color:#fff;box-shadow:none;
+  font-family:inherit;font-size:47px;line-height:1.2;font-weight:650;letter-spacing:.1em;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+.login-screen[data-cover-ready] .login-submit{background:transparent;color:transparent}
+.login-submit:hover{box-shadow:inset 0 0 0 2px #ffffff22}
+.login-screen .login-form[aria-busy="true"] .login-submit{background:#ff0f2c;color:#fff}
+.login-submit:disabled{cursor:wait;opacity:.72}
+.login-submit:focus-visible,.login-password-toggle:focus-visible,.login-remember input:focus-visible{outline:3px solid #c80028;outline-offset:3px}
+.login-error{position:absolute;left:165px;top:513px;width:696px;margin:0;color:#b31930;font-size:20px;line-height:24px}
+.login-error:empty{display:none}
+.login-logo{display:none}
+@media(min-width:901px){
+ .login-screen:not([data-cover-ready]) .login-panel{background:#ffe2e0}
+ .login-screen:not([data-cover-ready]) .login-heading{position:absolute!important;left:165px;top:190px;width:696px;height:auto;margin:0;overflow:visible;clip:auto;white-space:normal}
+ .login-heading h1{font-size:68px;line-height:1.2;font-weight:900;margin:0}
+ .login-heading h1 span{color:#ff0f2c}
+ .login-heading p{font-size:25px;line-height:1.6;letter-spacing:.2em;color:#808080;margin-top:13px}
+}
+/* Phone controls stay readable rather than shrinking the whole desktop cover. */
+@media(max-width:900px){
+ .login-screen{overflow:auto}
+ .login-stage{position:relative;left:auto;top:auto;width:100%;height:auto;min-height:100%;transform:none;visibility:visible;display:grid;grid-template-columns:1fr;grid-template-rows:clamp(210px,38vw,320px) auto}
+ .login-reference{display:none}
+ .login-art{display:block;position:relative;min-width:0;min-height:0;overflow:hidden;background:#ff765d}
+ .login-art picture{display:block;width:100%;height:100%}
+ .login-art-image{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 55%}
+ .login-panel{position:relative;left:auto;top:auto;width:auto;height:auto;min-width:0;min-height:0;display:flex;flex-direction:column;overflow:hidden;padding:32px max(24px,calc((100% - 440px)/2)) 32px;background:linear-gradient(154deg,#ffdcdb 0%,#ffe2e0 40%,#fff4ee 70%,#ffdfdf 100%)}
+ .login-heading,.login-form h2,.login-help{position:relative!important;width:auto;height:auto;margin:0;padding:0;border:0;overflow:visible;clip:auto;white-space:normal;flex-shrink:0}
+ .login-heading h1{margin:0;color:#080808;font-size:clamp(30px,4.9vw,40px);line-height:1.16;font-weight:900;letter-spacing:-.035em;white-space:nowrap}
+ .login-heading h1 span{color:#ff0c32}
+ .login-heading p{margin:8px 0 0;color:#808080;font-size:clamp(12px,1.8vw,15px);line-height:1.6;font-weight:600;letter-spacing:.12em}
+ .login-form{position:relative;inset:auto;width:100%;height:auto;margin:28px 0 0;flex-shrink:0}
+ .login-form h2{width:fit-content;padding-bottom:10px;color:#121212;font-size:24px;font-weight:700;line-height:1.2;letter-spacing:.045em}
+ .login-form h2::after{content:"";position:absolute;left:3px;bottom:0;width:88%;height:4px;border-radius:99px;background:#ff0b32}
+ .login-fields{position:relative;left:auto;top:auto;width:100%;margin-top:24px;gap:16px}
+ .login-field,.login-password-field{height:58px}
+ .login-field input{height:58px;padding-left:20px;font-size:17px;border-radius:8px;background:#fff}
+ .login-screen[data-cover-ready] .login-field input:placeholder-shown{background:#fff}
+ .login-screen[data-cover-ready] .login-field input::placeholder{color:#c5c5c5}
+ .login-password-field input{height:58px;padding-right:58px}
+ .login-password-toggle{right:8px;width:44px;height:44px}
+ .login-password-toggle svg{width:22px;height:22px}
+ .login-options{position:relative;left:auto;top:auto;width:auto;height:32px;margin:9px 0}
+ .login-remember{font-size:12px;gap:8px}
+ .login-remember input{width:16px;height:16px}
+ .login-submit{position:relative;left:auto;top:auto;display:block;width:100%;height:58px;margin:0;font-size:25px;border-radius:8px;background:#ff0f2c;color:#fff;box-shadow:0 7px 14px #91162c21}
+ .login-screen[data-cover-ready] .login-submit{background:#ff0f2c;color:#fff}
+ .login-submit:hover{background:#e9082b}
+ .login-error{position:relative;left:auto;top:auto;width:100%;margin:12px 0 0;font-size:14px;line-height:1.5}
+ .login-help{margin:16px 0 0;color:#88817e;font-size:12px;line-height:1.7;text-align:center}
+ .login-logo{display:block;position:relative;width:110px;height:auto;margin:38px auto 0;flex-shrink:0}
+}
+@media(max-width:360px){
+ .login-stage{grid-template-rows:190px auto}
+ .login-panel{padding:27px 20px 28px}
+ .login-heading h1{font-size:28px}
+ .login-heading p{font-size:11px;letter-spacing:.08em}
+}
+
+html[data-login-state='locked'] body{padding:0;background:#fff2ef;}
+.login-workspace-actions{display:flex;align-items:center;gap:10px;min-width:0}.login-account{color:var(--text-muted);font-size:12px}.login-logout{padding:9px 14px;border:1px solid var(--border-highlight);border-radius:999px;background:var(--bg-panel);color:var(--text-main);font-size:12px;white-space:nowrap;min-height:38px}#appRoot:focus{outline:none}@media(max-width:620px){.login-account{display:none}.login-workspace-actions{gap:6px}.login-logout{font-size:11px;padding:7px 10px;min-height:36px}}
+
 </style>
 <!-- Cropper.js 1.6.2 — https://github.com/fengyuanchen/cropperjs
 The MIT License (MIT)
@@ -389,15 +503,52 @@ THE SOFTWARE.
 <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon-v2.png?v=3136ec41806d">
 </head>
 <body>
-<div class="workspace" id="appRoot">
-<div class="theme-toolbar" aria-label="页面外观"><img id="headerLogo" src="assets/images/progress-logo-bfe48d01ddd3.png" alt="优悦教育" width="158" height="60">
-  <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="true" aria-label="当前为夜间模式，切换到日间模式" onclick="toggleTheme()">
+<section class="login-screen" id="loginScreen" tabindex="-1" aria-labelledby="loginHeading">
+  <div class="login-stage">
+  <picture class="login-reference" aria-hidden="true"><source media="(min-width:901px)" srcset="assets/images/login-cover-40027e123bbc.jpg"><img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" width="2922" height="1500" alt="" fetchpriority="high" decoding="async"></picture>
+  <div class="login-art" aria-hidden="true"><picture><source media="(max-width:900px)" srcset="assets/images/login-hero-d2cc4f6f2825.jpg"><img class="login-art-image" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" width="1896" height="1500" alt="" fetchpriority="high" decoding="async"></picture></div>
+  <div class="login-panel">
+    <header class="login-heading">
+      <h1 id="loginHeading">登录 <span>视觉生成网</span></h1>
+      <p>优悦教育内部员工视觉生成网站</p>
+    </header>
+    <form class="login-form" id="loginForm" method="post" onsubmit="event.preventDefault()" novalidate>
+      <h2>账号登录</h2>
+      <div class="login-fields">
+        <div class="login-field">
+          <label class="login-sr-only" for="loginUsername">账号</label>
+          <input id="loginUsername" name="username" type="text" placeholder="请输入用户名" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" maxlength="80" required>
+        </div>
+        <div class="login-field login-password-field">
+          <label class="login-sr-only" for="loginPassword">密码</label>
+          <input id="loginPassword" name="password" type="password" placeholder="请输入密码" autocomplete="current-password" maxlength="128" required aria-describedby="loginError">
+          <button class="login-password-toggle" id="loginPasswordToggle" type="button" aria-label="显示密码" aria-pressed="false" title="显示密码">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-6.5 10-6.5S22 12 22 12s-3.5 6.5-10 6.5S2 12 2 12Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+          </button>
+        </div>
+      </div>
+      <div class="login-options">
+        <label class="login-remember" for="loginRemember"><input id="loginRemember" name="remember" type="checkbox"><span>7 天内保持登录</span></label>
+      </div>
+      <button class="login-submit" id="loginSubmit" type="submit" disabled>登录</button>
+      <noscript><p class="login-error">请开启浏览器的 JavaScript 后刷新页面登录。</p></noscript>
+      <p class="login-error" id="loginError" role="alert" aria-live="polite"></p>
+      <p class="login-help">登录遇到问题？请联系润霖老师</p>
+    </form>
+    <img class="login-logo" src="assets/images/login-logo-95a60d6e310d.png" width="170" height="65" alt="优悦教育 YOUYUE EDUCATION" decoding="async">
+  </div>
+  </div>
+</section>
+
+<div class="workspace" id="appRoot" hidden>
+<div class="theme-toolbar" aria-label="页面外观"><img loading="lazy" id="headerLogo" src="assets/images/progress-logo-bfe48d01ddd3.png" alt="优悦教育" width="158" height="60">
+  <div class="login-workspace-actions"><span class="login-account">youyuejiaoyu</span><button type="button" class="theme-toggle" id="themeToggle" aria-pressed="true" aria-label="当前为夜间模式，切换到日间模式" onclick="toggleTheme()">
     <span class="theme-toggle-icon" id="themeToggleIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20.2 14.2A8.5 8.5 0 0 1 9.8 3.8a8.5 8.5 0 1 0 10.4 10.4Z"></path></svg></span>
     <span id="themeToggleText">夜间模式</span>
-  </button>
+  </button><button type="button" class="login-logout" id="logoutBtn">退出登录</button></div>
 </div>
 
-  <header class="kv-banner" id="kvBanner"><img id="kvImage" src="assets/images/kv-c3ce6e59a266.png" decoding="async" width="2662" height="320" alt="优悦教育设计素材生成网站"></header>
+  <header class="kv-banner" id="kvBanner"><img id="kvImage" src="assets/images/kv-c3ce6e59a266.png" loading="lazy" decoding="async" width="2662" height="320" alt="优悦教育设计素材生成网站"></header>
   <main class="workflow-grid" id="workflowWorkspace" data-template="portrait" aria-label="工牌生成工作台">
     <svg class="workflow-links" id="workflowLinks" aria-hidden="true" focusable="false"></svg>
     <section class="left-column" aria-label="信息与版式">
@@ -621,7 +772,7 @@ THE SOFTWARE.
 <button type="button" class="reset-btn" onclick="resetProgressLayout()">恢复案例默认排版</button></div>
     </aside>
   </main>
-  <footer class="workspace-footer"><span>优悦教育 · 工牌生成工作台</span><span>版本 2026.10.31 · 案例加载修复版</span><span><a href="assets/licenses/THIRD_PARTY_NOTICES.txt" style="color:inherit">开源组件说明</a></span></footer>
+  <footer class="workspace-footer"><span>优悦教育 · 工牌生成工作台</span><span>版本 2026.10.31 · 新稿铺满版</span><span><a href="assets/licenses/THIRD_PARTY_NOTICES.txt" style="color:inherit">开源组件说明</a></span></footer>
 </div>
 <dialog id="cropDialog" class="crop-dialog" aria-labelledby="cropTitle" aria-describedby="cropHelp">
     <div class="crop-heading"><h2 id="cropTitle">裁切二维码图片</h2><button type="button" class="chip-btn" onclick="cancelQrCrop()" aria-label="关闭裁切窗口">关闭</button></div>
@@ -1652,6 +1803,148 @@ function drawWorkflowLinks() {
   });
 }
 
+/* GitHub Pages simple shared entrance. Client-side checks are bypassable.
+   Use a server/gateway if actual private access becomes necessary. */
+var LOGIN_CONFIG={username:'youyuejiaoyu',passwordHash:'76205adec4735c47cb1e93d9c2205eb8af38597d878fdac0f0c21cd5f381d378',credentialVersion:'76205adec4735c47'};
+var LOGIN_SESSION_KEY='youyue-visual-login-v1',LOGIN_LOGOUT_KEY='youyue-visual-logout-v1';
+var loginMemorySession=null,loginAppStarted=false,loginChecking=false,loginOperation=0,loginAttemptStarted=0;
+function loginLogoutStamp(){try{return Number(window.localStorage.getItem(LOGIN_LOGOUT_KEY))||0;}catch(error){return 0;}}
+function loginRecordValid(record){
+  return !!record&&record.version===1&&record.username===LOGIN_CONFIG.username&&record.credentialVersion===LOGIN_CONFIG.credentialVersion&&Number.isFinite(record.issuedAt)&&record.issuedAt>=loginLogoutStamp()&&Number.isFinite(record.expires)&&record.expires>Date.now();
+}
+function loginReadRecord(storage){
+  try{return JSON.parse(storage.getItem(LOGIN_SESSION_KEY)||'null');}catch(error){return null;}
+}
+function loginStoredRecord(){
+  var session=null,persistent=null;
+  try{session=loginReadRecord(window.sessionStorage);}catch(error){}
+  try{persistent=loginReadRecord(window.localStorage);}catch(error){}
+  return loginRecordValid(persistent)?persistent:loginRecordValid(session)?session:null;
+}
+function loginClearStored(){
+  try{window.sessionStorage.removeItem(LOGIN_SESSION_KEY);}catch(error){}
+  try{window.localStorage.removeItem(LOGIN_SESSION_KEY);}catch(error){}
+}
+function loginShowError(message){
+  var error=document.getElementById('loginError');error.textContent=message;error.hidden=!message;
+}
+function loginSetBusy(busy){
+  loginChecking=busy;
+  document.getElementById('loginSubmit').disabled=busy;
+  document.getElementById('loginSubmit').textContent=busy?'正在登录…':'登录';
+  document.getElementById('loginForm').setAttribute('aria-busy',String(busy));
+}
+async function loginPasswordDigest(value){
+  if(!window.crypto||!window.crypto.subtle||typeof TextEncoder==='undefined')throw new Error('请使用 HTTPS 网站地址或本机预览打开，再尝试登录。');
+  var digest=await window.crypto.subtle.digest('SHA-256',new TextEncoder().encode(value));
+  return Array.prototype.map.call(new Uint8Array(digest),function(byte){return ('0'+byte.toString(16)).slice(-2);}).join('');
+}
+function loginUnlock(record){
+  loginMemorySession=record;
+  document.getElementById('loginPassword').value='';
+  document.getElementById('loginUsername').blur();document.getElementById('loginPassword').blur();
+  document.getElementById('loginScreen').hidden=true;
+  document.getElementById('appRoot').hidden=false;
+  document.documentElement.dataset.loginState='unlocked';
+  document.title='优悦教育 · 设计素材生成网站';
+  if(!loginAppStarted){loginAppStarted=true;initializeBadgeApp();}
+  var app=document.getElementById('appRoot');app.setAttribute('tabindex','-1');app.focus({preventScroll:true});
+  window.scrollTo(0,0);
+}
+async function submitLogin(event){
+  event.preventDefault();if(loginChecking)return;
+  var username=document.getElementById('loginUsername'),password=document.getElementById('loginPassword');
+  if(!document.getElementById('loginForm').reportValidity())return;
+  var operation=++loginOperation,issuedAt=Date.now(),remember=document.getElementById('loginRemember').checked,value=password.value;
+  loginAttemptStarted=issuedAt;loginShowError('');loginSetBusy(true);
+  try{
+    var digest=await loginPasswordDigest(value);value='';
+    if(operation!==loginOperation)return;
+    if(username.value.trim()!==LOGIN_CONFIG.username||digest!==LOGIN_CONFIG.passwordHash){
+      loginShowError('账号或密码不正确，请重新输入。');
+      username.setAttribute('aria-invalid','true');password.setAttribute('aria-invalid','true');
+      password.value='';password.focus();return;
+    }
+    var record={version:1,issuedAt:issuedAt,username:LOGIN_CONFIG.username,credentialVersion:LOGIN_CONFIG.credentialVersion,expires:Date.now()+(remember?7*24:12)*60*60*1000};
+    if(!loginRecordValid(record)){password.value='';loginShowError('登录状态已更新，请重新登录。');return;}
+    loginClearStored();
+    try{(remember?window.localStorage:window.sessionStorage).setItem(LOGIN_SESSION_KEY,JSON.stringify(record));}catch(error){/* This visit still works if Safari blocks storage. */}
+    loginUnlock(record);
+  }catch(error){if(operation===loginOperation)loginShowError(error.message||'登录未完成，请重试。');}
+  finally{value='';if(operation===loginOperation)loginSetBusy(false);}
+}
+function loginReloadLocked(){
+  ++loginOperation;loginMemorySession=null;loginClearStored();
+  document.getElementById('appRoot').hidden=true;
+  document.getElementById('loginScreen').hidden=false;
+  document.documentElement.dataset.loginState='locked';
+  // Release in-memory uploaded photos and any running inference before reload.
+  var crop=document.getElementById('cropDialog');if(crop&&crop.open){if(typeof cleanupQrCrop==='function')cleanupQrCrop();crop.close();}
+  if(typeof cancelPortraitJob==='function'&&loginAppStarted)cancelPortraitJob(true);
+  window.location.reload();
+}
+function logoutVisualSite(){
+  if(!window.confirm('退出后会清空本次未导出的内容，确定退出登录吗？'))return;
+  try{window.localStorage.setItem(LOGIN_LOGOUT_KEY,String(Date.now()));}catch(error){}
+  loginReloadLocked();
+}
+// Cover the viewport with the new 2922×1500 artwork using one shared scale.
+function updateLoginLayout(){
+  var screen=document.getElementById('loginScreen'),width=screen.clientWidth,height=screen.clientHeight;
+  if(!width||!height)return;
+  if(width<=900){
+    ['--login-scale','--login-offset-x','--login-offset-y'].forEach(function(key){screen.style.removeProperty(key);});
+  }else{
+    var scale=Math.max(width/2922,height/1500),scaledWidth=2922*scale,scaledHeight=1500*scale;
+    // Anchor the form side when a taller window crops the artwork horizontally.
+    var x=width-scaledWidth,y=(height-scaledHeight)/2;
+    // On wide/short windows, keep the title through the contact hint visible
+    // whenever that area fits, while retaining full background coverage.
+    var lower=Math.max(height-scaledHeight,8-170*scale),upper=Math.min(0,height-8-1060*scale);
+    if(lower<=upper)y=Math.max(lower,Math.min(upper,y));
+    screen.style.setProperty('--login-scale',String(scale));
+    screen.style.setProperty('--login-offset-x',x+'px');screen.style.setProperty('--login-offset-y',y+'px');
+  }
+  screen.setAttribute('data-fit-ready','true');
+}
+function updateLoginCoverState(){
+  var screen=document.getElementById('loginScreen'),image=document.querySelector('.login-reference img');
+  if(image&&image.complete&&image.naturalWidth===2922&&image.naturalHeight===1500)screen.setAttribute('data-cover-ready','true');
+  else screen.removeAttribute('data-cover-ready');
+}
+function initializeLoginGate(){
+  var cover=document.querySelector('.login-reference img');
+  if(cover){cover.addEventListener('load',updateLoginCoverState);cover.addEventListener('error',updateLoginCoverState);}
+  updateLoginCoverState();updateLoginLayout();window.addEventListener('resize',updateLoginLayout);
+  document.getElementById('loginForm').addEventListener('submit',submitLogin);
+  document.getElementById('loginSubmit').disabled=false;
+  document.getElementById('logoutBtn').addEventListener('click',logoutVisualSite);
+  document.getElementById('loginPasswordToggle').addEventListener('click',function(){
+    var password=document.getElementById('loginPassword'),shown=password.type==='password';
+    password.type=shown?'text':'password';
+    this.setAttribute('aria-label',shown?'隐藏密码':'显示密码');
+    this.setAttribute('aria-pressed',String(shown));this.title=shown?'隐藏密码':'显示密码';
+  });
+  ['loginUsername','loginPassword'].forEach(function(id){document.getElementById(id).addEventListener('input',function(){
+    document.getElementById('loginUsername').removeAttribute('aria-invalid');
+    document.getElementById('loginPassword').removeAttribute('aria-invalid');loginShowError('');
+  });});
+  var saved=loginStoredRecord();
+  if(saved)loginUnlock(saved);
+  else{loginClearStored();document.title='登录 · 优悦教育视觉生成网';}
+  window.addEventListener('pageshow',function(){if(loginAppStarted&&!loginRecordValid(loginMemorySession))loginReloadLocked();});
+  document.addEventListener('visibilitychange',function(){if(!document.hidden&&loginAppStarted&&!loginRecordValid(loginMemorySession))loginReloadLocked();});
+  window.addEventListener('storage',function(event){
+    if(event.key===LOGIN_LOGOUT_KEY&&event.newValue){
+      var stamp=Number(event.newValue)||0,lastLogin=loginMemorySession?loginMemorySession.issuedAt:loginChecking?loginAttemptStarted:0;
+      if(lastLogin>=stamp)return;
+      ++loginOperation;loginSetBusy(false);document.getElementById('loginPassword').value='';
+      if(loginAppStarted)loginReloadLocked();else{loginMemorySession=null;loginClearStored();}
+    }
+  });
+}
+
+
     function initializeBadgeApp() {
       initializeTheme();
       initEmbeddedAssets();
@@ -1672,8 +1965,8 @@ function drawWorkflowLinks() {
       selectTemplate('portrait');
       initializeWorkflowLinks();
     }
-    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initializeBadgeApp);
-    else initializeBadgeApp();
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initializeLoginGate);
+    else initializeLoginGate();
 
 </script>
 </body>
