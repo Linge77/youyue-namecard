@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="namecard-version" content="2026.11.02.1">
+<meta name="namecard-version" content="2026.11.02.2">
 <meta name="description" content="优悦教育设计素材生成网站，支持二维码裁切、排版调整与版式切换。">
 <title>优悦教育 · 设计素材生成网站</title>
 <style id="coreStyle">:root {
@@ -501,6 +501,194 @@ canvas { width:100%; height:100%; display:block; }
 html[data-login-state='locked'] body{padding:0;background:#fff2ef;}
 .login-workspace-actions{display:flex;align-items:center;gap:10px;min-width:0}.login-account{color:var(--text-muted);font-size:12px}.login-logout{padding:9px 14px;border:1px solid var(--border-highlight);border-radius:999px;background:var(--bg-panel);color:var(--text-main);font-size:12px;white-space:nowrap;min-height:38px}#appRoot:focus{outline:none}@media(max-width:620px){.login-account{display:none}.login-workspace-actions{gap:6px}.login-logout{font-size:11px;padding:7px 10px;min-height:36px}}
 
+/* Shared application navigation. Artwork canvases keep their own pixels. */
+.theme-toolbar { gap:22px; margin-bottom:0; }
+.visual-view { display:flex; flex-direction:column; gap:28px; min-width:0; }
+.site-tool-nav { display:flex; align-items:center; gap:10px; min-width:0; margin-right:auto; }
+.site-tool-button { position:relative; isolation:isolate; display:inline-flex; align-items:center; justify-content:center; gap:9px; min-height:43px; padding:10px 17px; border:1px solid var(--border-color); border-radius:999px; background:transparent; color:var(--text-muted); font-size:13px; font-weight:500; line-height:1.5; white-space:nowrap; transition:color .18s,border-color .18s,background .18s,box-shadow .25s; }
+.site-tool-button:hover { color:var(--text-main); border-color:var(--border-highlight); background:var(--bg-inner); }
+.site-tool-button[aria-current="page"] { color:var(--text-main); background:var(--bg-inner); border-color:var(--border-highlight); box-shadow:0 0 0 1px #e5122012,0 2px 15px #e5122010; }
+.site-tool-button::after { content:""; pointer-events:none; position:absolute; inset:-2px; border:1px solid #f45c68; border-radius:inherit; opacity:0; }
+.site-tool-button.nav-flash::after { animation:tool-nav-glow .7s ease-out; }
+.site-tool-button.nav-flash .tool-nav-icon { animation:tool-icon-glow .7s ease-out; }
+.site-tool-button:focus-visible { outline:2px solid var(--ui-focus-ring); outline-offset:4px; }
+.tool-nav-icon { display:inline-flex; align-items:center; justify-content:center; flex:0 0 21px; width:21px; height:21px; }
+.tool-nav-icon svg { display:block; width:100%; height:100%; fill:none; stroke:currentColor; stroke-width:1.65; stroke-linecap:round; stroke-linejoin:round; }
+.tool-nav-label { min-width:0; }
+@keyframes tool-nav-glow { 0% { opacity:.85; box-shadow:0 0 18px #ed344652; } 100% { opacity:0; box-shadow:0 0 30px #ed344600; transform:scale(1.025); } }
+@keyframes tool-icon-glow { 0% { color:#ff8a95; filter:drop-shadow(0 0 5px #f1596c); } 100% { filter:drop-shadow(0 0 0 transparent); } }
+
+/* Watermark workspace: every rule stays inside its own application view. */
+#watermarkView { display:grid; grid-template-columns:280px minmax(0,1fr); gap:26px; align-items:start; width:100%; min-width:0; color:var(--text-main); }
+#watermarkView > * { min-width:0; }
+#watermarkView .wm-sidebar,
+#watermarkView .wm-editor { background:var(--bg-panel); border:1px solid var(--border-color); border-radius:20px; box-shadow:var(--ui-panel-shadow); }
+#watermarkView .wm-sidebar { padding:26px 23px; }
+#watermarkView .wm-editor { padding:28px 28px 22px; }
+#watermarkView button,
+#watermarkView input,
+#watermarkView output { font-family:inherit; }
+#watermarkView button,
+#watermarkView label,
+#watermarkView a { -webkit-tap-highlight-color:transparent; }
+#watermarkView button { cursor:pointer; }
+#watermarkView button:disabled { opacity:.4; cursor:not-allowed; }
+#watermarkView button:focus-visible,
+#watermarkView input:focus-visible,
+#watermarkView a:focus-visible,
+#watermarkView summary:focus-visible { outline:2px solid var(--ui-focus-ring); outline-offset:4px; }
+#watermarkView a { color:var(--text-main); text-underline-offset:4px; }
+#watermarkView .section-label { font-size:9px; font-weight:600; letter-spacing:2px; color:var(--ui-subtle-text); line-height:1.6; }
+#watermarkView h1 { margin:12px 0 10px; font-size:24px; font-weight:650; line-height:1.4; letter-spacing:-.5px; }
+#watermarkView .intro { color:var(--text-muted); font-size:12px; line-height:1.9; margin:0 0 25px; }
+#watermarkView .upload-card { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:9px; min-height:172px; padding:24px 12px; border:1px dashed var(--border-highlight); border-radius:12px; background:var(--bg-input); cursor:pointer; transition:border-color .18s,background .18s; }
+#watermarkView .upload-card:hover { border-color:var(--ui-drag-border); background:var(--ui-drag-bg); }
+#watermarkView .upload-card:focus-within { outline:2px solid var(--ui-focus-ring); outline-offset:4px; }
+#watermarkView .upload-card.is-disabled { pointer-events:none; opacity:.5; }
+#watermarkView .upload-symbol { color:var(--accent-red); font-size:30px; font-weight:300; line-height:1; margin-bottom:6px; }
+#watermarkView .upload-card strong { font-size:13px; font-weight:600; }
+#watermarkView .upload-card small { font-size:10px; color:var(--text-muted); text-align:center; line-height:1.6; }
+#watermarkView .visually-hidden { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; }
+#watermarkView .sample-heading { display:flex; justify-content:space-between; align-items:center; margin:24px 0 12px; }
+#watermarkView .sample-heading h2 { font-size:12px; font-weight:600; }
+#watermarkView .sample-heading span { color:var(--text-muted); font-size:10px; }
+#watermarkView .samples { display:grid; gap:9px; }
+#watermarkView .sample-button { display:flex; align-items:center; gap:10px; width:100%; text-align:left; border:1px solid var(--border-color); border-radius:10px; padding:11px; color:var(--text-main); background:var(--bg-input); }
+#watermarkView .sample-button.active { border-color:var(--ui-selected-border); background:var(--ui-selected-bg); }
+#watermarkView .sample-number { display:grid; place-items:center; width:25px; height:29px; flex:0 0 25px; border-radius:6px; color:var(--text-muted); background:var(--bg-inner); font-size:10px; }
+#watermarkView .sample-button strong { display:block; font-size:11px; line-height:1.6; }
+#watermarkView .sample-button small { display:block; font-size:10px; line-height:1.6; color:var(--text-muted); }
+#watermarkView .local-note { display:flex; gap:10px; margin-top:24px; padding:15px 13px; border:1px solid var(--border-color); border-radius:10px; background:var(--bg-inner); color:var(--ui-soft-text); }
+#watermarkView .lock-icon { flex:0 0 18px; font-size:20px; line-height:1.2; color:var(--ui-live-text); }
+#watermarkView .local-note strong { font-size:11px; font-weight:600; line-height:1.6; }
+#watermarkView .local-note p { font-size:11px; line-height:1.8; margin-top:5px; color:var(--text-muted); }
+#watermarkView .sidebar-footnote { font-size:10px; line-height:1.9; margin:16px 1px 0; color:var(--ui-subtle-text); }
+#watermarkView .editor-heading { display:flex; justify-content:space-between; align-items:center; gap:14px; margin-bottom:22px; }
+#watermarkView .editor-heading h2 { margin-top:7px; font-size:18px; font-weight:600; line-height:1.6; overflow-wrap:anywhere; }
+#watermarkView .local-badge { display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border:1px solid var(--border-color); border-radius:999px; background:var(--bg-inner); color:var(--ui-live-text); font-size:10px; white-space:nowrap; }
+#watermarkView .local-badge::before { content:""; width:5px; height:5px; border-radius:50%; background:var(--ui-live-dot); box-shadow:0 0 7px var(--ui-live-glow); }
+#watermarkView .document-warning { display:flex; flex-direction:column; gap:5px; margin-bottom:17px; padding:13px 15px; border:1px solid var(--border-highlight); border-left:2px solid var(--accent-red); border-radius:9px; color:var(--text-muted); background:var(--bg-inner); font-size:11px; line-height:1.8; }
+#watermarkView .document-warning strong { color:var(--text-main); font-size:12px; }
+#watermarkView .toolbar { display:flex; align-items:center; gap:16px; flex-wrap:wrap; border-top:1px solid var(--border-color); padding:17px 0 18px; }
+#watermarkView .tool-switch { display:flex; padding:3px; background:var(--ui-tab-bg); border:1px solid var(--ui-tab-border); border-radius:9px; }
+#watermarkView .tool-button { padding:7px 11px; border:1px solid transparent; border-radius:6px; background:transparent; color:var(--text-muted); font-size:11px; line-height:1.5; white-space:nowrap; }
+#watermarkView .tool-button.active { border-color:var(--ui-tab-active-border); background:var(--ui-tab-active); color:var(--ui-tab-active-text); box-shadow:var(--ui-tab-shadow); }
+#watermarkView .brush-control { display:flex; align-items:center; gap:9px; color:var(--text-muted); font-size:11px; white-space:nowrap; }
+#watermarkView .brush-control input { width:88px; height:4px; accent-color:var(--accent-red); cursor:pointer; }
+#watermarkView .brush-control output { min-width:37px; color:var(--ui-soft-text); font-size:10px; font-variant-numeric:tabular-nums; }
+#watermarkView .tool-actions { display:flex; align-items:center; gap:16px; margin-left:auto; }
+#watermarkView .text-button { background:transparent; border:0; color:var(--text-muted); padding:7px 0; font-size:11px; line-height:1.5; white-space:nowrap; }
+#watermarkView .text-button:hover:enabled { color:var(--text-main); }
+#watermarkView .canvas-area { display:grid; place-items:center; position:relative; width:100%; min-width:0; min-height:500px; padding:22px; overflow:hidden; border:1px solid var(--border-color); border-radius:12px; background-color:var(--ui-preview-bg); background-image:radial-gradient(var(--ui-preview-dot) 1px,transparent 1px); background-size:18px 18px; }
+#watermarkView .canvas-wrap { display:block; position:relative; max-width:100%; background:#fff; line-height:0; box-shadow:var(--ui-paper-shadow); }
+#watermarkView .canvas-wrap canvas { display:block; width:100%; height:100%; max-width:100%; touch-action:none; }
+#watermarkView #wm-maskCanvas { position:absolute; inset:0; opacity:.46; cursor:crosshair; }
+#watermarkView .canvas-wrap.comparing #wm-maskCanvas { visibility:hidden; }
+#watermarkView .canvas-caption { position:absolute; left:12px; top:12px; padding:5px 8px; border:1px solid var(--ui-tag-border); border-radius:5px; background:var(--ui-chip-bg); color:var(--ui-tag-text); font-size:10px; line-height:1.5; pointer-events:none; }
+#watermarkView .empty-state { display:flex; flex-direction:column; justify-content:center; align-items:center; gap:12px; padding:50px 16px; color:var(--ui-empty-text); text-align:center; }
+#watermarkView .empty-state > div { font-size:35px; color:var(--ui-empty-icon); font-weight:300; line-height:1.2; margin-bottom:4px; }
+#watermarkView .empty-state strong { font-size:16px; font-weight:500; }
+#watermarkView .empty-state span { font-size:11px; line-height:1.7; color:var(--text-muted); }
+#watermarkView .drop-cover { display:grid; place-items:center; position:absolute; inset:0; padding:22px; background:var(--ui-drag-bg); border:2px dashed var(--ui-drag-border); border-radius:12px; color:var(--text-main); font-size:18px; font-weight:600; pointer-events:none; }
+#watermarkView .image-meta { display:flex; justify-content:space-between; flex-wrap:wrap; gap:5px 16px; padding:12px 2px 20px; color:var(--text-muted); font-size:10px; line-height:1.8; }
+#watermarkView .image-meta > span { min-width:0; overflow-wrap:anywhere; }
+#watermarkView .action-bar { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px; margin-bottom:21px; }
+#watermarkView .main-actions { display:flex; align-items:center; flex-wrap:wrap; gap:10px; }
+#watermarkView .primary-button,
+#watermarkView .secondary-button,
+#watermarkView .download-button { display:inline-flex; justify-content:center; align-items:center; gap:8px; min-height:41px; padding:10px 16px; border-radius:9px; font-size:12px; font-weight:600; line-height:1.5; white-space:nowrap; }
+#watermarkView .primary-button { border:1px solid transparent; background:linear-gradient(120deg,#df0718,#ff353b); color:#fff; box-shadow:0 4px 14px #d70c1814; }
+#watermarkView .primary-button:hover:enabled { filter:brightness(1.1); }
+#watermarkView .secondary-button { border:1px solid var(--border-highlight); background:transparent; color:var(--ui-soft-text); }
+#watermarkView .secondary-button:hover:enabled { background:var(--bg-inner); color:var(--text-main); }
+#watermarkView .download-button { border:1px solid var(--border-highlight); background:var(--bg-inner); color:var(--text-main); }
+#watermarkView .download-button:hover:enabled { border-color:var(--ui-chip-hover-border); box-shadow:var(--ui-tab-shadow); }
+#watermarkView .download-button span { font-size:15px; }
+#watermarkView .progress-panel { border:1px solid var(--border-color); border-radius:10px; background:var(--bg-input); padding:14px 15px; margin-bottom:18px; }
+#watermarkView .progress-line { display:flex; align-items:center; gap:9px; }
+#watermarkView .progress-icon { width:16px; flex:0 0 16px; color:var(--ui-subtle-text); font-size:15px; text-align:center; }
+#watermarkView .progress-line strong { font-size:12px; font-weight:500; line-height:1.7; overflow-wrap:anywhere; }
+#watermarkView .progress-line time { margin-left:auto; color:var(--text-muted); font-size:10px; font-variant-numeric:tabular-nums; white-space:nowrap; }
+#watermarkView .progress-panel p { margin:6px 0 0 25px; color:var(--text-muted); font-size:10px; line-height:1.8; }
+#watermarkView .progress-panel[data-stage="error"] { border-color:var(--ui-selected-border); }
+#watermarkView .progress-panel[data-stage="error"] .progress-icon { color:var(--accent-red); }
+#watermarkView .progress-panel[data-stage="done"] .progress-icon { color:var(--ui-live-text); }
+#watermarkView .progress-panel.is-busy .progress-icon { color:var(--accent-red); animation:wm-progress-spin 1.6s linear infinite; }
+#watermarkView progress { display:block; width:100%; height:5px; margin-top:11px; border:0; border-radius:4px; background:var(--bg-inner); accent-color:var(--accent-red); }
+#watermarkView progress::-webkit-progress-bar { background:var(--bg-inner); border-radius:4px; }
+#watermarkView progress::-webkit-progress-value { background:var(--accent-red); border-radius:4px; }
+#watermarkView progress::-moz-progress-bar { background:var(--accent-red); border-radius:4px; }
+#watermarkView .export-fallback { width:100%; max-width:none; margin:0 0 18px; padding:15px 17px; background:var(--bg-inner); border:1px solid var(--border-highlight); border-radius:10px; color:var(--text-main); font-size:12px; line-height:1.8; }
+#watermarkView .export-fallback strong { font-size:12px; font-weight:600; }
+#watermarkView .export-fallback p { margin:5px 0 9px; color:var(--text-muted); font-size:11px; }
+#watermarkView .export-fallback a { display:inline-flex; align-items:center; margin:0 10px 0 0; padding:7px 12px; border:1px solid var(--border-highlight); border-radius:7px; background:var(--bg-panel); color:var(--text-main); font-size:11px; text-decoration:none; }
+#watermarkView .export-fallback a:hover { border-color:var(--ui-chip-hover-border); }
+#watermarkView .notes { border-top:1px solid var(--border-color); padding-top:15px; color:var(--text-muted); font-size:11px; line-height:1.8; }
+#watermarkView .notes summary { cursor:pointer; width:fit-content; }
+#watermarkView .notes > div { padding:8px 0 0; }
+#watermarkView .notes p { margin:7px 0; color:var(--text-muted); font-size:11px; line-height:1.9; }
+@keyframes wm-progress-spin { to { transform:rotate(360deg); } }
+
+@media (max-width:1100px) {
+  .theme-toolbar { flex-wrap:wrap; gap:16px; }
+  .theme-toolbar .login-workspace-actions { margin-left:auto; }
+  .site-tool-nav { order:3; flex:0 0 100%; margin-right:0; }
+  #watermarkView { grid-template-columns:240px minmax(0,1fr); gap:20px; }
+  #watermarkView .wm-sidebar { padding:23px 19px; }
+  #watermarkView .wm-editor { padding:24px 22px 20px; }
+  #watermarkView .toolbar { gap:12px; }
+  #watermarkView .tool-actions { margin-left:0; }
+  #watermarkView .canvas-area { min-height:420px; padding:20px; }
+}
+@media (max-width:760px) {
+  #watermarkView { grid-template-columns:minmax(0,1fr); gap:20px; }
+  #watermarkView .wm-sidebar { padding:23px; }
+  #watermarkView .wm-editor { padding:22px 18px 18px; border-radius:18px; }
+  #watermarkView h1 { font-size:22px; margin:9px 0; }
+  #watermarkView .intro { margin-bottom:20px; }
+  #watermarkView .upload-card { min-height:138px; padding:20px 14px; }
+  #watermarkView .local-note { margin-top:18px; }
+  #watermarkView .canvas-area { min-height:330px; padding:11px; }
+  #watermarkView .editor-heading { gap:10px; margin-bottom:18px; }
+  #watermarkView .editor-heading h2 { font-size:16px; }
+  #watermarkView .toolbar { gap:12px; justify-content:space-between; padding-top:15px; }
+  #watermarkView .tool-actions { gap:17px; }
+  #watermarkView .brush-control { margin-left:auto; gap:7px; }
+  #watermarkView .brush-control input { width:67px; }
+  #watermarkView .tool-button { padding:7px 9px; font-size:10px; }
+  #watermarkView .canvas-caption { left:7px; top:7px; font-size:9px; padding:4px 6px; }
+  #watermarkView .empty-state { padding:40px 12px; }
+  #watermarkView .action-bar { align-items:stretch; gap:15px; }
+  #watermarkView .download-button { width:100%; min-height:44px; }
+  #watermarkView .primary-button,
+  #watermarkView .secondary-button { min-height:44px; padding:10px 13px; }
+  #watermarkView .main-actions { gap:10px; }
+  #watermarkView .progress-panel { padding:13px; }
+  #watermarkView .progress-panel p { margin-left:0; }
+  #watermarkView .image-meta { font-size:9px; }
+}
+@media (max-width:620px) {
+  .visual-view { gap:20px; }
+  .theme-toolbar { gap:14px 10px; }
+  .site-tool-nav { gap:8px; }
+  .site-tool-button { flex:1; min-width:0; min-height:43px; padding:9px 12px; gap:7px; font-size:11px; }
+  .tool-nav-icon { flex-basis:19px; width:19px; height:19px; }
+}
+@media (max-width:380px) {
+  .site-tool-button { padding:9px 8px; gap:5px; font-size:10px; }
+  #watermarkView .wm-sidebar { padding:20px; }
+  #watermarkView .wm-editor { padding:19px 14px 16px; }
+  #watermarkView .brush-control { margin-left:0; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .site-tool-button,
+  .site-tool-button::after,
+  .site-tool-button .tool-nav-icon,
+  #watermarkView *,
+  #watermarkView *::before,
+  #watermarkView *::after { animation:none!important; transition:none!important; }
+}
+
 </style>
 <!-- Cropper.js 1.6.2 — https://github.com/fengyuanchen/cropperjs
 The MIT License (MIT)
@@ -589,13 +777,22 @@ THE SOFTWARE.
 </dialog>
 
 <div class="workspace" id="appRoot" hidden>
-<div class="theme-toolbar" aria-label="页面外观"><img loading="lazy" id="headerLogo" src="assets/images/progress-logo-bfe48d01ddd3.png" alt="优悦教育" width="158" height="60">
+<div class="theme-toolbar" aria-label="页面外观"><img loading="lazy" id="headerLogo" src="assets/images/progress-logo-bfe48d01ddd3.png" alt="优悦教育" width="158" height="60"><nav class="site-tool-nav" aria-label="选择工具">
+  <button type="button" class="site-tool-button" id="visualToolTab" aria-current="page" aria-controls="visualView" onclick="selectSiteTool('visual',true)">
+    <span class="tool-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="13" rx="2"></rect><path d="M8 21h8M12 17v4M3 13.5h18"></path></svg></span><span class="tool-nav-label">视觉素材生成</span>
+  </button>
+  <button type="button" class="site-tool-button" id="watermarkToolTab" aria-controls="watermarkView" onclick="selectSiteTool('watermark',true)">
+    <span class="tool-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2.5" y="3" width="19" height="18" rx="5"></rect><path d="m6 15 3-7 3 7M7.1 12.5h3.8M16 8v7M3 21 21 3"></path></svg></span><span class="tool-nav-label">AI 图像水印去除工具</span>
+  </button>
+</nav>
+
   <div class="login-workspace-actions"><span class="login-account">youyuejiaoyu</span><button type="button" class="theme-toggle" id="themeToggle" aria-pressed="true" aria-label="当前为夜间模式，切换到日间模式" onclick="toggleTheme()">
     <span class="theme-toggle-icon" id="themeToggleIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20.2 14.2A8.5 8.5 0 0 1 9.8 3.8a8.5 8.5 0 1 0 10.4 10.4Z"></path></svg></span>
     <span id="themeToggleText">夜间模式</span>
   </button><button type="button" class="login-logout" id="logoutBtn">退出登录</button></div>
 </div>
 
+<section id="visualView" class="visual-view" aria-label="视觉素材生成">
   <header class="kv-banner" id="kvBanner"><img id="kvImage" src="assets/images/kv-c3ce6e59a266.png" loading="lazy" decoding="async" width="2662" height="320" alt="优悦教育设计素材生成网站"></header>
   <main class="workflow-grid" id="workflowWorkspace" data-template="portrait" aria-label="工牌生成工作台">
     <svg class="workflow-links" id="workflowLinks" aria-hidden="true" focusable="false"></svg>
@@ -820,7 +1017,45 @@ THE SOFTWARE.
 <button type="button" class="reset-btn" onclick="resetProgressLayout()">恢复案例默认排版</button></div>
     </aside>
   </main>
-  <footer class="workspace-footer"><span>优悦教育 · 工牌生成工作台</span><span>版本 2026.11.02 · 封面与示例人物更新版</span><span><a href="assets/licenses/THIRD_PARTY_NOTICES.txt" style="color:inherit">开源组件说明</a></span></footer>
+</section>
+<main class="wm-view" id="watermarkView" aria-label="AI 图像水印去除工具" hidden>
+<aside class="wm-sidebar">
+      <div class="section-label">01 · 选择图片</div>
+      <h1 id="wm-toolTitle">AI 图像水印去除</h1>
+      <p class="intro" id="wm-toolIntro">上传图片，涂选水印，再由本机模型补全画面。</p>
+      <label class="upload-card" id="wm-uploadCard" for="wm-fileInput"><span class="upload-symbol" aria-hidden="true">＋</span><strong>上传图片</strong><small>PNG、JPG、WebP · 最大 20 MB</small></label>
+      <input id="wm-fileInput" class="visually-hidden" type="file" accept="image/png,image/jpeg,image/webp" aria-label="上传需要去除水印的图片">
+      <div class="sample-heading" hidden><h2>使用测试样张</h2><span id="wm-sampleCount">读取中</span></div>
+      <div class="samples" id="wm-sampleList" hidden aria-label="测试样张列表"></div>
+      <div class="local-note"><span class="lock-icon" aria-hidden="true">◈</span><div><strong>图片留在本机</strong><p id="wm-modelDescription">图片在浏览器中处理，首次修复时加载模型。</p></div></div>
+      <p class="sidebar-footnote" id="wm-sidebarFootnote">请使用自己制作或有权编辑的素材。水印覆盖文字或复杂纹理时，可能残留痕迹或损伤内容，请对照原图检查。</p>
+    </aside>
+    <section class="wm-editor" id="wm-repairPanel" aria-label="水印去除工作区">
+      <div class="editor-heading"><div><div class="section-label">02 · 涂选水印并处理</div><h2 id="wm-imageTitle">选择一张图片开始</h2></div><span class="local-badge">本机处理</span></div>
+      <div class="document-warning" id="wm-documentWarning" hidden><strong>文档测试：文字准确性优先</strong><span>水印与正文重叠时，模型可能损伤笔画。请对照原图核对；标记消失不代表修复通过。</span></div>
+      <div class="toolbar" aria-label="涂选工具">
+        <div class="tool-switch" role="group" aria-label="画笔模式"><button id="wm-paintBtn" type="button" class="tool-button active" aria-pressed="true">画笔涂选</button><button id="wm-eraseBtn" type="button" class="tool-button" aria-pressed="false">擦除涂选</button></div>
+        <label class="brush-control" for="wm-brushSize">画笔 <input id="wm-brushSize" type="range" min="8" max="180" value="40"><output id="wm-brushValue" for="wm-brushSize">40 px</output></label>
+        <div class="tool-actions"><button id="wm-undoBtn" class="text-button" type="button" disabled>撤销涂选</button><button id="wm-clearMaskBtn" class="text-button" type="button" disabled>清空涂选</button></div>
+      </div>
+      <div class="canvas-area" id="wm-canvasArea">
+        <div class="empty-state" id="wm-emptyState"><div aria-hidden="true">▧</div><strong>把图片放进来</strong><span>上传 PNG、JPG、WebP，或拖入图片</span></div>
+        <div class="canvas-wrap" id="wm-canvasWrap" hidden><canvas id="wm-imageCanvas" aria-label="待修复的图片预览"></canvas><canvas id="wm-maskCanvas" role="img" aria-label="涂选区域画布，红色表示要修复的区域"></canvas><span class="canvas-caption" id="wm-canvasCaption">红色为修复区域</span></div>
+        <div class="drop-cover" id="wm-dropCover" hidden>松开以导入图片</div>
+      </div>
+      <div class="image-meta"><span id="wm-imageMeta">尚未加载图片</span><span id="wm-maskMeta">未涂选区域</span></div>
+      <div class="action-bar">
+        <div class="main-actions"><button id="wm-runBtn" type="button" class="primary-button" disabled><span aria-hidden="true">✦</span> 去除选中水印</button><button id="wm-cancelBtn" type="button" class="secondary-button" hidden>取消处理</button><button id="wm-compareBtn" type="button" class="secondary-button" disabled aria-pressed="false">按住看原图</button><button id="wm-resetResultBtn" type="button" class="text-button" disabled>恢复原图</button></div>
+        <button id="wm-downloadBtn" type="button" class="download-button" disabled>生成高清 PNG <span aria-hidden="true">↓</span></button>
+      </div>
+      <div class="progress-panel" id="wm-progressPanel" role="status" aria-live="polite" data-stage="idle"><div class="progress-line"><span class="progress-icon" id="wm-progressIcon" aria-hidden="true">○</span><strong id="wm-statusText">准备就绪，请上传图片</strong><time id="wm-elapsedTime"></time></div><progress id="wm-loadProgress" max="100" hidden aria-label="模型加载进度"></progress><p id="wm-statusDetail">上传后用画笔覆盖水印，再点击“去除选中水印”。</p></div>
+      <div class="export-fallback" id="wm-exportFallback" hidden><strong>修复图已生成</strong><p>点击下方链接下载；Safari 也可打开高清图片后保存。</p><a id="wm-saveLink" target="_blank" rel="noopener">打开高清 PNG</a><a id="wm-exportDownload" download>下载 PNG</a></div>
+      <details class="notes"><summary>操作说明</summary><div><p>用画笔完整覆盖水印，可擦除、撤销或清空涂选。处理后按住“看原图”检查效果，再生成和下载 PNG。</p><p>较大的图片使用最长边 2048 px 的工作画布，导出保持原图尺寸。复杂纹理或被遮挡的文字可能需要重新调整涂选区域。</p></div></details>
+    </section>
+
+
+</main>
+  <footer class="workspace-footer"><span>优悦教育 · 工牌生成工作台</span><span>版本 2026.11.02 · 双工具工作台版</span><span><a href="assets/licenses/THIRD_PARTY_NOTICES.txt" style="color:inherit">开源组件说明</a></span></footer>
 </div>
 <dialog id="cropDialog" class="crop-dialog" aria-labelledby="cropTitle" aria-describedby="cropHelp">
     <div class="crop-heading"><h2 id="cropTitle">裁切二维码图片</h2><button type="button" class="chip-btn" onclick="cancelQrCrop()" aria-label="关闭裁切窗口">关闭</button></div>
@@ -1977,6 +2212,7 @@ function loginReloadLocked(){
   document.getElementById('appRoot').hidden=true;
   document.getElementById('loginScreen').hidden=false;
   document.documentElement.dataset.loginState='locked';
+  if(typeof disposeSiteTools==='function')disposeSiteTools();
   // Release in-memory uploaded photos and any running inference before reload.
   var crop=document.getElementById('cropDialog');if(crop&&crop.open){if(typeof cleanupQrCrop==='function')cleanupQrCrop();crop.close();}
   if(typeof cancelPortraitJob==='function'&&loginAppStarted)cancelPortraitJob(true);
@@ -2045,6 +2281,56 @@ function initializeLoginGate(){
 }
 
 
+window.WATERMARK_MODULE_BASE='assets/watermark/';
+/* Shared chrome; both editors stay mounted so switching preserves their state. */
+var currentSiteTool='visual',watermarkModule=null,watermarkModulePromise=null;
+async function loadWatermarkTool(){
+  if(watermarkModule)return watermarkModule;
+  if(!watermarkModulePromise){
+    watermarkModulePromise=import(new URL((window.WATERMARK_MODULE_BASE||'assets/watermark/')+'app.js?v=20261102-2',document.baseURI).href)
+      .then(function(module){watermarkModule=module;return module;})
+      .catch(function(error){watermarkModulePromise=null;throw error;});
+  }
+  return watermarkModulePromise;
+}
+function flashSiteTool(button){
+  button.classList.remove('nav-flash');void button.offsetWidth;button.classList.add('nav-flash');
+  window.setTimeout(function(){button.classList.remove('nav-flash');},650);
+}
+function selectSiteTool(key,fromClick){
+  if(document.documentElement.dataset.loginState!=='unlocked')return;
+  key=key==='watermark'?'watermark':'visual';
+  currentSiteTool=key;
+  document.getElementById('visualView').hidden=key!=='visual';
+  document.getElementById('watermarkView').hidden=key!=='watermark';
+  ['visual','watermark'].forEach(function(value){
+    var button=document.getElementById(value+'ToolTab');
+    if(value===key)button.setAttribute('aria-current','page');else button.removeAttribute('aria-current');
+  });
+  document.title=key==='watermark'?'AI 图像水印去除 · 优悦教育':'优悦教育 · 设计素材生成网站';
+  if(fromClick){
+    flashSiteTool(document.getElementById(key+'ToolTab'));
+    var hash=key==='watermark'?'#watermark':'#visual';
+    if(location.hash!==hash)history.pushState(null,'',hash);
+  }
+  if(key==='visual'){
+    if(watermarkModule)watermarkModule.suspend();
+    requestAnimationFrame(function(){if(typeof scheduleWorkflowLinks==='function')scheduleWorkflowLinks();});
+    return;
+  }
+  loadWatermarkTool().then(function(module){if(currentSiteTool==='watermark')module.activate();})
+    .catch(function(){
+      var panel=document.getElementById('wm-progressPanel');panel.dataset.stage='error';
+      document.getElementById('wm-statusText').textContent='工具未能加载，请再次点击顶部去水印入口。';
+      document.getElementById('wm-statusDetail').textContent='如果仍未恢复，请确认本次更新的 assets 文件夹已完整上传。';
+    });
+}
+function initializeSiteTools(){
+  function route(){selectSiteTool(location.hash==='#watermark'?'watermark':'visual',false);}
+  window.addEventListener('hashchange',route);window.addEventListener('popstate',route);route();
+}
+function disposeSiteTools(){if(watermarkModule)watermarkModule.dispose();}
+
     function initializeBadgeApp() {
       initializeTheme();
       initEmbeddedAssets();
@@ -2064,6 +2350,7 @@ function initializeLoginGate(){
       updateSliders();
       selectTemplate('portrait');
       initializeWorkflowLinks();
+      initializeSiteTools();
     }
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initializeLoginGate);
     else initializeLoginGate();

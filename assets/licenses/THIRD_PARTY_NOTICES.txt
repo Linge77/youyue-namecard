@@ -37,3 +37,10 @@ provided by the user; edited text uses the OFL font subset.
 Employee photos are processed on the employee's device. Model and runtime files
 are fetched from this website only; images are not sent to an image processing API.
 Local integration code: 维护源码/横版功能.js, 纯色背景清理.js, 人像抠像Worker.js.
+
+
+MI-GAN image repair (MIT) and ONNX Runtime Web 1.20.1 (MIT)
+Integrated browser-local watermark editor; original engine reused.
+Source: https://github.com/Picsart-AI-Research/MI-GAN
+Full code and weights licenses: assets/watermark/assets/licenses/
+Photos are processed in the browser. No image-processing API is used.
