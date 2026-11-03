@@ -44,3 +44,11 @@ Integrated browser-local watermark editor; original engine reused.
 Source: https://github.com/Picsart-AI-Research/MI-GAN
 Full code and weights licenses: assets/watermark/assets/licenses/
 Photos are processed in the browser. No image-processing API is used.
+
+
+Youyue Article Studio
+Theme library adapted from huasheng_editor, MIT, Copyright (c) 2024 花生 (alchaincyf).
+https://github.com/alchaincyf/huasheng_editor
+Markdown-it 15.0.3 (MIT); Turndown 7.2.4 (MIT); DOMPurify 3.4.17 (Apache-2.0 OR MPL-2.0).
+Unmodified dependencies and complete licenses: assets/article/licenses/
+Local editor, safe template import, IndexedDB drafts, inline HTML export; no analytics or upload service.

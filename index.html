@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="namecard-version" content="2026.11.02.2">
+<meta name="namecard-version" content="2026.11.03.4">
 <meta name="description" content="优悦教育设计素材生成网站，支持二维码裁切、排版调整与版式切换。">
 <title>优悦教育 · 设计素材生成网站</title>
 <style id="coreStyle">:root {
@@ -689,6 +689,121 @@ html[data-login-state='locked'] body{padding:0;background:#fff2ef;}
   #watermarkView *::after { animation:none!important; transition:none!important; }
 }
 
+/* Native article editor; all content styles are scoped to its workspace. */
+#articleView { --pa-accent:var(--accent-red); min-width:0; color:var(--text-main); }
+#articleView * { box-sizing:border-box; }
+#articleView button,#articleView input,#articleView select,#articleView textarea { font-family:inherit; }
+#articleView button { cursor:pointer; }
+#articleView button:disabled { opacity:.45; cursor:not-allowed; }
+#articleView button:focus-visible,#articleView input:focus-visible,#articleView select:focus-visible,#articleView textarea:focus-visible,#articleView a:focus-visible,#articleView summary:focus-visible { outline:2px solid var(--ui-focus-ring); outline-offset:3px; }
+#articleView .pa-heading-row { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:20px; margin:8px 0 28px; }
+#articleView .pa-eyebrow { color:var(--text-muted); font-size:10px; letter-spacing:3px; }
+#articleView h1 { font-size:27px; letter-spacing:-.6px; margin:9px 0; line-height:1.4; }
+#articleView .pa-heading-row p { color:var(--text-muted); font-size:12px; line-height:1.8; margin:0; }
+#articleView .pa-heading-actions { display:flex; flex-wrap:wrap; gap:9px; }
+#articleView .pa-btn { display:inline-flex; align-items:center; justify-content:center; gap:12px; padding:10px 15px; min-height:40px; border:1px solid var(--border-highlight); border-radius:10px; background:var(--bg-panel); color:var(--text-main); font-size:12px; line-height:1.6; }
+#articleView .pa-btn:hover { border-color:var(--text-muted); background:var(--bg-inner); }
+#articleView .pa-primary { border-color:transparent; background:linear-gradient(120deg,#df0718,#ff353b); color:white; box-shadow:0 5px 18px #d70c1822; }
+#articleView .pa-primary:hover { background:#ee1629; border-color:transparent; }
+#articleView .pa-primary span { font-size:17px; }
+#articleView .pa-layout { display:grid; grid-template-columns:208px minmax(270px,1fr) minmax(350px,1.12fr); gap:18px; align-items:start; }
+#articleView .pa-panel { min-width:0; border:1px solid var(--border-color); border-radius:18px; background:var(--bg-panel); overflow:hidden; box-shadow:var(--ui-panel-shadow); }
+#articleView .pa-panel-heading { display:flex; justify-content:space-between; align-items:center; gap:10px; padding:20px 20px 17px; }
+#articleView h2 { font-size:14px; line-height:1.5; margin:0; font-weight:600; }
+#articleView .pa-panel-heading > div { display:flex; gap:13px; }
+#articleView .pa-count { color:var(--text-muted); font-size:11px; }
+#articleView .pa-search { display:block; margin:0 16px 15px; }
+#articleView .pa-search input { width:100%; border:1px solid var(--border-color); background:var(--bg-input); color:var(--text-main); font-size:11px; padding:9px 11px; border-radius:8px; }
+#articleView .pa-template-list { padding:1px 14px 12px; max-height:570px; overflow:auto; display:grid; gap:10px; }
+#articleView .pa-template-card { position:relative; display:block; width:100%; text-align:left; padding:0; border:1px solid var(--border-color); border-radius:10px; background:var(--bg-input); color:var(--text-main); overflow:hidden; transition:border-color .18s,box-shadow .18s; }
+#articleView .pa-template-card:hover { border-color:var(--border-highlight); }
+#articleView .pa-template-card[aria-pressed="true"] { border-color:#ed3446; box-shadow:0 0 0 1px #ed344630; }
+#articleView .pa-template-card[aria-pressed="true"]::after { content:'✓'; position:absolute; top:7px; right:7px; width:18px; height:18px; border-radius:50%; background:#e71f32; color:#fff; font-size:11px; text-align:center; line-height:18px; }
+#articleView .pa-template-sample { display:block; height:73px; margin:8px; padding:10px 11px; border-radius:5px; overflow:hidden; pointer-events:none; }
+#articleView .pa-template-sample strong { display:block; font-size:12px; line-height:1.5; margin-bottom:7px; }
+#articleView .pa-sample-line { display:block; height:3px; margin:5px 0; background:currentColor; opacity:.18; width:90%; }
+#articleView .pa-sample-line:last-child { width:63%; }
+#articleView .pa-template-name { display:flex; justify-content:space-between; padding:1px 11px 10px; gap:6px; font-size:11px; line-height:1.6; }
+#articleView .pa-template-name small { color:var(--text-muted); font-size:9px; white-space:nowrap; }
+#articleView .pa-template-foot { padding:14px 16px 17px; border-top:1px solid var(--border-color); text-align:center; }
+#articleView .pa-template-foot .pa-btn { width:100%; margin-bottom:7px; }
+#articleView .pa-template-foot p { color:var(--text-muted); font-size:10px; line-height:1.8; margin:9px 0 0; }
+#articleView .pa-text-button { padding:3px 0; border:0; background:transparent; color:var(--text-muted); font-size:11px; line-height:1.6; }
+#articleView .pa-text-button:hover { color:var(--text-main); }
+#articleView .pa-formatbar { display:flex; align-items:center; flex-wrap:wrap; gap:5px; padding:11px 16px; border-top:1px solid var(--border-color); border-bottom:1px solid var(--border-color); background:var(--bg-inner); }
+#articleView .pa-formatbar button { display:inline-flex; align-items:center; justify-content:center; min-width:28px; height:28px; padding:3px 7px; border:1px solid transparent; border-radius:5px; background:transparent; color:var(--text-main); font-size:12px; }
+#articleView .pa-formatbar button:hover { background:var(--bg-panel); border-color:var(--border-highlight); }
+#articleView .pa-componentbar { display:flex; flex-wrap:wrap; gap:6px; padding:9px 16px; border-bottom:1px solid var(--border-color); }
+#articleView .pa-componentbar button { display:inline-flex; align-items:center; gap:6px; padding:5px 9px; min-height:30px; border:1px solid var(--border-color); border-radius:6px; background:var(--bg-inner); color:var(--text-main); font-size:11px; }
+#articleView .pa-componentbar button:hover { border-color:var(--border-highlight); }
+#articleView .pa-componentbar span { color:var(--accent-red); font-size:13px; font-weight:650; }
+#articleView .pa-inline-format,#articleView .pa-subtitle-bar { align-items:center; gap:6px 10px; }
+#articleView .pa-subtitle-bar { background:var(--bg-inner); }
+#articleView .pa-inline-field { display:inline-flex; align-items:center; gap:5px; color:var(--text-muted); font-size:11px; white-space:nowrap; }
+#articleView .pa-inline-field input,#articleView .pa-subtitle-bar select { height:30px; padding:3px 5px; border:1px solid var(--border-highlight); border-radius:6px; background:var(--bg-input); color:var(--text-main); font-size:12px; }
+#articleView .pa-inline-field input[type=number] { width:54px; }
+#articleView .pa-inline-field input[type=color] { width:34px; padding:2px 3px; cursor:pointer; }
+#articleView .pa-componentbar :is(input,select):disabled { opacity:.45; cursor:not-allowed; }
+#articleView .pa-componentbar .pa-color-swatch { width:24px; min-height:24px; padding:0; border-color:#cf2435; background:#cf2435; }
+#articleView .pa-componentbar .pa-color-swatch:hover { border-color:var(--text-main); }
+#articleView .pa-subtitle-bar .pa-inline-caption { color:var(--text-main); font-size:11px; }
+#articleView .pa-format-feedback { margin:0; padding:7px 16px; color:var(--text-muted); border-bottom:1px solid var(--border-color); font-size:11px; line-height:1.5; }
+#articleView .pa-format-feedback.is-error { color:var(--accent-red); }
+@media(max-width:680px) { #articleView .pa-inline-field input,#articleView .pa-subtitle-bar select { font-size:16px; } }
+#articleView #pa-input { display:block; resize:vertical; width:100%; height:570px; min-height:300px; padding:22px 23px; border:0; border-radius:0; background:var(--bg-panel); color:var(--text-main); font-size:14px; line-height:1.95; outline-offset:-3px; tab-size:2; }
+#articleView #pa-input::placeholder { color:var(--text-muted); }
+#articleView .pa-edit-footer { display:flex; justify-content:space-between; gap:12px; padding:12px 20px; color:var(--text-muted); font-size:10px; border-top:1px solid var(--border-color); line-height:1.7; }
+#articleView .pa-help { padding:0 20px 17px; color:var(--text-muted); font-size:11px; line-height:1.9; }
+#articleView .pa-help summary { cursor:pointer; }
+#articleView .pa-help p { margin:10px 0 0; }
+#articleView .pa-current-theme { font-size:10px; color:var(--text-muted); max-width:48%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+#articleView .pa-preview-options { display:flex; flex-wrap:wrap; gap:10px 15px; align-items:center; padding:11px 18px; border-top:1px solid var(--border-color); border-bottom:1px solid var(--border-color); min-height:51px; background:var(--bg-inner); font-size:10px; color:var(--text-muted); }
+#articleView .pa-preview-options label { display:flex; align-items:center; gap:5px; }
+#articleView select { padding:3px; border:1px solid var(--border-color); border-radius:5px; background:var(--bg-input); color:var(--text-main); font-size:10px; height:28px; }
+#articleView .pa-width-control { margin-left:auto; white-space:nowrap; }
+#articleView .pa-width-control input { accent-color:var(--accent-red); }
+#articleView .pa-preview-scroll { height:610px; overflow:auto; padding:24px 16px 36px; background-color:var(--ui-preview-bg); background-image:radial-gradient(var(--ui-preview-dot) 1px,transparent 1px); background-size:18px 18px; }
+#articleView .pa-paper { width:100%; margin:0 auto; min-height:480px; background:#fff; color:#333; box-shadow:0 6px 24px #00000014; transition:max-width .2s; overflow-wrap:anywhere; }
+#articleView .pa-paper.is-mobile { max-width:375px; }
+#articleView .pa-paper img { max-width:100%; height:auto; }
+#articleView .pa-paper :where(p,h1,h2,h3,h4,h5,h6,ul,ol,blockquote,pre,table) { margin:0; }
+#articleView .pa-paper :where(ul) { list-style-type:disc; }
+#articleView .pa-paper :where(ol) { list-style-type:decimal; }
+#articleView .pa-preview-note { margin:0; padding:12px 18px; color:var(--text-muted); font-size:10px; line-height:1.8; border-top:1px solid var(--border-color); }
+#articleView .pa-footnote { display:flex; gap:10px; justify-content:space-between; flex-wrap:wrap; margin:16px 2px 0; color:var(--text-muted); font-size:10px; line-height:1.8; }
+#articleView .pa-footnote a { color:inherit; text-underline-offset:3px; }
+#articleView .pa-status { font-size:12px; line-height:1.8; margin:14px 0 0; color:var(--ui-live-text); min-height:0; }
+#articleView .pa-status:empty { display:none; }
+#articleView .pa-status.is-error { color:var(--accent-red); }
+#articleView .pa-load { border:1px solid var(--border-color); border-radius:14px; background:var(--bg-panel); padding:40px 22px; color:var(--text-muted); font-size:13px; margin-bottom:12px; }
+#articleView .pa-sr { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; }
+#articleView .pa-dialog { width:min(620px,calc(100vw - 24px)); max-height:85vh; padding:25px; margin:auto; border:1px solid var(--border-highlight); border-radius:18px; background:var(--bg-panel); color:var(--text-main); box-shadow:0 24px 90px #0006; }
+#articleView .pa-dialog::backdrop { background:#0009; backdrop-filter:blur(4px); }
+#articleView .pa-dialog-heading { display:flex; justify-content:space-between; align-items:center; gap:20px; margin-bottom:20px; }
+#articleView .pa-dialog h2 { font-size:18px; }
+#articleView .pa-close { border:1px solid var(--border-color); border-radius:50%; color:var(--text-main); background:var(--bg-inner); font-size:22px; width:32px; height:32px; line-height:1; }
+#articleView .pa-dialog p { font-size:12px; line-height:1.9; color:var(--text-muted); margin:10px 0 18px; }
+#articleView .pa-dialog .pa-btn { margin:0 8px 10px 0; }
+#articleView .pa-component-form { display:grid; grid-template-columns:repeat(auto-fit,minmax(135px,1fr)); gap:14px; }
+#articleView .pa-component-form label { display:grid; gap:7px; align-content:start; color:var(--text-main); font-size:12px; }
+#articleView .pa-component-form label[hidden] { display:none; }
+#articleView .pa-component-form input,#articleView .pa-component-form select { width:100%; min-width:0; height:39px; padding:7px 9px; border:1px solid var(--border-color); border-radius:7px; background:var(--bg-input); color:var(--text-main); font-size:14px; }
+#articleView .pa-component-form input[type=color] { padding:3px 6px; }
+#articleView .pa-component-form .pa-field-wide,#articleView .pa-component-actions { grid-column:1/-1; }
+#articleView .pa-component-actions { display:flex; flex-wrap:wrap; justify-content:flex-end; }
+#articleView .pa-component-actions .pa-btn { margin:3px 0 0 8px; }
+#articleView .pa-component-form .pa-form-error { margin:0; color:var(--accent-red); }
+#articleView .pa-component-form .pa-form-error:empty { display:none; }
+@media(max-width:680px) { #articleView .pa-component-form input,#articleView .pa-component-form select { font-size:16px; } }
+#articleView .pa-history-item { display:block; width:100%; text-align:left; margin:0 0 10px; padding:14px 15px; border:1px solid var(--border-color); border-radius:10px; background:var(--bg-input); color:var(--text-main); }
+#articleView .pa-history-item strong { display:block; margin-bottom:6px; font-size:13px; }
+#articleView .pa-history-item small { color:var(--text-muted); font-size:10px; }
+#articleView .pa-download-link { color:var(--text-main); text-underline-offset:3px; font-size:13px; }
+@media(max-width:1250px) { .theme-toolbar { flex-wrap:wrap; } .theme-toolbar .login-workspace-actions { margin-left:auto; } .site-tool-nav { order:3; flex:0 0 100%; } #articleView .pa-layout { grid-template-columns:170px minmax(250px,1fr) minmax(320px,1fr);gap:12px; } #articleView .pa-panel-heading { padding:18px 15px; } }
+@media(max-width:1000px) { #articleView .pa-layout { grid-template-columns:minmax(0,1fr) minmax(0,1fr); } #articleView .pa-templates { grid-column:1/-1; display:grid; grid-template-columns:180px minmax(0,1fr); } #articleView .pa-templates .pa-panel-heading { grid-column:1; padding-bottom:5px; } #articleView .pa-search { grid-column:1; grid-row:2; } #articleView .pa-template-list { grid-column:2; grid-row:1/4; display:flex; overflow:auto; padding:12px; gap:10px; } #articleView .pa-template-card { flex:0 0 140px; } #articleView .pa-template-foot { grid-column:1; border:0; padding-top:0; } #articleView .pa-template-foot p { display:none; } #articleView .pa-template-foot .pa-btn { padding:6px; min-height:30px; font-size:10px; } #articleView .pa-width-control { margin-left:0; } }
+@media(max-width:680px) { .site-tool-nav { overflow:auto; padding:4px 2px; } .site-tool-button { flex:0 0 auto; } #articleView h1 { font-size:23px; } #articleView .pa-heading-row { margin:0 0 20px; gap:15px; } #articleView .pa-heading-actions { width:100%; } #articleView .pa-heading-actions .pa-primary { margin-left:auto; } #articleView .pa-layout { display:flex; flex-direction:column; gap:16px; } #articleView .pa-panel { width:100%; border-radius:14px; } #articleView .pa-templates { display:grid; grid-template-columns:120px minmax(0,1fr); } #articleView .pa-search { margin:0 12px 10px; } #articleView .pa-search input { padding:7px; } #articleView .pa-template-foot { padding:0 12px 10px; } #articleView .pa-template-card { flex-basis:128px; } #articleView .pa-template-list { max-height:170px; } #articleView #pa-input { height:320px; padding:18px; font-size:16px; } #articleView .pa-preview-scroll { height:600px; padding:16px 10px 24px; } #articleView .pa-footnote { font-size:10px; } }
+@media(prefers-reduced-motion:reduce) { #articleView * { transition:none!important; animation:none!important; } }
+
 </style>
 <!-- Cropper.js 1.6.2 — https://github.com/fengyuanchen/cropperjs
 The MIT License (MIT)
@@ -783,6 +898,9 @@ THE SOFTWARE.
   </button>
   <button type="button" class="site-tool-button" id="watermarkToolTab" aria-controls="watermarkView" onclick="selectSiteTool('watermark',true)">
     <span class="tool-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2.5" y="3" width="19" height="18" rx="5"></rect><path d="m6 15 3-7 3 7M7.1 12.5h3.8M16 8v7M3 21 21 3"></path></svg></span><span class="tool-nav-label">AI 图像水印去除工具</span>
+  </button>
+  <button type="button" class="site-tool-button" id="articleToolTab" aria-controls="articleView" onclick="selectSiteTool('article',true)">
+    <span class="tool-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="15" height="18" rx="2.5"></rect><path d="M9 3v18M3 7h4M3 12h4M3 17h4M12.5 8h4M12.5 12h4"></path></svg></span><span class="tool-nav-label">公众号排版工具</span>
   </button>
 </nav>
 
@@ -1055,7 +1173,63 @@ THE SOFTWARE.
 
 
 </main>
-  <footer class="workspace-footer"><span>优悦教育 · 工牌生成工作台</span><span>版本 2026.11.02 · 双工具工作台版</span><span><a href="assets/licenses/THIRD_PARTY_NOTICES.txt" style="color:inherit">开源组件说明</a></span></footer>
+<section id="articleView" class="article-workspace" aria-labelledby="pa-heading" hidden>
+  <header class="pa-heading-row">
+    <div><span class="pa-eyebrow">ARTICLE STUDIO</span><h1 id="pa-heading">公众号排版工具</h1><p>写好内容，选个模板，让每一篇分享都有好排版。</p></div>
+    <div class="pa-heading-actions"><button type="button" id="pa-history" class="pa-btn">草稿箱</button><button type="button" id="pa-export" class="pa-btn">导出文章</button><button type="button" id="pa-copy" class="pa-btn pa-primary" disabled>复制到公众号 <span aria-hidden="true">↗</span></button></div>
+  </header>
+  <div id="pa-loading" class="pa-load" role="status">正在准备排版工具…</div>
+  <button id="pa-retry" class="pa-btn" type="button" hidden>重新加载排版工具</button>
+  <div id="pa-ready" hidden>
+    <div class="pa-layout">
+      <aside class="pa-templates pa-panel" aria-label="排版模板">
+        <div class="pa-panel-heading"><h2>排版模板</h2><span id="pa-template-count" class="pa-count"></span></div>
+        <label class="pa-search"><span class="pa-sr">搜索模板</span><input id="pa-search" type="search" placeholder="搜索模板名称" autocomplete="off"></label>
+        <div id="pa-template-list" class="pa-template-list"></div>
+        <div class="pa-template-foot"><button type="button" id="pa-import-template" class="pa-btn">＋ 导入模板</button><button type="button" id="pa-export-template" class="pa-text-button">导出当前模板</button><p>后续设计好的模板文件，可以直接导入使用。</p></div>
+      </aside>
+      <section class="pa-editor pa-panel" aria-label="文章编辑">
+        <div class="pa-panel-heading"><h2>文章内容</h2><div><button type="button" id="pa-import" class="pa-text-button">导入文章</button><button type="button" id="pa-save" class="pa-text-button">保存草稿</button></div></div>
+        <div class="pa-formatbar" role="toolbar" aria-label="快捷插入排版格式">
+          <button type="button" data-pa-format="h1" title="文章标题">H1</button><button type="button" data-pa-format="h2" title="小标题">H2</button><button type="button" data-pa-format="bold" title="加粗"><b>B</b></button><button type="button" data-pa-format="quote" title="引用">❞</button><button type="button" data-pa-format="list" title="列表">☷</button><button type="button" data-pa-format="link" title="插入链接">链接</button><button type="button" id="pa-image">图片</button><button type="button" data-pa-format="hr" title="分隔线">—</button>
+        </div>
+        <div class="pa-componentbar pa-inline-format" role="group" aria-label="选中文字的样式">
+          <label class="pa-inline-field" title="选中文字后调整字号">字号 <input type="number" id="pa-text-size" min="10" max="72" step="1" placeholder="默认" aria-label="选中文字字号（px）" disabled></label>
+          <label class="pa-inline-field">字色 <input type="color" id="pa-text-color" value="#cf2435" aria-label="选中文字颜色" disabled></label>
+          <button type="button" class="pa-color-swatch" id="pa-text-red" aria-label="文字设为优悦红" title="优悦红" disabled></button>
+          <button type="button" id="pa-text-clear" title="恢复选中文字的模板字号和颜色" disabled>清除样式</button>
+          <button type="button" id="pa-gallery"><span aria-hidden="true">⇆</span>滑动图组</button>
+        </div>
+        <div class="pa-componentbar pa-subtitle-bar" role="group" aria-label="副标题框设置">
+          <span class="pa-inline-caption">副标题框</span>
+          <label class="pa-inline-field">字号 <input type="number" id="pa-subtitle-size" min="12" max="64" step="1" aria-label="副标题字号（px）" disabled></label>
+          <label class="pa-inline-field">宽度 <input type="number" id="pa-subtitle-width" min="20" max="100" step="1" aria-label="副标题宽度（%）" disabled> %</label>
+          <label class="pa-inline-field">上下留白 <input type="number" id="pa-subtitle-padding-y" min="0" max="40" step="1" aria-label="副标题上下留白（px）" disabled></label>
+          <label class="pa-inline-field">左右留白 <input type="number" id="pa-subtitle-padding-x" min="0" max="56" step="1" aria-label="副标题左右留白（px）" disabled></label>
+          <select id="pa-subtitle-align" aria-label="副标题框位置" disabled><option value="left">靠左</option><option value="center">居中</option><option value="right">靠右</option></select>
+        </div>
+        <p id="pa-format-feedback" class="pa-format-feedback" role="status" aria-live="polite">选中文字调字号和颜色。光标放进小标题可调副标题框。</p>
+        <label for="pa-input" class="pa-sr">文章内容（支持 Markdown 或粘贴 Word、飞书等富文本）</label>
+        <textarea id="pa-input" spellcheck="false" placeholder="把文章写在这里，或粘贴 Word、飞书、Notion 的内容…"></textarea>
+        <div class="pa-edit-footer"><span id="pa-count">0 字</span><span id="pa-save-state" role="status">草稿仅保存在当前浏览器</span></div>
+        <details class="pa-help"><summary>查看编辑用法</summary><p>选中文字后直接用上方的字号和字色控件。把光标放进小标题，可调整副标题框。把光标放进图组标记，再点「滑动图组」可修改方向和尺寸。<br><code># 大标题</code> · <code>## 小标题</code> · <code>**重点文字**</code><br>图片可上传、拖入或粘贴。</p></details>
+      </section>
+      <section class="pa-preview pa-panel" aria-label="排版实时预览">
+        <div class="pa-panel-heading"><h2>实时预览</h2><span id="pa-active-theme" class="pa-current-theme"></span></div>
+        <div class="pa-preview-options"><label>正文 <select id="pa-size" aria-label="正文字号"><option value="">模板默认</option value="14">14 px</option><option value="15">15 px</option><option value="16">16 px</option><option value="17">17 px</option><option value="18">18 px</option></select></label><label>行距 <select id="pa-line" aria-label="正文行距"><option value="">模板默认</option><option value="1.6">1.6</option><option value="1.8">1.8</option><option value="2">2.0</option><option value="2.2">2.2</option></select></label><label class="pa-width-control"><input type="checkbox" id="pa-mobile">手机宽度</label></div>
+        <div class="pa-preview-scroll"><article id="pa-paper" class="pa-paper" aria-label="排版后的文章"></article></div>
+        <p class="pa-preview-note">复制后粘贴到公众号正文，再用手机预览核对图片和滑动效果。</p>
+      </section>
+    </div>
+    <p class="pa-status" id="pa-status" role="status" aria-live="polite"></p>
+    <footer class="pa-footnote">文章和模板保存在当前浏览器，可导出备份或分享。<a href="https://github.com/alchaincyf/huasheng_editor" target="_blank" rel="noopener noreferrer">样式基于花生排版器 · MIT</a></footer>
+  </div>
+  <input id="pa-file" type="file" accept=".md,.markdown,.txt,.html,.htm,.json" hidden>
+  <input id="pa-template-file" type="file" accept=".json,application/json" hidden>
+  <input id="pa-image-file" type="file" accept="image/png,image/jpeg,image/webp,image/gif" multiple hidden>
+  <dialog id="pa-dialog" class="pa-dialog" aria-labelledby="pa-dialog-title"><div class="pa-dialog-heading"><h2 id="pa-dialog-title"></h2><button type="button" id="pa-dialog-close" class="pa-close" aria-label="关闭窗口">×</button></div><div id="pa-dialog-body"></div></dialog>
+</section>
+  <footer class="workspace-footer"><span>优悦教育 · 工牌生成工作台</span><span>版本 2026.11.03 · 公众号排版工具栏版</span><span><a href="assets/licenses/THIRD_PARTY_NOTICES.txt" style="color:inherit">开源组件说明</a></span></footer>
 </div>
 <dialog id="cropDialog" class="crop-dialog" aria-labelledby="cropTitle" aria-describedby="cropHelp">
     <div class="crop-heading"><h2 id="cropTitle">裁切二维码图片</h2><button type="button" class="chip-btn" onclick="cancelQrCrop()" aria-label="关闭裁切窗口">关闭</button></div>
@@ -2282,8 +2456,15 @@ function initializeLoginGate(){
 
 
 window.WATERMARK_MODULE_BASE='assets/watermark/';
+window.ARTICLE_MODULE_BASE='assets/article/';
 /* Shared chrome; both editors stay mounted so switching preserves their state. */
 var currentSiteTool='visual',watermarkModule=null,watermarkModulePromise=null;
+var articleModule=null,articleModulePromise=null;
+function loadArticleTool(){
+  if(articleModule)return Promise.resolve(articleModule);
+  if(!articleModulePromise)articleModulePromise=import(new URL((window.ARTICLE_MODULE_BASE||'assets/article/')+'app.js?v=20261103-4',document.baseURI).href).then(function(module){articleModule=module;return module;}).catch(function(error){articleModulePromise=null;throw error;});
+  return articleModulePromise;
+}
 async function loadWatermarkTool(){
   if(watermarkModule)return watermarkModule;
   if(!watermarkModulePromise){
@@ -2299,22 +2480,28 @@ function flashSiteTool(button){
 }
 function selectSiteTool(key,fromClick){
   if(document.documentElement.dataset.loginState!=='unlocked')return;
-  key=key==='watermark'?'watermark':'visual';
+  key=['visual','watermark','article'].includes(key)?key:'visual';
   currentSiteTool=key;
   document.getElementById('visualView').hidden=key!=='visual';
   document.getElementById('watermarkView').hidden=key!=='watermark';
-  ['visual','watermark'].forEach(function(value){
+  document.getElementById('articleView').hidden=key!=='article';
+  ['visual','watermark','article'].forEach(function(value){
     var button=document.getElementById(value+'ToolTab');
     if(value===key)button.setAttribute('aria-current','page');else button.removeAttribute('aria-current');
   });
-  document.title=key==='watermark'?'AI 图像水印去除 · 优悦教育':'优悦教育 · 设计素材生成网站';
+  document.title=key==='watermark'?'AI 图像水印去除 · 优悦教育':key==='article'?'公众号排版 · 优悦教育':'优悦教育 · 设计素材生成网站';
   if(fromClick){
     flashSiteTool(document.getElementById(key+'ToolTab'));
-    var hash=key==='watermark'?'#watermark':'#visual';
+    var hash='#'+key;
     if(location.hash!==hash)history.pushState(null,'',hash);
   }
+  if(key!=='watermark'&&watermarkModule)watermarkModule.suspend();
+  if(key!=='article'&&articleModule)articleModule.suspend();
+  if(key==='article'){
+    loadArticleTool().then(function(module){if(currentSiteTool==='article')return module.activate();}).catch(function(error){document.getElementById('pa-loading').textContent='排版工具未能加载，请重试。'+(error.message||'');document.getElementById('pa-retry').hidden=false;});
+    return;
+  }
   if(key==='visual'){
-    if(watermarkModule)watermarkModule.suspend();
     requestAnimationFrame(function(){if(typeof scheduleWorkflowLinks==='function')scheduleWorkflowLinks();});
     return;
   }
@@ -2326,10 +2513,11 @@ function selectSiteTool(key,fromClick){
     });
 }
 function initializeSiteTools(){
-  function route(){selectSiteTool(location.hash==='#watermark'?'watermark':'visual',false);}
+  function route(){selectSiteTool(location.hash.slice(1),false);}
+  document.getElementById('pa-retry').onclick=function(){selectSiteTool('article',false);};
   window.addEventListener('hashchange',route);window.addEventListener('popstate',route);route();
 }
-function disposeSiteTools(){if(watermarkModule)watermarkModule.dispose();}
+function disposeSiteTools(){if(watermarkModule)watermarkModule.dispose();if(articleModule)articleModule.dispose();}
 
     function initializeBadgeApp() {
       initializeTheme();
