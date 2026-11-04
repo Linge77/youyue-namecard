@@ -590,10 +590,41 @@ async function initialize() {
   renderTemplates();render();bind();initialized=true;
   $('loading').hidden=true;$('retry').hidden=true;$('ready').hidden=false;
 }
-export async function activate() {
+async function activateArticle() {
   if(initialized)return;
   if(!initPromise)initPromise=initialize().catch(e=>{initPromise=null;$('loading').hidden=false;$('loading').textContent=e.name==='AbortError'?'排版资源加载超时，请重试。':e.message;$('retry').hidden=false;throw e;});
   return initPromise;
+}
+let currentMediaWorkspace = 'article';
+let mediaTabsBound = false;
+let coverModulePromise;
+
+function selectMediaWorkspace(workspace) {
+  const showCover = workspace === 'cover';
+  currentMediaWorkspace = workspace;
+  $('article-panel').hidden = showCover;
+  $('cover-panel').hidden = !showCover;
+  $('article-tab').setAttribute('aria-pressed', String(!showCover));
+  $('cover-tab').setAttribute('aria-pressed', String(showCover));
+  if (!showCover) return activateArticle();
+  if (!coverModulePromise) {
+    coverModulePromise = import('./cover.js?v=20261104-2').catch(error => {
+      coverModulePromise = undefined;
+      throw error;
+    });
+  }
+  return coverModulePromise.then(module => module.activateCover()).catch(error => {
+    $('cover-status').textContent = error.message || '封面素材加载失败，请再次点击「图文封面生成」重试。';
+  });
+}
+
+export function activate() {
+  if (!mediaTabsBound) {
+    $('article-tab').onclick = () => selectMediaWorkspace('article').catch(() => {});
+    $('cover-tab').onclick = () => selectMediaWorkspace('cover');
+    mediaTabsBound = true;
+  }
+  return selectMediaWorkspace(currentMediaWorkspace);
 }
 export function suspend(){if(initialized){render();saveCurrent();if($('dialog').open)$('dialog').close();}}
 export function dispose(){if(initialized)saveCurrent();if(downloadURL)URL.revokeObjectURL(downloadURL);}

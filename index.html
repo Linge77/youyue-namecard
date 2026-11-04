@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="namecard-version" content="2026.11.03.4">
+<meta name="namecard-version" content="2026.11.04.2">
 <meta name="description" content="优悦教育设计素材生成网站，支持二维码裁切、排版调整与版式切换。">
 <title>优悦教育 · 设计素材生成网站</title>
 <style id="coreStyle">:root {
@@ -701,6 +701,26 @@ html[data-login-state='locked'] body{padding:0;background:#fff2ef;}
 #articleView h1 { font-size:27px; letter-spacing:-.6px; margin:9px 0; line-height:1.4; }
 #articleView .pa-heading-row p { color:var(--text-muted); font-size:12px; line-height:1.8; margin:0; }
 #articleView .pa-heading-actions { display:flex; flex-wrap:wrap; gap:9px; }
+#articleView .pa-media-nav { display:flex; flex-wrap:wrap; gap:8px; padding-bottom:18px; margin-bottom:16px; border-bottom:1px solid var(--border-color); }
+#articleView .pa-media-nav .pa-btn[aria-pressed="true"] { border-color:var(--accent-red); background:var(--bg-inner); }
+#articleView #pa-article-panel .pa-heading-row { margin:0 0 18px; }
+#articleView h2.pa-tool-heading { font-size:18px; }
+#articleView .pa-cover-grid { display:grid; grid-template-columns:minmax(235px,300px) minmax(0,1fr); gap:18px; align-items:start; }
+#articleView .pa-cover-fields { display:grid; gap:9px; padding:0 20px 18px; font-size:12px; }
+#articleView .pa-cover-fields input { display:block; min-width:0; width:100%; border:1px solid var(--border-color); border-radius:8px; background:var(--bg-input); color:var(--text-main); padding:10px; font-size:16px; }
+#articleView .pa-cover-short { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin-top:4px; }
+#articleView .pa-cover-short input { margin-top:7px; }
+#articleView .pa-cover-size { display:flex; gap:6px; align-items:center; white-space:nowrap; color:var(--text-muted); }
+#articleView .pa-cover-size input { width:66px; min-width:0; height:32px; margin:0; padding:4px 6px; }
+#articleView .pa-cover-short .pa-cover-size input { flex:1 1 50px; max-width:72px; }
+#articleView .pa-cover-save { color:var(--text-muted); }
+#articleView .pa-cover-save summary { cursor:pointer; }
+#articleView .pa-cover-save img { display:block; width:100%; height:auto; margin-top:8px; }
+#articleView .pa-cover-fields p { margin:3px 0; color:var(--text-muted); line-height:1.6; }
+#articleView .pa-cover-fields p:empty { display:none; }
+#articleView .pa-cover-stage { padding:clamp(10px,2vw,28px); background:var(--ui-preview-bg); }
+#articleView .pa-cover-stage canvas { width:100%; height:auto; display:block; border-radius:5px; background:var(--bg-inner); }
+@media(max-width:760px) { #articleView .pa-cover-grid { grid-template-columns:minmax(0,1fr); } }
 #articleView .pa-btn { display:inline-flex; align-items:center; justify-content:center; gap:12px; padding:10px 15px; min-height:40px; border:1px solid var(--border-highlight); border-radius:10px; background:var(--bg-panel); color:var(--text-main); font-size:12px; line-height:1.6; }
 #articleView .pa-btn:hover { border-color:var(--text-muted); background:var(--bg-inner); }
 #articleView .pa-primary { border-color:transparent; background:linear-gradient(120deg,#df0718,#ff353b); color:white; box-shadow:0 5px 18px #d70c1822; }
@@ -804,6 +824,73 @@ html[data-login-state='locked'] body{padding:0;background:#fff2ef;}
 @media(max-width:680px) { .site-tool-nav { overflow:auto; padding:4px 2px; } .site-tool-button { flex:0 0 auto; } #articleView h1 { font-size:23px; } #articleView .pa-heading-row { margin:0 0 20px; gap:15px; } #articleView .pa-heading-actions { width:100%; } #articleView .pa-heading-actions .pa-primary { margin-left:auto; } #articleView .pa-layout { display:flex; flex-direction:column; gap:16px; } #articleView .pa-panel { width:100%; border-radius:14px; } #articleView .pa-templates { display:grid; grid-template-columns:120px minmax(0,1fr); } #articleView .pa-search { margin:0 12px 10px; } #articleView .pa-search input { padding:7px; } #articleView .pa-template-foot { padding:0 12px 10px; } #articleView .pa-template-card { flex-basis:128px; } #articleView .pa-template-list { max-height:170px; } #articleView #pa-input { height:320px; padding:18px; font-size:16px; } #articleView .pa-preview-scroll { height:600px; padding:16px 10px 24px; } #articleView .pa-footnote { font-size:10px; } }
 @media(prefers-reduced-motion:reduce) { #articleView * { transition:none!important; animation:none!important; } }
 
+#mediaGateDialog {
+  box-sizing:border-box;
+  width:min(420px,calc(100% - 28px));
+  max-height:calc(100vh - 28px);
+  max-height:calc(100dvh - 28px);
+  margin:auto;
+  padding:25px;
+  border:1px solid var(--border-highlight);
+  border-radius:20px;
+  background:var(--bg-panel);
+  color:var(--text-main);
+  box-shadow:var(--ui-panel-shadow);
+}
+#mediaGateDialog::backdrop { background:#08080bb0; }
+#mediaGateDialog .media-gate-icon {
+  display:grid;
+  place-items:center;
+  width:43px;
+  height:43px;
+  margin-bottom:14px;
+  border-radius:11px;
+  background:var(--bg-inner);
+  color:var(--accent-red);
+}
+#mediaGateDialog .media-gate-icon svg {
+  width:23px;
+  height:23px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.7;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+#mediaGateDialog h2 { margin:0 0 6px; font-size:21px; line-height:1.4; }
+#mediaGateDescription { margin:0 0 20px; color:var(--text-muted); font-size:13px; line-height:1.6; }
+#mediaGateDialog label { display:block; margin-bottom:7px; font-size:13px; font-weight:600; }
+#mediaGatePassword {
+  box-sizing:border-box;
+  width:100%;
+  min-height:43px;
+  padding:9px 12px;
+  border:1px solid var(--border-highlight);
+  border-radius:8px;
+  background:var(--bg-input);
+  color:var(--text-main);
+  font:inherit;
+  font-size:16px;
+}
+#mediaGatePassword[aria-invalid="true"] { border-color:var(--accent-red); }
+#mediaGateError { min-height:19px; margin:6px 0 10px; color:var(--accent-red); font-size:12px; line-height:1.55; }
+#mediaGateDialog .media-gate-actions { display:flex; justify-content:flex-end; gap:8px; }
+#mediaGateDialog button {
+  min-height:41px;
+  padding:9px 15px;
+  border:1px solid var(--border-highlight);
+  border-radius:8px;
+  background:var(--bg-inner);
+  color:var(--text-main);
+  font:inherit;
+  font-size:13px;
+  font-weight:600;
+  cursor:pointer;
+}
+#mediaGateDialog #mediaGateSubmit { border-color:transparent; background:#d51b2a; color:#fff; }
+#mediaGateDialog button:disabled { opacity:.55; cursor:wait; }
+#mediaGateDialog :is(input,button):focus-visible { outline:2px solid var(--ui-focus-ring); outline-offset:2px; }
+
 </style>
 <!-- Cropper.js 1.6.2 — https://github.com/fengyuanchen/cropperjs
 The MIT License (MIT)
@@ -900,9 +987,25 @@ THE SOFTWARE.
     <span class="tool-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2.5" y="3" width="19" height="18" rx="5"></rect><path d="m6 15 3-7 3 7M7.1 12.5h3.8M16 8v7M3 21 21 3"></path></svg></span><span class="tool-nav-label">AI 图像水印去除工具</span>
   </button>
   <button type="button" class="site-tool-button" id="articleToolTab" aria-controls="articleView" onclick="selectSiteTool('article',true)">
-    <span class="tool-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="15" height="18" rx="2.5"></rect><path d="M9 3v18M3 7h4M3 12h4M3 17h4M12.5 8h4M12.5 12h4"></path></svg></span><span class="tool-nav-label">公众号排版工具</span>
+    <span class="tool-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="15" height="18" rx="2.5"></rect><path d="M9 3v18M3 7h4M3 12h4M3 17h4M12.5 8h4M12.5 12h4"></path></svg></span><span class="tool-nav-label">新媒体端小工具</span>
   </button>
 </nav>
+<dialog id="mediaGateDialog" aria-labelledby="mediaGateTitle" aria-describedby="mediaGateDescription">
+  <div class="media-gate-icon" aria-hidden="true">
+    <svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="11" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 5v2"></path></svg>
+  </div>
+  <h2 id="mediaGateTitle">新媒体端小工具</h2>
+  <p id="mediaGateDescription">输入访问密码，进入公众号排版和封面生成。</p>
+  <form id="mediaGateForm">
+    <label for="mediaGatePassword">访问密码</label>
+    <input id="mediaGatePassword" type="password" autocomplete="off" spellcheck="false" autocapitalize="off" placeholder="请输入访问密码" aria-describedby="mediaGateError" required autofocus>
+    <p id="mediaGateError" role="alert"></p>
+    <div class="media-gate-actions">
+      <button type="button" id="mediaGateCancel">取消</button>
+      <button type="submit" id="mediaGateSubmit">进入工具</button>
+    </div>
+  </form>
+</dialog>
 
   <div class="login-workspace-actions"><span class="login-account">youyuejiaoyu</span><button type="button" class="theme-toggle" id="themeToggle" aria-pressed="true" aria-label="当前为夜间模式，切换到日间模式" onclick="toggleTheme()">
     <span class="theme-toggle-icon" id="themeToggleIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20.2 14.2A8.5 8.5 0 0 1 9.8 3.8a8.5 8.5 0 1 0 10.4 10.4Z"></path></svg></span>
@@ -1175,7 +1278,15 @@ THE SOFTWARE.
 </main>
 <section id="articleView" class="article-workspace" aria-labelledby="pa-heading" hidden>
   <header class="pa-heading-row">
-    <div><span class="pa-eyebrow">ARTICLE STUDIO</span><h1 id="pa-heading">公众号排版工具</h1><p>写好内容，选个模板，让每一篇分享都有好排版。</p></div>
+    <div><span class="pa-eyebrow">MEDIA STUDIO</span><h1 id="pa-heading">新媒体端小工具</h1><p>排版公众号文章，制作配套图文封面。</p></div>
+  </header>
+  <nav class="pa-media-nav" aria-label="新媒体工具">
+    <button type="button" class="pa-btn" id="pa-article-tab" aria-controls="pa-article-panel" aria-pressed="true">公众号排版</button>
+    <button type="button" class="pa-btn" id="pa-cover-tab" aria-controls="pa-cover-panel" aria-pressed="false">图文封面生成</button>
+  </nav>
+  <section id="pa-article-panel" aria-labelledby="pa-article-heading">
+  <header class="pa-heading-row">
+    <h2 id="pa-article-heading" class="pa-tool-heading">公众号排版</h2>
     <div class="pa-heading-actions"><button type="button" id="pa-history" class="pa-btn">草稿箱</button><button type="button" id="pa-export" class="pa-btn">导出文章</button><button type="button" id="pa-copy" class="pa-btn pa-primary" disabled>复制到公众号 <span aria-hidden="true">↗</span></button></div>
   </header>
   <div id="pa-loading" class="pa-load" role="status">正在准备排版工具…</div>
@@ -1228,8 +1339,39 @@ THE SOFTWARE.
   <input id="pa-template-file" type="file" accept=".json,application/json" hidden>
   <input id="pa-image-file" type="file" accept="image/png,image/jpeg,image/webp,image/gif" multiple hidden>
   <dialog id="pa-dialog" class="pa-dialog" aria-labelledby="pa-dialog-title"><div class="pa-dialog-heading"><h2 id="pa-dialog-title"></h2><button type="button" id="pa-dialog-close" class="pa-close" aria-label="关闭窗口">×</button></div><div id="pa-dialog-body"></div></dialog>
+  </section>
+  <section id="pa-cover-panel" aria-labelledby="pa-cover-heading" hidden>
+    <div class="pa-cover-grid">
+      <section class="pa-panel pa-cover-controls">
+        <div class="pa-panel-heading"><h2 id="pa-cover-heading">封面文案</h2><button type="button" id="pa-cover-reset" class="pa-text-button">恢复示例</button></div>
+        <div class="pa-cover-fields">
+          <label for="pa-cover-title">左侧主标题</label>
+          <input type="text" id="pa-cover-title" value="少科院2+4调整" maxlength="30" autocomplete="off">
+          <label class="pa-cover-size" for="pa-cover-title-size">主标题字号<input type="number" id="pa-cover-title-size" min="12" max="180" step="1" placeholder="自动" aria-label="左侧主标题字号（px）"><span>px</span></label>
+          <div class="pa-cover-short">
+            <label for="pa-cover-short-top">右侧第一行<input type="text" id="pa-cover-short-top" value="2+4" maxlength="10" autocomplete="off"></label>
+            <label for="pa-cover-short-bottom">右侧第二行<input type="text" id="pa-cover-short-bottom" value="调整" maxlength="10" autocomplete="off"></label>
+            <label class="pa-cover-size" for="pa-cover-short-top-size">字号<input type="number" id="pa-cover-short-top-size" min="12" max="180" step="1" placeholder="自动" aria-label="右侧第一行字号（px）"><span>px</span></label>
+            <label class="pa-cover-size" for="pa-cover-short-bottom-size">字号<input type="number" id="pa-cover-short-bottom-size" min="12" max="180" step="1" placeholder="自动" aria-label="右侧第二行字号（px）"><span>px</span></label>
+          </div>
+          <p>字号留空时自动计算。文字过长时会缩小以放入原版式。</p>
+          <button type="button" class="pa-btn pa-primary" id="pa-cover-download" disabled>下载封面 PNG</button>
+          <p id="pa-cover-status" role="status" aria-live="polite">正在准备封面素材…</p>
+          <details id="pa-cover-save-fallback" class="pa-cover-save" hidden>
+            <summary>查看已生成的 PNG</summary>
+            <p><a id="pa-cover-save-link" class="pa-download-link">保存 PNG 文件</a>，也可右键或长按下图保存。</p>
+            <img id="pa-cover-save-image" alt="可保存的封面 PNG">
+          </details>
+        </div>
+      </section>
+      <section class="pa-panel pa-cover-preview" aria-label="封面预览">
+        <div class="pa-panel-heading"><h2>实时预览</h2><span class="pa-count">1296 × 382 px</span></div>
+        <div class="pa-cover-stage"><canvas id="pa-cover-canvas" width="1296" height="382" role="img" aria-label="图文封面预览">当前浏览器无法预览封面。</canvas></div>
+      </section>
+    </div>
+  </section>
 </section>
-  <footer class="workspace-footer"><span>优悦教育 · 工牌生成工作台</span><span>版本 2026.11.03 · 公众号排版工具栏版</span><span><a href="assets/licenses/THIRD_PARTY_NOTICES.txt" style="color:inherit">开源组件说明</a></span></footer>
+  <footer class="workspace-footer"><span>优悦教育 · 工牌生成工作台</span><span>版本 2026.11.04 · 新媒体工具版</span><span><a href="assets/licenses/THIRD_PARTY_NOTICES.txt" style="color:inherit">开源组件说明</a></span></footer>
 </div>
 <dialog id="cropDialog" class="crop-dialog" aria-labelledby="cropTitle" aria-describedby="cropHelp">
     <div class="crop-heading"><h2 id="cropTitle">裁切二维码图片</h2><button type="button" class="chip-btn" onclick="cancelQrCrop()" aria-label="关闭裁切窗口">关闭</button></div>
@@ -2460,9 +2602,13 @@ window.ARTICLE_MODULE_BASE='assets/article/';
 /* Shared chrome; both editors stay mounted so switching preserves their state. */
 var currentSiteTool='visual',watermarkModule=null,watermarkModulePromise=null;
 var articleModule=null,articleModulePromise=null;
+// Lightweight GitHub Pages gate. A browser-side verifier cannot enforce private access.
+var MEDIA_GATE_KEY='youyue-media-unlock-v1';
+var MEDIA_GATE_HASH='5207e2660db14f72118a0d4d5f6721c2c4aa341b8a8c32eaa5315c35f31b1a00';
+var mediaGateUnlocked=false,mediaGateAttempt=0,mediaGateFromClick=false;
 function loadArticleTool(){
   if(articleModule)return Promise.resolve(articleModule);
-  if(!articleModulePromise)articleModulePromise=import(new URL((window.ARTICLE_MODULE_BASE||'assets/article/')+'app.js?v=20261103-4',document.baseURI).href).then(function(module){articleModule=module;return module;}).catch(function(error){articleModulePromise=null;throw error;});
+  if(!articleModulePromise)articleModulePromise=import(new URL((window.ARTICLE_MODULE_BASE||'assets/article/')+'app.js?v=20261104-2',document.baseURI).href).then(function(module){articleModule=module;return module;}).catch(function(error){articleModulePromise=null;throw error;});
   return articleModulePromise;
 }
 async function loadWatermarkTool(){
@@ -2478,9 +2624,89 @@ function flashSiteTool(button){
   button.classList.remove('nav-flash');void button.offsetWidth;button.classList.add('nav-flash');
   window.setTimeout(function(){button.classList.remove('nav-flash');},650);
 }
+function mediaGateSessionToken(){
+  return loginMemorySession ? loginMemorySession.issuedAt+':'+MEDIA_GATE_HASH.slice(0,16) : '';
+}
+function setMediaGateUnlocked(unlocked){
+  mediaGateUnlocked=unlocked;
+  var tab=document.getElementById('articleToolTab');
+  if(unlocked)tab.removeAttribute('aria-haspopup');
+  else tab.setAttribute('aria-haspopup','dialog');
+}
+function showMediaGate(fromClick){
+  var dialog=document.getElementById('mediaGateDialog');
+  mediaGateFromClick=mediaGateFromClick||fromClick;
+  if(dialog.open)return;
+  document.getElementById('mediaGatePassword').value='';
+  document.getElementById('mediaGatePassword').removeAttribute('aria-invalid');
+  document.getElementById('mediaGateError').textContent='';
+  document.getElementById('mediaGateSubmit').disabled=false;
+  dialog.showModal();
+  document.getElementById('mediaGatePassword').focus();
+}
+async function submitMediaGate(event){
+  event.preventDefault();
+  var dialog=document.getElementById('mediaGateDialog');
+  var input=document.getElementById('mediaGatePassword');
+  var submit=document.getElementById('mediaGateSubmit');
+  var errorLabel=document.getElementById('mediaGateError');
+  if(!dialog.open||submit.disabled||!input.value)return;
+  var attempt=++mediaGateAttempt;
+  var digestPending=loginPasswordDigest(input.value);
+  input.value='';
+  submit.disabled=true;
+  errorLabel.textContent='';
+  try{
+    var digest=await digestPending;
+    if(attempt!==mediaGateAttempt||!dialog.open||document.documentElement.dataset.loginState!=='unlocked')return;
+    if(digest!==MEDIA_GATE_HASH){
+      errorLabel.textContent='访问密码不正确，请重新输入。';
+      input.setAttribute('aria-invalid','true');
+      input.focus();
+      return;
+    }
+    setMediaGateUnlocked(true);
+    var token=mediaGateSessionToken();
+    if(token){try{window.sessionStorage.setItem(MEDIA_GATE_KEY,token);}catch(error){}}
+    var fromClick=mediaGateFromClick;
+    mediaGateFromClick=false;
+    dialog.close();
+    selectSiteTool('article',fromClick);
+  }catch(error){
+    if(attempt===mediaGateAttempt&&dialog.open)errorLabel.textContent=error.message||'暂时无法验证，请重试。';
+  }finally{
+    if(attempt===mediaGateAttempt)submit.disabled=false;
+  }
+}
+function initializeMediaGate(){
+  var token=mediaGateSessionToken(), saved=null;
+  try{saved=window.sessionStorage.getItem(MEDIA_GATE_KEY);}catch(error){}
+  setMediaGateUnlocked(Boolean(token&&saved===token));
+  var dialog=document.getElementById('mediaGateDialog');
+  var input=document.getElementById('mediaGatePassword');
+  document.getElementById('mediaGateForm').addEventListener('submit',submitMediaGate);
+  document.getElementById('mediaGateCancel').addEventListener('click',function(){dialog.close();});
+  input.addEventListener('input',function(){
+    input.removeAttribute('aria-invalid');
+    document.getElementById('mediaGateError').textContent='';
+  });
+  dialog.addEventListener('close',function(){
+    if(dialog.open)return;
+    ++mediaGateAttempt;
+    mediaGateFromClick=false;
+    input.value='';
+    if(!mediaGateUnlocked&&document.documentElement.dataset.loginState==='unlocked'){
+      if(location.hash==='#article')history.replaceState(null,'','#'+currentSiteTool);
+      document.getElementById('articleToolTab').focus({preventScroll:true});
+    }
+  });
+}
 function selectSiteTool(key,fromClick){
   if(document.documentElement.dataset.loginState!=='unlocked')return;
   key=['visual','watermark','article'].includes(key)?key:'visual';
+  if(key==='article'&&!mediaGateUnlocked){showMediaGate(fromClick);return;}
+  var gate=document.getElementById('mediaGateDialog');
+  if(gate.open)gate.close();
   currentSiteTool=key;
   document.getElementById('visualView').hidden=key!=='visual';
   document.getElementById('watermarkView').hidden=key!=='watermark';
@@ -2489,7 +2715,7 @@ function selectSiteTool(key,fromClick){
     var button=document.getElementById(value+'ToolTab');
     if(value===key)button.setAttribute('aria-current','page');else button.removeAttribute('aria-current');
   });
-  document.title=key==='watermark'?'AI 图像水印去除 · 优悦教育':key==='article'?'公众号排版 · 优悦教育':'优悦教育 · 设计素材生成网站';
+  document.title=key==='watermark'?'AI 图像水印去除 · 优悦教育':key==='article'?'新媒体端小工具 · 优悦教育':'优悦教育 · 设计素材生成网站';
   if(fromClick){
     flashSiteTool(document.getElementById(key+'ToolTab'));
     var hash='#'+key;
@@ -2513,11 +2739,20 @@ function selectSiteTool(key,fromClick){
     });
 }
 function initializeSiteTools(){
+  initializeMediaGate();
   function route(){selectSiteTool(location.hash.slice(1),false);}
   document.getElementById('pa-retry').onclick=function(){selectSiteTool('article',false);};
   window.addEventListener('hashchange',route);window.addEventListener('popstate',route);route();
 }
-function disposeSiteTools(){if(watermarkModule)watermarkModule.dispose();if(articleModule)articleModule.dispose();}
+function disposeSiteTools(){
+  ++mediaGateAttempt;
+  setMediaGateUnlocked(false);
+  var gate=document.getElementById('mediaGateDialog');
+  if(gate.open)gate.close();
+  try{window.sessionStorage.removeItem(MEDIA_GATE_KEY);}catch(error){}
+  if(watermarkModule)watermarkModule.dispose();
+  if(articleModule)articleModule.dispose();
+}
 
     function initializeBadgeApp() {
       initializeTheme();
