@@ -608,7 +608,7 @@ function selectMediaWorkspace(workspace) {
   $('cover-tab').setAttribute('aria-pressed', String(showCover));
   if (!showCover) return activateArticle();
   if (!coverModulePromise) {
-    coverModulePromise = import('./cover.js?v=20261104-2').catch(error => {
+    coverModulePromise = import('./cover.js?v=20261104-7').catch(error => {
       coverModulePromise = undefined;
       throw error;
     });

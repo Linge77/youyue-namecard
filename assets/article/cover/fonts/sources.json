@@ -1,0 +1,44 @@
+{
+  "provided_by": "用户提供的原始字体文件",
+  "official_information": "https://www.alibabafonts.com/",
+  "files": {
+    "light.otf": {
+      "source_file": "ALIBABA-PUHUITI-LIGHT.OTF",
+      "bytes": 6740552,
+      "sha256": "81628086e19f8aefa8698e7accc68a882427ee95a3a7e4dbe20733881893f10a",
+      "modified": false
+    },
+    "regular.otf": {
+      "source_file": "ALIBABA-PUHUITI-REGULAR.OTF",
+      "bytes": 6917288,
+      "sha256": "1c6820d3de274946117b713d509294da604ab4d3676075d595f4316de14979c5",
+      "modified": false
+    },
+    "medium.otf": {
+      "source_file": "ALIBABA-PUHUITI-MEDIUM.OTF",
+      "bytes": 6567296,
+      "sha256": "1e7cfcc08e27506afdace7b9abe2fa93c2b35fe3ad386742b47a9e24b5fd431f",
+      "modified": false
+    },
+    "heavy.otf": {
+      "source_file": "ALIBABA-PUHUITI-HEAVY.OTF",
+      "bytes": 1656164,
+      "sha256": "6cdbfb605f9898e5145bfe510b17c41fb8610278a3eacf0e3db3643a7c32d8e1",
+      "modified": false
+    },
+    "bold-horizontal.woff2": {
+      "source_file": "Alibaba-PuHuiTi-B.ttf",
+      "source_sha256": "8af30eb7415fb7c9dc3518cce5cc8e9afbdce09831ccaa7361774b21273f67fb",
+      "bytes": 4689944,
+      "sha256": "b3323ed700239a2b890133ae12a3dfa60489809583574c25b67532d049330566",
+      "modified": true,
+      "processing": [
+        "转为 WOFF2 网页格式",
+        "OS/2 表版本从 3 调整到 4，以匹配原有 fsSelection 标志",
+        "移除元数据异常且封面横排不使用的 vhea/vmtx 纵排表"
+      ],
+      "validation": "完整 cmap、glyphOrder、hmtx 与全部字形坐标一致；未裁减字符，未修改嵌入权限标志",
+      "tool": "fontTools 4.60.2 / Brotli 1.2.1"
+    }
+  }
+}
