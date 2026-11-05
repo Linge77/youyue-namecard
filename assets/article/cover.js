@@ -8,8 +8,7 @@ const DEFAULT_TITLE = '少科院2+4调整';
 const DEFAULT_TOP = '2+4';
 const DEFAULT_BOTTOM = '调整';
 const MAIN_TITLE = {x:42, y:181, width:642, height:88, size:112, center:false, blur:4};
-const SHORT_TOP = {x:1105, y:143, width:300, height:86, size:122, center:true, blur:3};
-const SHORT_BOTTOM = {x:1105, y:274, width:300, height:114, size:138, center:true, blur:3};
+const SHORT_TEXT = {x:1105, y:208.5, width:300, height:256, lineHeight:114, blur:3};
 const get = name => document.getElementById('pa-cover-' + name);
 let initialization;
 
@@ -33,43 +32,66 @@ function loadImage(name, width, height) {
   });
 }
 
-function drawText(ctx, title, area, requestedSize, font) {
-  if (!title) return;
+function measureLine(ctx, title, height, font) {
+  ctx.font = `${font.weight} 100px "${font.family}"`;
+  const metrics = ctx.measureText(title);
+  const left = metrics.actualBoundingBoxLeft ?? 0;
+  const right = metrics.actualBoundingBoxRight ?? metrics.width;
+  const ascent = metrics.actualBoundingBoxAscent ?? 80;
+  const descent = metrics.actualBoundingBoxDescent ?? 20;
+  const scale = height / Math.max(1, ascent + descent);
+  return {title, left, right, ascent, descent, scale, width:(left + right) * scale, height};
+}
+
+function drawLine(ctx, line, x, y, center, blur, font) {
   ctx.save();
+  ctx.font = `${font.weight} 100px "${font.family}"`;
   ctx.textAlign = 'left';
   ctx.textBaseline = 'alphabetic';
-  let size = requestedSize ?? area.size;
-  let left, right, ascent, descent;
-  for (;;) {
-    ctx.font = `${font.weight} ${size}px "${font.family}"`;
-    const metrics = ctx.measureText(title);
-    left = metrics.actualBoundingBoxLeft ?? 0;
-    right = metrics.actualBoundingBoxRight ?? metrics.width;
-    ascent = metrics.actualBoundingBoxAscent ?? size * .8;
-    descent = metrics.actualBoundingBoxDescent ?? size * .2;
-    const fit = Math.min(1, area.width / Math.max(1, left + right), area.height / Math.max(1, ascent + descent));
-    if (fit >= 1 || size <= 1) break;
-    size = Math.max(1, Math.floor(size * fit));
-  }
-  const x = area.center ? area.x + (left - right) / 2 : area.x + left;
-  const y = area.y + (ascent - descent) / 2;
   ctx.fillStyle = '#fff';
   ctx.shadowColor = 'rgba(111, 16, 37, .46)';
   ctx.shadowOffsetX = 2;
   ctx.shadowOffsetY = 5;
-  ctx.shadowBlur = area.blur;
-  ctx.fillText(title, x, y);
+  ctx.shadowBlur = blur;
+  ctx.translate(x, y);
+  ctx.scale(line.scale, line.scale);
+  ctx.fillText(line.title, center ? (line.left - line.right) / 2 : line.left, (line.ascent - line.descent) / 2);
   ctx.restore();
+}
+
+function drawMainTitle(ctx, title, scale, font) {
+  if (!title) return;
+  const line = measureLine(ctx, title, Math.min(148, MAIN_TITLE.height * scale / 100), font);
+  const fit = Math.min(1, MAIN_TITLE.width / Math.max(1, line.width));
+  line.scale *= fit;
+  drawLine(ctx, line, MAIN_TITLE.x, MAIN_TITLE.y, false, MAIN_TITLE.blur, font);
+}
+
+function drawShortLines(ctx, top, bottom, topScale, bottomScale, gap, font) {
+  const lines = [
+    top && measureLine(ctx, top, SHORT_TEXT.lineHeight * topScale / 100, font),
+    bottom && measureLine(ctx, bottom, SHORT_TEXT.lineHeight * bottomScale / 100, font)
+  ].filter(Boolean);
+  if (!lines.length) return;
+  const spacing = lines.length === 2 ? gap : 0;
+  const textHeight = lines.reduce((sum, line) => sum + line.height, 0);
+  // Fit the two lines together, so identical scale values retain identical glyph
+  // heights instead of silently using different per-line height limits.
+  const fit = Math.min(1, (SHORT_TEXT.height - spacing) / textHeight, ...lines.map(line => SHORT_TEXT.width / Math.max(1, line.width)));
+  let y = SHORT_TEXT.y - (textHeight * fit + spacing) / 2;
+  for (const line of lines) {
+    line.scale *= fit;
+    drawLine(ctx, line, SHORT_TEXT.x, y + line.height * fit / 2, true, SHORT_TEXT.blur, font);
+    y += line.height * fit + spacing;
+  }
 }
 
 function copyRegion(ctx, image, x, y, width, height) {
   ctx.drawImage(image, x, y, width, height, x, y, width, height);
 }
 
-function readSize(field) {
-  if (!field?.value) return null;
-  const size = Number(field.value);
-  return Number.isFinite(size) ? Math.min(180, Math.max(12, Math.round(size))) : null;
+function readControl(field) {
+  return Math.min(Number(field.max), Math.max(Number(field.min), Number(field.value)));
 }
 
 function makeCoverRenderer(canvas, assets) {
@@ -77,35 +99,25 @@ function makeCoverRenderer(canvas, assets) {
   if (!ctx) throw new Error('当前浏览器无法绘制封面图片。');
   canvas.width = WIDTH;
   canvas.height = HEIGHT;
-  return ({title, top, bottom, titleSize = null, topSize = null, bottomSize = null}, font) => {
+  return ({title, top, bottom, titleScale = 100, topScale = 100, bottomScale = 100, gap = 18}, font) => {
     const originalWeight = font.weight === 900;
-    const defaultTitle = originalWeight && title === DEFAULT_TITLE && titleSize === null;
-    const defaultTop = originalWeight && top === DEFAULT_TOP && topSize === null;
-    const defaultBottom = originalWeight && bottom === DEFAULT_BOTTOM && bottomSize === null;
+    const defaultTitle = originalWeight && title === DEFAULT_TITLE && titleScale === 100;
+    const defaultRight = originalWeight && top === DEFAULT_TOP && bottom === DEFAULT_BOTTOM && topScale === 100 && bottomScale === 100 && gap === 18;
     ctx.clearRect(0, 0, WIDTH, HEIGHT);
     // The supplied result is kept pixel-for-pixel for unchanged sections.
-    if (defaultTitle && defaultTop && defaultBottom) {
+    if (defaultTitle && defaultRight) {
       ctx.drawImage(assets.example, 0, 0);
       return;
     }
     copyRegion(ctx, defaultTitle ? assets.example : assets.background, 0, 0, SQUARE_X, HEIGHT);
-    if (!defaultTitle) drawText(ctx, title, MAIN_TITLE, titleSize, font);
+    if (!defaultTitle) drawMainTitle(ctx, title, titleScale, font);
 
-    if (defaultTop && defaultBottom) {
+    if (defaultRight) {
       copyRegion(ctx, assets.example, SQUARE_X, 0, SQUARE_SIZE, HEIGHT);
       return;
     }
     ctx.drawImage(assets.rightBackground, SQUARE_X, 0);
-    if (defaultTop) {
-      ctx.drawImage(assets.rightText, 0, 0, 242, 106, 983, 99, 242, 106);
-    } else {
-      drawText(ctx, top, SHORT_TOP, topSize, font);
-    }
-    if (defaultBottom) {
-      ctx.drawImage(assets.rightText, 0, 106, 242, 138, 983, 205, 242, 138);
-    } else {
-      drawText(ctx, bottom, SHORT_BOTTOM, bottomSize, font);
-    }
+    drawShortLines(ctx, top, bottom, topScale, bottomScale, gap, font);
   };
 }
 
@@ -120,11 +132,17 @@ async function initializeCover() {
   const weightField = get('weight');
   const fontStatus = get('font-status');
   const fontRetry = get('font-retry');
-  const mainSize = get('title-size');
-  const topSize = get('short-top-size');
-  const bottomSize = get('short-bottom-size');
-  const sizeFields = [mainSize, topSize, bottomSize].filter(Boolean);
-  const fields = [mainField, topField, bottomField, ...sizeFields];
+  const mainScale = get('title-scale');
+  const topScale = get('top-scale');
+  const bottomScale = get('bottom-scale');
+  const lineGap = get('line-gap');
+  const controls = [mainScale, topScale, bottomScale, lineGap];
+  const fields = [mainField, topField, bottomField, ...controls];
+  function updateControlLabels() {
+    for (const field of controls) {
+      get(field.id.replace('pa-cover-', '') + '-value').textContent = field.value + (field === lineGap ? ' px' : '%');
+    }
+  }
   const saveFallback = get('save-fallback');
   const saveLink = get('save-link');
   const saveImage = get('save-image');
@@ -132,13 +150,12 @@ async function initializeCover() {
   status.textContent = '正在加载封面素材…';
   let assets;
   try {
-    const [background, example, rightBackground, rightText] = await Promise.all([
+    const [background, example, rightBackground] = await Promise.all([
       loadImage('background.png', WIDTH, HEIGHT),
       loadImage('example.png', WIDTH, HEIGHT),
-      loadImage('right-background.png', SQUARE_SIZE, SQUARE_SIZE),
-      loadImage('right-text.png', 242, 244)
+      loadImage('right-background.png', SQUARE_SIZE, SQUARE_SIZE)
     ]);
-    assets = {background, example, rightBackground, rightText};
+    assets = {background, example, rightBackground};
   } catch (error) {
     status.textContent = error.message;
     throw error;
@@ -149,9 +166,10 @@ async function initializeCover() {
     title: mainField.value.trim(),
     top: topField.value.trim(),
     bottom: bottomField.value.trim(),
-    titleSize: readSize(mainSize),
-    topSize: readSize(topSize),
-    bottomSize: readSize(bottomSize)
+    titleScale: readControl(mainScale),
+    topScale: readControl(topScale),
+    bottomScale: readControl(bottomScale),
+    gap: readControl(lineGap)
   });
   let frame = 0;
   let activeFont = null;
@@ -163,6 +181,7 @@ async function initializeCover() {
     if (fontIsReady()) paint(values(), activeFont);
   }
   function queueRender() {
+    updateControlLabels();
     if (saveFallback && !saveFallback.hidden) {
       saveFallback.hidden = true;
       saveFallback.open = false;
@@ -201,11 +220,18 @@ async function initializeCover() {
   weightField.addEventListener('change', selectFont);
   fontRetry.addEventListener('click', selectFont);
   for (const input of fields) input.addEventListener('input', queueRender);
+  for (const button of document.querySelectorAll('[data-cover-step]')) {
+    button.addEventListener('click', () => {
+      const field = get(button.dataset.coverStep);
+      field.value = String(Math.min(Number(field.max), Math.max(Number(field.min), Number(field.value) + Number(button.dataset.step))));
+      queueRender();
+    });
+  }
   reset?.addEventListener('click', () => {
     mainField.value = DEFAULT_TITLE;
     topField.value = DEFAULT_TOP;
     bottomField.value = DEFAULT_BOTTOM;
-    for (const field of sizeFields) field.value = '';
+    for (const field of controls) field.value = field.defaultValue;
     weightField.value = '900';
     selectFont();
     queueRender();

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="namecard-version" content="2026.11.04.7">
+<meta name="namecard-version" content="2026.11.04.8">
 <meta name="description" content="优悦教育设计素材生成网站，支持二维码裁切、排版调整与版式切换。">
 <title>优悦教育 · 设计素材生成网站</title>
 <style id="coreStyle">:root {
@@ -712,9 +712,12 @@ html[data-login-state='locked'] body{padding:0;background:#fff2ef;}
 #articleView #pa-cover-font-retry { justify-self:start; color:var(--accent-red); }
 #articleView .pa-cover-short { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin-top:4px; }
 #articleView .pa-cover-short input { margin-top:7px; }
-#articleView .pa-cover-size { display:flex; gap:6px; align-items:center; white-space:nowrap; color:var(--text-muted); }
-#articleView .pa-cover-size input { width:66px; min-width:0; height:32px; margin:0; padding:4px 6px; }
-#articleView .pa-cover-short .pa-cover-size input { flex:1 1 50px; max-width:72px; }
+#articleView .pa-cover-scale { display:grid; grid-template-columns:1fr auto; align-items:center; gap:8px; padding-top:5px; }
+#articleView .pa-cover-scale output { color:var(--text-muted); font-variant-numeric:tabular-nums; }
+#articleView .pa-cover-slider { display:flex; align-items:center; gap:10px; grid-column:1/-1; }
+#articleView .pa-cover-slider input[type="range"] { flex:1; width:0; margin:0; padding:0; height:24px; border:0; background:transparent; accent-color:var(--accent-red); cursor:pointer; }
+#articleView .pa-cover-slider button { flex:0 0 30px; width:30px; height:30px; padding:0; border:1px solid var(--border-color); border-radius:7px; color:var(--text-main); background:var(--bg-input); font-size:18px; line-height:1; }
+#articleView .pa-cover-slider button:hover { border-color:var(--accent-red); }
 #articleView .pa-cover-save { color:var(--text-muted); }
 #articleView .pa-cover-save summary { cursor:pointer; }
 #articleView .pa-cover-save img { display:block; width:100%; height:auto; margin-top:8px; }
@@ -1359,14 +1362,15 @@ THE SOFTWARE.
           <button type="button" id="pa-cover-font-retry" class="pa-text-button" hidden>重新加载字体</button>
           <label for="pa-cover-title">左侧主标题</label>
           <input type="text" id="pa-cover-title" value="少科院2+4调整" maxlength="30" autocomplete="off">
-          <label class="pa-cover-size" for="pa-cover-title-size">主标题字号<input type="number" id="pa-cover-title-size" min="12" max="180" step="1" placeholder="自动" aria-label="左侧主标题字号（px）"><span>px</span></label>
+          <div class="pa-cover-scale"><label for="pa-cover-title-scale">主标题大小</label><output for="pa-cover-title-scale" id="pa-cover-title-scale-value">100%</output><div class="pa-cover-slider"><button type="button" data-cover-step="title-scale" data-step="-5" aria-label="缩小主标题">−</button><input type="range" id="pa-cover-title-scale" min="25" max="160" step="1" value="100" aria-label="主标题大小"><button type="button" data-cover-step="title-scale" data-step="5" aria-label="放大主标题">＋</button></div></div>
           <div class="pa-cover-short">
             <label for="pa-cover-short-top">右侧第一行<input type="text" id="pa-cover-short-top" value="2+4" maxlength="10" autocomplete="off"></label>
             <label for="pa-cover-short-bottom">右侧第二行<input type="text" id="pa-cover-short-bottom" value="调整" maxlength="10" autocomplete="off"></label>
-            <label class="pa-cover-size" for="pa-cover-short-top-size">字号<input type="number" id="pa-cover-short-top-size" min="12" max="180" step="1" placeholder="自动" aria-label="右侧第一行字号（px）"><span>px</span></label>
-            <label class="pa-cover-size" for="pa-cover-short-bottom-size">字号<input type="number" id="pa-cover-short-bottom-size" min="12" max="180" step="1" placeholder="自动" aria-label="右侧第二行字号（px）"><span>px</span></label>
           </div>
-          <p>字号留空时自动计算。文字过长时会缩小以放入原版式。</p>
+          <div class="pa-cover-scale"><label for="pa-cover-top-scale">第一行大小</label><output for="pa-cover-top-scale" id="pa-cover-top-scale-value">100%</output><div class="pa-cover-slider"><button type="button" data-cover-step="top-scale" data-step="-5" aria-label="缩小第一行">−</button><input type="range" id="pa-cover-top-scale" min="25" max="160" step="1" value="100" aria-label="第一行大小"><button type="button" data-cover-step="top-scale" data-step="5" aria-label="放大第一行">＋</button></div></div>
+          <div class="pa-cover-scale"><label for="pa-cover-bottom-scale">第二行大小</label><output for="pa-cover-bottom-scale" id="pa-cover-bottom-scale-value">100%</output><div class="pa-cover-slider"><button type="button" data-cover-step="bottom-scale" data-step="-5" aria-label="缩小第二行">−</button><input type="range" id="pa-cover-bottom-scale" min="25" max="160" step="1" value="100" aria-label="第二行大小"><button type="button" data-cover-step="bottom-scale" data-step="5" aria-label="放大第二行">＋</button></div></div>
+          <div class="pa-cover-scale"><label for="pa-cover-line-gap">两行间距</label><output for="pa-cover-line-gap" id="pa-cover-line-gap-value">18 px</output><div class="pa-cover-slider"><button type="button" data-cover-step="line-gap" data-step="-2" aria-label="减小两行间距">−</button><input type="range" id="pa-cover-line-gap" min="0" max="80" step="1" value="18" aria-label="两行间距"><button type="button" data-cover-step="line-gap" data-step="2" aria-label="增大两行间距">＋</button></div></div>
+          <p>拖动滑块或点 − / ＋ 放大缩小。右侧两行使用统一字高；文字超出可用区域时会自动缩小。</p>
           <button type="button" class="pa-btn pa-primary" id="pa-cover-download" disabled>下载封面 PNG</button>
           <p id="pa-cover-status" role="status" aria-live="polite">正在准备封面素材…</p>
           <details id="pa-cover-save-fallback" class="pa-cover-save" hidden>
@@ -1383,7 +1387,7 @@ THE SOFTWARE.
     </div>
   </section>
 </section>
-  <footer class="workspace-footer"><span>优悦教育 · 工牌生成工作台</span><span>版本 2026.11.04 · 封面字体修复版</span><span><a href="assets/licenses/THIRD_PARTY_NOTICES.txt" style="color:inherit">开源组件说明</a></span></footer>
+  <footer class="workspace-footer"><span>优悦教育 · 工牌生成工作台</span><span>版本 2026.11.04 · 封面缩放与间距调整版</span><span><a href="assets/licenses/THIRD_PARTY_NOTICES.txt" style="color:inherit">开源组件说明</a></span></footer>
 </div>
 <dialog id="cropDialog" class="crop-dialog" aria-labelledby="cropTitle" aria-describedby="cropHelp">
     <div class="crop-heading"><h2 id="cropTitle">裁切二维码图片</h2><button type="button" class="chip-btn" onclick="cancelQrCrop()" aria-label="关闭裁切窗口">关闭</button></div>
@@ -2620,7 +2624,7 @@ var MEDIA_GATE_HASH='5207e2660db14f72118a0d4d5f6721c2c4aa341b8a8c32eaa5315c35f31
 var mediaGateUnlocked=false,mediaGateAttempt=0,mediaGateFromClick=false;
 function loadArticleTool(){
   if(articleModule)return Promise.resolve(articleModule);
-  if(!articleModulePromise)articleModulePromise=import(new URL((window.ARTICLE_MODULE_BASE||'assets/article/')+'app.js?v=20261104-7',document.baseURI).href).then(function(module){articleModule=module;return module;}).catch(function(error){articleModulePromise=null;throw error;});
+  if(!articleModulePromise)articleModulePromise=import(new URL((window.ARTICLE_MODULE_BASE||'assets/article/')+'app.js?v=20261104-8',document.baseURI).href).then(function(module){articleModule=module;return module;}).catch(function(error){articleModulePromise=null;throw error;});
   return articleModulePromise;
 }
 async function loadWatermarkTool(){
