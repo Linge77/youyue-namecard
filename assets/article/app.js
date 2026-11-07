@@ -2,7 +2,8 @@
  * UI, storage, safe template import and site integration are maintained locally.
  * Third-party libraries and complete licenses are shipped beside this module. */
 import {installFormatting, renderFormatting, getTextFormat, applyTextFormat, getSubtitleFormat, isSubtitleSelection, applySubtitleFormat, registerFormattingImport} from './formatting.js?v=20261103-4';
-import {galleryAtSelection, galleryMarkdown, renderGalleries, registerGalleryImport} from './gallery.js?v=20261103-4';
+import {galleryAtSelection, galleryMarkdown, renderGalleries, registerGalleryImport} from './gallery.js?v=20261107-1';
+import {EDITORIAL_LAYOUT, editorialTemplate, decorateEditorialChapters} from './wechat-editorial.js?v=20261107-1';
 
 const $ = id => document.getElementById('pa-' + id);
 const BASE = new URL('./', import.meta.url);
@@ -42,7 +43,8 @@ const SAMPLE = `# 把每一次进步，写成值得分享的故事
 `;
 let md, converter, purifier, db, initPromise, initialized = false;
 let templates = {}, customTemplates = {}, images = {}, memory = new Map(), state = {markdown:SAMPLE,theme:'youyue-red',size:'',line:'',mobile:false};
-let renderTimer, saveTimer, saveQueue = Promise.resolve(), downloadURL, renderFailure = false;
+let renderTimer, saveTimer, saveQueue = Promise.resolve(), downloadURL, readersExpanded = false;
+const VERTICAL_GALLERY = 'section[data-pa-gallery*=",vertical,"]';
 const scripts = new Map();
 
 function status(text, error = false) { $('status').textContent = text; $('status').classList.toggle('is-error', error); }
@@ -98,7 +100,10 @@ function validateTemplate(input, strict = true) {
   if(strict && (input.schema!=='youyue-article-template'||input.version!==1))throw new Error('这不是受支持的排版模板，请使用版本 1 的优悦模板文件。');
   const styles={}; SELECTORS.forEach(key=>{if(Object.hasOwn(input.styles,key))styles[key]=cleanCSS(input.styles[key]);});
   if(!styles.container || !styles.h2)throw new Error('模板缺少正文或小标题样式。');
-  return {name:input.name.trim(),styles,description:typeof input.description==='string'?input.description.slice(0,120):''};
+  const description = typeof input.description === 'string' ? input.description.slice(0,120) : '';
+  const template = {name:input.name.trim(),styles,description};
+  if (input.layout === EDITORIAL_LAYOUT) template.layout = EDITORIAL_LAYOUT;
+  return template;
 }
 function buildTemplates(source) {
   for(const [key,value] of Object.entries(source))templates[key]=validateTemplate(value,false);
@@ -116,7 +121,11 @@ function buildTemplates(source) {
     td:'border:1px solid #e7d6c1;padding:10px;color:#444;',
     hr:'border:0;border-top:1px solid #dfbd75;margin:30px 0;'
   }};
-  templates={'youyue-red':red,...templates};
+  const editorial = validateTemplate({...editorialTemplate, styles:{...baseline, ...editorialTemplate.styles}}, false);
+  templates={[EDITORIAL_LAYOUT]:editorial,'youyue-red':red,...templates};
+}
+function usesEditorialLayout() {
+  return templates[state.theme]?.layout === EDITORIAL_LAYOUT;
 }
 const RASTER=/^data:image\/(?:png|jpeg|webp|gif);base64,[a-z0-9+/=\s]+$/i;
 function safeImage(src) { return RASTER.test(src)||/^https?:\/\//i.test(src); }
@@ -147,14 +156,22 @@ function setupParser() {
     lines.splice(1,0,'| '+Array(width).fill('---').join(' | ')+' |');return '\n\n'+lines.join('\n')+'\n\n';
   }});
 }
-function renderDocument() {
+function renderDocument({markdown = state.markdown, expanded = false} = {}) {
+  if (markdown.length > MAX_TEXT) throw new Error('文章超过 25 万字符，请拆成多篇后排版。');
   const theme=templates[state.theme]||templates['youyue-red'];
-  const root=document.createElement('section');root.innerHTML=sanitizeHTML(md.render(state.markdown));
+  const editorial = usesEditorialLayout();
+  const root=document.createElement('section');root.innerHTML=sanitizeHTML(md.render(markdown));
   for(const selector of SELECTORS) {
     if(selector==='container')continue;
     root.querySelectorAll(selector).forEach(node=>{if(theme.styles[selector])node.setAttribute('style',theme.styles[selector]);});
   }
-  root.setAttribute('style',theme.styles.container+';max-width:100%;box-sizing:border-box;overflow-wrap:anywhere;');
+  root.setAttribute('style',theme.styles.container+';box-sizing:border-box;overflow-wrap:anywhere;');
+  if (!editorial) root.style.maxWidth = '100%';
+  if (editorial && root.firstElementChild?.tagName === 'H1') {
+    root.style.paddingTop = '0';
+    root.firstElementChild.style.marginLeft = '-24px';
+    root.firstElementChild.style.marginRight = '-24px';
+  }
   root.querySelectorAll('p,li').forEach(node=>{
     if(state.size)node.style.setProperty('font-size',state.size+'px','important');
     if(state.line)node.style.setProperty('line-height',state.line,'important');
@@ -179,23 +196,58 @@ function renderDocument() {
     group.forEach((p,index)=>{if(index%cols===0)body.append(document.createElement('tr'));const cell=document.createElement('td');cell.style.cssText='padding:3px;vertical-align:top;border:none;';const img=p.querySelector('img').cloneNode(true);img.style.cssText='display:block;width:100%;height:auto;margin:0;max-width:100%;';cell.append(img);body.lastElementChild.append(cell);});
     group[0].before(table);group.forEach(p=>p.remove());group=[];
   }
-  [...root.children].forEach(p=>{if(p.tagName==='P'&&p.querySelectorAll('img').length===1&&!p.textContent.trim())group.push(p);else flushImages();});flushImages();
+  if (!editorial) {
+    [...root.children].forEach(p=>{if(p.tagName==='P'&&p.querySelectorAll('img').length===1&&!p.textContent.trim())group.push(p);else flushImages();});flushImages();
+  }
   if(root.firstElementChild)root.firstElementChild.style.setProperty('margin-top','0','important');
   root.querySelectorAll('table').forEach(table=>{table.style.maxWidth='100%';table.style.wordBreak='break-word';});
   renderFormatting(root);
-  renderGalleries(root,src=>src.startsWith('yyimg://')?images[src.slice(8)]?.data||'':src);
+  if (editorial) decorateEditorialChapters(root);
+  renderGalleries(root,src=>src.startsWith('yyimg://')?images[src.slice(8)]?.data||'':src,{editorial,expanded:editorial && expanded});
   return root;
+}
+function showReaderImage(img) {
+  const body = dialog('原尺寸查看');
+  const scroller = document.createElement('div');
+  scroller.style.cssText = 'overflow:auto;max-height:62vh;';
+  const original = document.createElement('img');
+  original.src = img.src;
+  original.alt = img.alt;
+  original.referrerPolicy = 'no-referrer';
+  original.style.cssText = 'display:block;width:auto;height:auto;max-width:none;';
+  scroller.append(original);
+  body.append(scroller);
 }
 function render() {
   clearTimeout(renderTimer);
   try {
     state.markdown=$('input').value;
-    if(state.markdown.length>MAX_TEXT)throw new Error('文章超过 25 万字符，请拆成多篇后排版。');
-    const paper=$('paper');paper.replaceChildren(renderDocument());paper.classList.toggle('is-mobile',state.mobile);
+    const article = renderDocument({expanded:readersExpanded});
+    const readers = usesEditorialLayout() ? [...article.querySelectorAll(VERTICAL_GALLERY)] : [];
+    const toggle = $('reader-expand');
+    toggle.hidden = !readers.length;
+    toggle.textContent = readersExpanded ? '恢复滚动框' : '展开全部资料';
+    toggle.setAttribute('aria-pressed', String(readersExpanded));
+    for (const reader of readers) {
+      for (const img of reader.querySelectorAll('img')) {
+        img.tabIndex = 0;
+        img.setAttribute('role', 'button');
+        img.setAttribute('aria-label', '原尺寸查看' + (img.alt ? ' · ' + img.alt : '图片'));
+        img.style.cursor = 'zoom-in';
+        img.onclick = () => showReaderImage(img);
+        img.onkeydown = event => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            showReaderImage(img);
+          }
+        };
+      }
+    }
+    const paper=$('paper');paper.replaceChildren(article);paper.classList.toggle('is-mobile',state.mobile);
     $('count').textContent=state.markdown.replace(/\s/g,'').length.toLocaleString()+' 字符';
     $('active-theme').textContent=templates[state.theme]?.name||'优悦红金';
-    $('copy').disabled=!state.markdown.trim();renderFailure=false;
-  }catch(error){renderFailure=true;$('copy').disabled=true;status(error.message||'排版未能完成，请检查文章。',true);}
+    $('copy').disabled=!state.markdown.trim();
+  }catch(error){$('copy').disabled=true;$('reader-expand').hidden=true;status(error.message||'排版未能完成，请检查文章。',true);}
 }
 function update() {clearTimeout(renderTimer);renderTimer=setTimeout(render,160);queueSave();}
 function queueSave() {clearTimeout(saveTimer);$('save-state').textContent='正在保存…';saveTimer=setTimeout(()=>saveCurrent(),700);}
@@ -209,7 +261,10 @@ function saveCurrent() {
   saveQueue=saveQueue.catch(()=>{}).then(()=>storePut(record)).then(persisted=>{$('save-state').textContent=persisted?'已自动保存到本机':'暂存在内存，请导出备份';}).catch(()=>{$('save-state').textContent='保存失败，请导出备份';status('本机存储空间不足或不可用，请导出「文章备份」保存当前内容。',true);});
   return saveQueue;
 }
-function templateFile(id) {const t=templates[id]||templates['youyue-red'];return {schema:'youyue-article-template',version:1,name:t.name,description:t.description||'',styles:t.styles};}
+function templateFile(id) {
+  const template = templates[id] || templates['youyue-red'];
+  return {schema:'youyue-article-template',version:1,...template};
+}
 function renderTemplates() {
   const list=$('template-list');list.replaceChildren();const query=$('search').value.trim().toLowerCase();
   for(const [id,t] of Object.entries(templates)){
@@ -217,12 +272,12 @@ function renderTemplates() {
     const b=document.createElement('button');b.type='button';b.className='pa-template-card';b.setAttribute('aria-pressed',String(id===state.theme));b.setAttribute('aria-label','应用模板：'+t.name);
     const sample=document.createElement('span');sample.className='pa-template-sample';
     const probe=document.createElement('div');probe.style.cssText=t.styles.container;sample.style.backgroundColor=probe.style.backgroundColor||'#fff';sample.style.color=probe.style.color||'#444';
-    const heading=document.createElement('strong');heading.textContent='让内容更有层次';const hprobe=document.createElement('div');hprobe.style.cssText=t.styles.h2;
+    const heading=document.createElement('strong');heading.textContent='让内容更有层次';const hprobe=document.createElement('div');hprobe.style.cssText=t.styles[t.layout === EDITORIAL_LAYOUT ? 'h1' : 'h2'];
     heading.style.color=hprobe.style.color||probe.style.color||'#333';heading.style.backgroundColor=hprobe.style.backgroundColor;heading.style.borderLeft=hprobe.style.borderLeft;heading.style.borderBottom=hprobe.style.borderBottom;heading.style.borderRadius=hprobe.style.borderRadius;heading.style.padding='2px 5px';
     sample.append(heading);for(let i=0;i<2;i++){const line=document.createElement('i');line.className='pa-sample-line';sample.append(line);}
     const label=document.createElement('span');label.className='pa-template-name';const text=document.createElement('span');text.textContent=t.name;label.append(text);
-    if(id==='youyue-red'||customTemplates[id]){const tag=document.createElement('small');tag.textContent=id==='youyue-red'?'推荐':'自定义';label.append(tag);}
-    b.append(sample,label);b.addEventListener('click',()=>{state.theme=id;renderTemplates();render();queueSave();});list.append(b);
+    if(id===EDITORIAL_LAYOUT||id==='youyue-red'||customTemplates[id]){const tag=document.createElement('small');tag.textContent=id===EDITORIAL_LAYOUT?'Skill v2':id==='youyue-red'?'推荐':'自定义';label.append(tag);}
+    b.append(sample,label);b.addEventListener('click',()=>{if(state.theme!==id)readersExpanded=false;state.theme=id;renderTemplates();render();queueSave();});list.append(b);
   }
   $('template-count').textContent=Object.keys(templates).length+' 款';
   if(!list.childElementCount){const p=document.createElement('p');p.textContent='没有找到对应模板';p.style.fontSize='12px';list.append(p);}
@@ -386,11 +441,11 @@ function showGallery() {
   const input = $('input');
   const restore = articleSelection(input);
   const current = galleryAtSelection(input);
-  const {number, select, field, onSubmit} = componentForm('滑动图组', current ? '可以调整方向和尺寸，也可以重新选择图片替换图组。' : '选两张以上图片，在光标所在行后插入滑动框。长图可用纵向滚动，图片保持原比例。', current ? '更新滑动图组' : '插入滑动图组');
+  const {number, select, field, onSubmit} = componentForm('滑动图组', current ? '可以调整方向和尺寸，也可以重新选择图片替换图组。' : '横向滑动适合两张以上图片。纵向滚动支持单张长图或多页资料，图片保持原比例。', current ? '更新滑动图组' : '插入滑动图组');
   const file = document.createElement('input');
   Object.assign(file, {type:'file', accept:'image/png,image/jpeg,image/webp,image/gif', multiple:true});
   field(current ? '替换图片（可选）' : '选择图片', file, true);
-  const direction = select('滚动方向', [['horizontal','横向滑动'],['vertical','纵向滚动']], current?.options.direction ?? 'horizontal');
+  const direction = select('滚动方向', [['horizontal','横向滑动'],['vertical','纵向滚动']], current?.options.direction ?? (usesEditorialLayout() ? 'vertical' : 'horizontal'));
   const width = number('每张图宽度（%）', current?.options.width ?? 85, 45, 100);
   const height = number('图片高度（px）', current?.options.height || '', 100, 640, '留空按原比例');
   const frameHeight = number('滚动框高度（px）', current?.options.frameHeight ?? 440, 200, 800);
@@ -450,6 +505,7 @@ function applyDocument(input) {
   const doc=validateDocument(input);images=doc.images;
   let theme=doc.theme;
   if(doc.template&&!templates[theme]){theme='imported-'+Date.now();templates[theme]=validateTemplate(doc.template);customTemplates[theme]=templates[theme];persistTemplates();}
+  readersExpanded = false;
   state={markdown:doc.markdown,theme:templates[theme]?theme:'youyue-red',size:['14','15','16','17','18'].includes(doc.size)?doc.size:'',line:['1.6','1.8','2','2.2'].includes(doc.line)?doc.line:'',mobile:!!doc.mobile};
   $('input').value=state.markdown;$('size').value=state.size;$('line').value=state.line;$('mobile').checked=state.mobile;renderTemplates();render();syncInlineFormatting();queueSave();
 }
@@ -479,7 +535,12 @@ async function insertImages(files, galleryOptions = null, currentGallery = null)
   const start=$('input').selectionStart,end=$('input').selectionEnd,version=$('input').value;const pending=[];
   try {
     if(!list.length)throw new Error('请选择 PNG、JPG、WebP 或 GIF 图片。');
-    if(galleryOptions && (list.length<2 || list.length!==files.length))throw new Error('请为图组选择至少两张支持格式的图片。');
+    if (galleryOptions) {
+      const vertical = galleryOptions.direction === 'vertical';
+      if (list.length < (vertical ? 1 : 2) || list.length !== files.length) {
+        throw new Error(vertical ? '请为纵向图组选择至少一张支持格式的图片。' : '请为横向图组选择至少两张支持格式的图片。');
+      }
+    }
     if(list.some(f=>f.size>12*1024*1024))throw new Error('单张图片请控制在 12 MB 内。');
     let total=JSON.stringify(documentRecord().images).length;
     for(const f of list){const data=await readData(f);total+=data.length;if(total>MAX_DOC)throw new Error('当前文章图片已较多，请拆分文章，或缩小图片后再插入。');if(!RASTER.test(data))throw new Error('不支持这张图片的编码格式。');const id='img-'+Date.now()+'-'+Math.random().toString(36).slice(2,9);pending.push([id,{data,name:f.name}]);}
@@ -535,30 +596,45 @@ async function importFile(file) {
     applyDocument(doc);status('已导入文章，导入前的内容保留在草稿箱。');
   }catch(e){status(e instanceof SyntaxError?'无法识别文章备份格式。':e.message,true);}finally{$('file').value='';}
 }
-function richHTML() {render();if(renderFailure)throw new Error('请先修正文章再导出。');return $('paper').innerHTML;}
+function articleForExport(expanded = false) {
+  return renderDocument({markdown:$('input').value,expanded});
+}
 function fallbackCopy(html) {
   const holder=document.createElement('div');holder.contentEditable='true';holder.style.cssText='position:fixed;left:0;top:0;max-height:1px;opacity:.01;overflow:hidden;';holder.innerHTML=html;document.body.append(holder);
   const selection=window.getSelection(),range=document.createRange();range.selectNodeContents(holder);selection.removeAllRanges();selection.addRange(range);let result=false;try{result=document.execCommand('copy');}catch{}selection.removeAllRanges();holder.remove();return result;
 }
 function copied() {status('已复制排版内容。请粘贴到公众号正文，并核对图片、表格与标题样式。');saveCurrent();}
 function copyArticle() {
-  let html;try{html=richHTML();}catch(e){status(e.message,true);return;}
-  if(!state.markdown.trim())return;
+  if (!$('input').value.trim()) return;
+  let article;
+  try { article = articleForExport(); } catch(e) { status(e.message,true); return; }
+  const html = article.outerHTML;
   const fail=()=>{if(fallbackCopy(html))copied();else {const body=dialog('手动复制排版');paragraph(body,'浏览器未允许自动复制。下方已选中排版内容，请按 ⌘C（Windows 按 Ctrl+C），然后到公众号粘贴。');const region=document.createElement('div');region.className='pa-paper';region.innerHTML=html;region.tabIndex=0;body.append(region);const range=document.createRange();range.selectNodeContents(region);const s=getSelection();s.removeAllRanges();s.addRange(range);}};
   // No asynchronous preparation before write(): Safari requires user activation.
   if(navigator.clipboard?.write && window.ClipboardItem){
-    try{const item=new ClipboardItem({'text/html':new Blob([html],{type:'text/html'}),'text/plain':new Blob([$('paper').textContent],{type:'text/plain'})});navigator.clipboard.write([item]).then(copied,fail);}catch{fail();}
+    try{const item=new ClipboardItem({'text/html':new Blob([html],{type:'text/html'}),'text/plain':new Blob([article.textContent],{type:'text/plain'})});navigator.clipboard.write([item]).then(copied,fail);}catch{fail();}
   }else fail();
 }
 function showExport() {
   const body=dialog('导出文章');paragraph(body,'选择文章备份可完整保留图片、文字与模板，下次通过「导入文章」继续修改。');
   action(body,'文章备份（含图片）',()=>download(JSON.stringify(documentRecord()),'application/json',title()+'.article.json'));
-  action(body,'排版 HTML',()=>{try{const html='<!DOCTYPE html><html lang="zh-CN"><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>公众号排版文章</title><body style="margin:0 auto;max-width:740px;">'+richHTML()+'</body></html>';download(html,'text/html;charset=utf-8',title()+'.html');}catch(e){status(e.message,true);}});
+  const exportHTML = (expanded = false) => {
+    try {
+      const html = '<!DOCTYPE html><html lang="zh-CN"><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>公众号排版文章</title><body style="margin:0 auto;max-width:740px;">'
+        + articleForExport(expanded).outerHTML + '</body></html>';
+      download(html,'text/html;charset=utf-8',title()+(expanded?'_资料展开版':'')+'.html');
+    } catch(e) { status(e.message,true); }
+  };
+  action(body,'排版 HTML',()=>exportHTML());
+  if (usesEditorialLayout() && $('paper').querySelector(VERTICAL_GALLERY)) {
+    action(body,'排版 HTML（资料展开版）',()=>exportHTML(true));
+  }
   action(body,'Markdown（含图片）',()=>{let text=$('input').value;for(const [id,img] of Object.entries(images))text=text.split('yyimg://'+id).join(img.data);download(text,'text/markdown;charset=utf-8',title()+'.md');});
 }
 function bind() {
   $('input').addEventListener('input',update);
   $('search').addEventListener('input',renderTemplates);
+  $('reader-expand').onclick=()=>{readersExpanded=!readersExpanded;render();};
   document.querySelectorAll('[data-pa-format]').forEach(b=>b.onclick=()=>format(b.dataset.paFormat));
   $('size').onchange=()=>{state.size=$('size').value;render();queueSave();};$('line').onchange=()=>{state.line=$('line').value;render();queueSave();};$('mobile').onchange=()=>{state.mobile=$('mobile').checked;render();queueSave();};
   $('import').onclick=()=>$('file').click();$('file').onchange=()=>importFile($('file').files[0]);

@@ -30,7 +30,9 @@ export function galleryMarkdown(items, options) {
     const alt = String(item.alt || '').replace(/[\[\]\\\n\r]/g, '').slice(0, 200);
     return `![${alt}](${item.src})`;
   });
-  if (lines.length < 2) throw new Error('滑动图组至少需要两张图片。');
+  if (lines.length < (direction === 'vertical' ? 1 : 2)) {
+    throw new Error(direction === 'vertical' ? '纵向滚动至少需要一张图片。' : '横向滑动至少需要两张图片。');
+  }
   const vertical = direction === 'vertical' ? ` direction=vertical frameHeight=${frameHeight}` : '';
   return ['```yy-gallery', `yy-gallery width=${width} height=${height}${vertical}`, ...lines, '```'].join('\n');
 }
@@ -42,14 +44,16 @@ function optionsFromMatch([, width, height, frameHeight]) {
 function parseBody(body) {
   const [header, ...lines] = body.trim().split(/\r?\n/);
   const dimensions = HEADER.exec(header);
-  if (!dimensions || lines.length < 2) return null;
+  if (!dimensions) return null;
+  const options = optionsFromMatch(dimensions);
+  if (lines.length < (options.direction === 'vertical' ? 1 : 2)) return null;
   const items = [];
   for (const line of lines) {
     const match = IMAGE_LINE.exec(line.trim());
     if (!match || !isImageReference(match[2])) return null;
     items.push({ src: match[2], alt: match[1] });
   }
-  return { items, options: optionsFromMatch(dimensions) };
+  return { items, options };
 }
 
 export function galleryAtSelection(input) {
@@ -64,22 +68,35 @@ export function galleryAtSelection(input) {
   return null;
 }
 
-function makeGallery(doc, gallery, resolveImage) {
+function makeGallery(doc, gallery, resolveImage, { editorial, expanded }) {
   const { width, height, direction, frameHeight } = gallery.options;
   const vertical = direction === 'vertical';
+  const reader = editorial && vertical;
+  const open = expanded && vertical;
   const section = doc.createElement('section');
   section.title = `滑动图组（${width}% · ${height}px${vertical ? ` · 竖向${frameHeight}px` : ''}）`;
   section.setAttribute('data-pa-gallery', `${width},${height}${vertical ? `,vertical,${frameHeight}` : ''}`);
-  section.style.cssText = 'margin:22px 0;padding:9px;max-width:100%;box-sizing:border-box;border:1px solid #dddde2;border-radius:9px;';
+  section.style.cssText = reader
+    ? 'margin:25px 0 29px;max-width:100%;box-sizing:border-box;border:1px solid #d8b7b2;background-color:#fff;'
+    : 'margin:22px 0;padding:9px;max-width:100%;box-sizing:border-box;border:1px solid #dddde2;border-radius:9px;';
+  if (reader) {
+    const heading = doc.createElement('p');
+    heading.textContent = '资料查阅';
+    heading.style.cssText = 'margin:0;padding:13px 15px;background-color:#a41f29;color:#fff;font-size:14px;line-height:1.8;font-weight:600;';
+    section.append(heading);
+  }
 
   const scroller = doc.createElement('section');
-  scroller.tabIndex = 0;
-  const scrollHint = vertical ? '上下滑动查看更多图片' : '左右滑动查看更多图片';
-  scroller.setAttribute('aria-label', `滑动图组，${scrollHint}`);
-  const scrollStyle = vertical
-    ? `height:${frameHeight}px;overflow-x:hidden;overflow-y:auto;white-space:normal;`
-    : 'overflow-x:auto;overflow-y:hidden;white-space:nowrap;padding:2px 0 8px;scroll-snap-type:x proximity;';
-  scroller.style.cssText = `display:block;max-width:100%;box-sizing:border-box;-webkit-overflow-scrolling:touch;${scrollStyle}`;
+  let scrollStyle = 'overflow-x:auto;overflow-y:hidden;white-space:nowrap;padding:2px 0 8px;scroll-snap-type:x proximity;';
+  if (vertical) scrollStyle = open
+    ? 'height:auto;overflow:visible;white-space:normal;'
+    : `height:${frameHeight}px;overflow-x:hidden;overflow-y:auto;white-space:normal;`;
+  const scrollHint = reader ? '上下滑动查阅完整内容' : vertical ? '上下滑动查看更多图片' : '左右滑动查看更多图片';
+  if (!open) {
+    scroller.tabIndex = 0;
+    scroller.setAttribute('aria-label', `滑动图组，${scrollHint}`);
+  }
+  scroller.style.cssText = `display:block;max-width:100%;box-sizing:border-box;-webkit-overflow-scrolling:touch;${scrollStyle}${reader ? 'padding:10px 8px;background-color:#fff;' : ''}`;
 
   gallery.items.forEach((item, index) => {
     const card = doc.createElement('section');
@@ -106,25 +123,31 @@ function makeGallery(doc, gallery, resolveImage) {
     scroller.append(card);
   });
 
-  const hint = doc.createElement('p');
-  hint.textContent = scrollHint;
-  hint.style.cssText = 'margin:3px 0 0;text-align:center;font-size:12px;line-height:1.5;color:#737886;';
-  section.append(scroller, hint);
+  section.append(scroller);
+  if (!open) {
+    const hint = doc.createElement('p');
+    hint.textContent = scrollHint;
+    hint.style.cssText = reader
+      ? 'margin:0;padding:9px 12px;border-top:1px solid #dfd0c9;text-align:center;font-size:11px;line-height:1.8;color:#806b62;'
+      : 'margin:3px 0 0;text-align:center;font-size:12px;line-height:1.5;color:#737886;';
+    section.append(hint);
+  }
   return section;
 }
 
-export function renderGalleries(root, resolveImage) {
+export function renderGalleries(root, resolveImage, { editorial = false, expanded = false } = {}) {
   for (const code of root.querySelectorAll('pre > code.language-yy-gallery')) {
     const gallery = parseBody(code.textContent);
-    if (gallery) code.parentElement.replaceWith(makeGallery(root.ownerDocument, gallery, resolveImage));
+    if (gallery) code.parentElement.replaceWith(makeGallery(root.ownerDocument, gallery, resolveImage, { editorial, expanded }));
   }
 }
 
 export function registerGalleryImport(converter) {
   converter.addRule('youyueGallery', {
     filter(node) {
-      return node.nodeName === 'SECTION' && TITLE.test(node.getAttribute('title') || '') &&
-        [...node.querySelectorAll('img')].filter(img => isImageReference(img.getAttribute('src'))).length >= 2;
+      const dimensions = node.nodeName === 'SECTION' && TITLE.exec(node.getAttribute('title') || '');
+      return Boolean(dimensions) &&
+        [...node.querySelectorAll('img')].filter(img => isImageReference(img.getAttribute('src'))).length >= (dimensions[3] ? 1 : 2);
     },
     replacement(_content, node) {
       const options = optionsFromMatch(TITLE.exec(node.getAttribute('title')));
