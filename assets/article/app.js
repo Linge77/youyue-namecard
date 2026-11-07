@@ -218,16 +218,38 @@ function showReaderImage(img) {
   scroller.append(original);
   body.append(scroller);
 }
+function mountReaderToggle() {
+  let toggle = $('reader-expand');
+  if (!toggle) {
+    // A browser can keep the previous homepage while loading the latest script.
+    const toolbar = $('article-panel')?.querySelector('.pa-preview-options');
+    if (!toolbar) return;
+    toggle = document.createElement('button');
+    toggle.id = 'pa-reader-expand';
+    toggle.type = 'button';
+    toggle.className = 'pa-text-button';
+    toggle.textContent = '展开全部资料';
+    toggle.hidden = true;
+    toggle.setAttribute('aria-pressed', 'false');
+    toolbar.append(toggle);
+  }
+  toggle.onclick = () => {
+    readersExpanded = !readersExpanded;
+    render();
+  };
+}
 function render() {
   clearTimeout(renderTimer);
+  const toggle = $('reader-expand');
   try {
     state.markdown=$('input').value;
     const article = renderDocument({expanded:readersExpanded});
     const readers = usesEditorialLayout() ? [...article.querySelectorAll(VERTICAL_GALLERY)] : [];
-    const toggle = $('reader-expand');
-    toggle.hidden = !readers.length;
-    toggle.textContent = readersExpanded ? '恢复滚动框' : '展开全部资料';
-    toggle.setAttribute('aria-pressed', String(readersExpanded));
+    if (toggle) {
+      toggle.hidden = !readers.length;
+      toggle.textContent = readersExpanded ? '恢复滚动框' : '展开全部资料';
+      toggle.setAttribute('aria-pressed', String(readersExpanded));
+    }
     for (const reader of readers) {
       for (const img of reader.querySelectorAll('img')) {
         img.tabIndex = 0;
@@ -247,7 +269,11 @@ function render() {
     $('count').textContent=state.markdown.replace(/\s/g,'').length.toLocaleString()+' 字符';
     $('active-theme').textContent=templates[state.theme]?.name||'优悦红金';
     $('copy').disabled=!state.markdown.trim();
-  }catch(error){$('copy').disabled=true;$('reader-expand').hidden=true;status(error.message||'排版未能完成，请检查文章。',true);}
+  } catch (error) {
+    $('copy').disabled = true;
+    if (toggle) toggle.hidden = true;
+    status(error.message || '排版未能完成，请检查文章。', true);
+  }
 }
 function update() {clearTimeout(renderTimer);renderTimer=setTimeout(render,160);queueSave();}
 function queueSave() {clearTimeout(saveTimer);$('save-state').textContent='正在保存…';saveTimer=setTimeout(()=>saveCurrent(),700);}
@@ -634,7 +660,6 @@ function showExport() {
 function bind() {
   $('input').addEventListener('input',update);
   $('search').addEventListener('input',renderTemplates);
-  $('reader-expand').onclick=()=>{readersExpanded=!readersExpanded;render();};
   document.querySelectorAll('[data-pa-format]').forEach(b=>b.onclick=()=>format(b.dataset.paFormat));
   $('size').onchange=()=>{state.size=$('size').value;render();queueSave();};$('line').onchange=()=>{state.line=$('line').value;render();queueSave();};$('mobile').onchange=()=>{state.mobile=$('mobile').checked;render();queueSave();};
   $('import').onclick=()=>$('file').click();$('file').onchange=()=>importFile($('file').files[0]);
@@ -658,6 +683,7 @@ async function initialize() {
   const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),20000);
   let source;try{const response=await fetch(new URL('upstream-themes.json',BASE),{signal:controller.signal});if(!response.ok)throw new Error('模板加载失败，请确认更新文件已上传。');source=await response.json();}finally{clearTimeout(timeout);}
   buildTemplates(source);setupParser();await openStore();
+  mountReaderToggle();
   const savedTemplates=await storeGet('templates').catch(()=>null);
   if(savedTemplates?.values)for(const [id,t] of Object.entries(savedTemplates.values)){try{if(/^custom-|^imported-/.test(id)){customTemplates[id]=validateTemplate(t,false);templates[id]=customTemplates[id];}}catch{}}
   $('input').value=state.markdown;
