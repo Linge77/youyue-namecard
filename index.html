@@ -831,6 +831,14 @@ html[data-login-state='locked'] body{padding:0;background:#fff2ef;}
 #articleView .pa-video-badges { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
 #articleView .pa-video-badge { padding:4px 10px; border:1px solid var(--border-color); border-radius:999px; background:var(--bg-inner); color:var(--text-muted); font-size:11px; line-height:1.5; }
 #articleView .pa-video-badge.is-ready { border-color:var(--border-highlight); color:var(--text-main); }
+#articleView .pa-video-badge.is-action { cursor:pointer; border-color:var(--accent-red); color:var(--accent-red); background:var(--ui-selected-bg); font-weight:500; transition:opacity .15s,background .15s; }
+#articleView .pa-video-badge.is-action:hover { opacity:.88; }
+#articleView .pa-channels-steps { margin:12px 0 18px; padding:14px 16px 14px 32px; border:1px solid var(--border-color); border-radius:12px; background:var(--bg-inner); color:var(--text-main); font-size:12px; line-height:1.85; }
+#articleView .pa-channels-steps li { margin-bottom:6px; }
+#articleView .pa-channels-steps li:last-child { margin-bottom:0; }
+#articleView .pa-channels-note { margin:0 0 16px; padding:10px 13px; border-radius:9px; background:var(--ui-selected-bg); border:1px solid var(--ui-selected-border); color:var(--text-main); font-size:11.5px; line-height:1.7; }
+#articleView .pa-channels-actions { display:flex; flex-wrap:wrap; gap:10px; justify-content:flex-end; align-items:center; }
+#articleView .pa-channels-actions .pa-btn { margin:0; text-decoration:none; }
 #articleView .pa-video-grid { display:grid; grid-template-columns:minmax(290px,1fr) minmax(320px,1.15fr); gap:18px; align-items:start; }
 #articleView .pa-video-fields { display:grid; gap:12px; padding:0 20px 20px; }
 #articleView .pa-video-textarea { width:100%; min-height:148px; padding:13px 14px; border:1px solid var(--border-color); border-radius:10px; background:var(--bg-input); color:var(--text-main); font-size:13px; line-height:1.7; resize:vertical; outline:none; transition:border-color .18s; }
@@ -1442,7 +1450,7 @@ THE SOFTWARE.
       <div class="pa-video-badges">
         <span class="pa-video-badge is-ready">抖音 · 无水印</span>
         <span class="pa-video-badge is-ready">小红书 · 视频/图集</span>
-        <span class="pa-video-badge">视频号 · 需本地嗅探</span>
+        <button type="button" id="pa-video-channels-btn" class="pa-video-badge is-action">📺 视频号下载指引</button>
       </div>
     </header>
     <div class="pa-video-grid">
@@ -1461,8 +1469,8 @@ THE SOFTWARE.
           <div id="pa-video-status" class="pa-video-alert" role="status" aria-live="polite" hidden></div>
         </div>
         <details class="pa-help">
-          <summary>支持范围与视频号说明</summary>
-          <p><strong>抖音 / 小红书</strong>：直接复制 App 内分享链接或整段文案粘贴即可提取无水印 MP4 或原图。<br><strong>微信视频号</strong>：因官方对视频流采用私有加密，纯网页端粘贴链接无法直接解密；电脑端需配合微信本地嗅探工具（如 WechatVideoDownload）提取。</p>
+          <summary>使用提示</summary>
+          <p><strong>抖音 / 小红书</strong>：直接复制 App 内分享链接或整段文案粘贴即可提取无水印 MP4 或原图。<br><strong>微信视频号</strong>：请点击右上角「📺 视频号下载指引」查看电脑版微信辅助下载方法。</p>
         </details>
         <details class="pa-video-config">
           <summary>⚙️ 解析服务接口设置</summary>
@@ -1493,6 +1501,23 @@ THE SOFTWARE.
         </div>
       </section>
     </div>
+    <dialog id="pa-video-channels-dialog" class="pa-dialog" aria-labelledby="pa-video-channels-title">
+      <div class="pa-dialog-heading">
+        <h2 id="pa-video-channels-title">微信视频号下载指引</h2>
+        <button type="button" id="pa-video-channels-close" class="pa-close" aria-label="关闭窗口">×</button>
+      </div>
+      <p>由于微信视频号不开放网页分享链接，且视频流采用了微信内部加密机制，<strong>无法通过纯网页粘贴链接直接提取</strong>。如需下载视频号高清原片，请使用电脑版微信配合开源本地辅助工具：</p>
+      <ol class="pa-channels-steps">
+        <li><strong>获取辅助工具</strong>：点击下方按钮下载开源工具 <code>wx_channels_download</code>（根据电脑选择 Windows 或 macOS 版本）。</li>
+        <li><strong>启动工具并开电脑微信</strong>：运行下载好的工具（首次使用按提示完成证书信任），保持工具窗口在后台运行。</li>
+        <li><strong>播放视频一键保存</strong>：在电脑版微信中打开并播放需要保存的视频号视频，页面中会自动出现下载入口，点击即可自动解密并保存高清无水印 MP4。</li>
+      </ol>
+      <div class="pa-channels-note">💡 使用完毕后请正常关闭工具窗口（例如按 Ctrl+C 退出），避免残留本地网络代理设置影响上网。</div>
+      <div class="pa-channels-actions">
+        <a id="pa-video-channels-link" href="https://github.com/ltaoo/wx_channels_download/releases" target="_blank" rel="noopener noreferrer" class="pa-btn pa-primary">前往下载辅助工具 <span>↗</span></a>
+        <button type="button" id="pa-video-channels-ok" class="pa-btn">我知道了</button>
+      </div>
+    </dialog>
   </section>
 </section>
 <section id="mockupView" class="mockup-view" aria-label="物料样机功能" hidden>
@@ -2745,7 +2770,7 @@ var MEDIA_GATE_HASH='5207e2660db14f72118a0d4d5f6721c2c4aa341b8a8c32eaa5315c35f31
 var mediaGateUnlocked=false,mediaGateAttempt=0,mediaGateFromClick=false;
 function loadArticleTool(){
   if(articleModule)return Promise.resolve(articleModule);
-  if(!articleModulePromise)articleModulePromise=import(new URL((window.ARTICLE_MODULE_BASE||'assets/article/')+'app.js?v=20261120-2',document.baseURI).href).then(function(module){articleModule=module;return module;}).catch(function(error){articleModulePromise=null;throw error;});
+  if(!articleModulePromise)articleModulePromise=import(new URL((window.ARTICLE_MODULE_BASE||'assets/article/')+'app.js?v=20261120-3',document.baseURI).href).then(function(module){articleModule=module;return module;}).catch(function(error){articleModulePromise=null;throw error;});
   return articleModulePromise;
 }
 async function loadWatermarkTool(){
