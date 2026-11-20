@@ -727,7 +727,7 @@ function selectMediaWorkspace(workspace) {
   }
 
   if (!videoModulePromise) {
-    videoModulePromise = import('./video.js?v=20261120-2').catch(error => {
+    videoModulePromise = import('./video.js?v=20261120-3').catch(error => {
       videoModulePromise = undefined;
       throw error;
     });
@@ -751,5 +751,5 @@ export function activate() {
   }
   return selectMediaWorkspace(currentMediaWorkspace);
 }
-export function suspend(){if(initialized){render();saveCurrent();if($('dialog').open)$('dialog').close();}}
+export function suspend(){if(initialized){render();saveCurrent();if($('dialog').open)$('dialog').close();}if($('video-channels-dialog')?.open)$('video-channels-dialog').close();}
 export function dispose(){if(initialized)saveCurrent();if(downloadURL)URL.revokeObjectURL(downloadURL);}

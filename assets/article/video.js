@@ -158,6 +158,23 @@ function renderResult(data, apiBase) {
   }
 }
 
+// 视频号电脑端辅助下载工具地址（如需换成公司网盘链接，改这里即可）：
+const CHANNELS_TOOL_URL = 'https://github.com/ltaoo/wx_channels_download/releases';
+
+function openChannelsDialog() {
+  const dialog = get('channels-dialog');
+  if (dialog && typeof dialog.showModal === 'function' && !dialog.open) {
+    dialog.showModal();
+  }
+}
+
+function closeChannelsDialog() {
+  const dialog = get('channels-dialog');
+  if (dialog && dialog.open) {
+    dialog.close();
+  }
+}
+
 async function handleExtract() {
   const input = get('input');
   const content = input ? input.value.trim() : '';
@@ -181,6 +198,9 @@ async function handleExtract() {
 
     if (!response.ok || !data.success) {
       resetPreview();
+      if (data.platform === 'channels') {
+        openChannelsDialog();
+      }
       const extraTip = data.tip ? `\n\n${data.tip}` : '';
       showStatus((data.error_msg || data.detail || '解析失败，请检查链接是否有效。') + extraTip, 'error');
       return;
@@ -207,6 +227,33 @@ function bindEvents() {
   const apiInput = get('api-input');
   const apiSave = get('api-save');
   const apiReset = get('api-reset');
+  const channelsBtn = get('channels-btn');
+  const channelsDialog = get('channels-dialog');
+  const channelsClose = get('channels-close');
+  const channelsOk = get('channels-ok');
+  const channelsLink = get('channels-link');
+
+  if (channelsLink && CHANNELS_TOOL_URL) {
+    channelsLink.href = CHANNELS_TOOL_URL;
+  }
+
+  if (channelsBtn) {
+    channelsBtn.addEventListener('click', openChannelsDialog);
+  }
+
+  if (channelsClose) {
+    channelsClose.addEventListener('click', closeChannelsDialog);
+  }
+
+  if (channelsOk) {
+    channelsOk.addEventListener('click', closeChannelsDialog);
+  }
+
+  if (channelsDialog) {
+    channelsDialog.addEventListener('click', e => {
+      if (e.target === channelsDialog) closeChannelsDialog();
+    });
+  }
 
   if (apiInput) {
     apiInput.value = getApiBase();
