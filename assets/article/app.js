@@ -727,7 +727,7 @@ function selectMediaWorkspace(workspace) {
   }
 
   if (!videoModulePromise) {
-    videoModulePromise = import('./video.js?v=20261120-1').catch(error => {
+    videoModulePromise = import('./video.js?v=20261120-2').catch(error => {
       videoModulePromise = undefined;
       throw error;
     });

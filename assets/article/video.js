@@ -1,7 +1,7 @@
 /* Youyue Media Studio: Video watermark-free extraction panel */
 
-// 部署后端到云端（如 Render / Vercel / 公司服务器）后，可把默认公网接口地址填在这里：
-const DEFAULT_CLOUD_API_BASE = '';
+// 默认使用已部署好的 Vercel 云端解析服务，全员打开网页即可直接使用：
+const DEFAULT_CLOUD_API_BASE = 'https://youyue-video-api.vercel.app';
 const STORAGE_KEY = 'youyue_video_api_base';
 
 const get = name => document.getElementById('pa-video-' + name);
@@ -189,11 +189,7 @@ async function handleExtract() {
     renderResult(data, apiBase);
   } catch (err) {
     resetPreview();
-    const isGitHub = !isLocalHost();
-    const hint = isGitHub
-      ? `当前解析接口（${apiBase}）无法连通。如果您在本地使用，请先双击运行「启动视频提取工具.command」；如需让所有同事在线使用，请将后端部署到云端后在上方「接口设置」中填入地址。`
-      : `无法连接本地解析服务（${apiBase}）。请先双击运行「启动视频提取工具.command」启动后台解析服务后再试。`;
-    showStatus(`连接解析服务失败：${err.message}\n${hint}`, 'error');
+    showStatus(`连接解析服务失败：${err.message}\n当前解析接口（${apiBase}）暂时无法连通，请检查网络连接或在下方「解析服务接口设置」中确认接口地址。`, 'error');
   } finally {
     setLoading(false);
   }
