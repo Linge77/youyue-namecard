@@ -700,23 +700,45 @@ async function activateArticle() {
 let currentMediaWorkspace = 'article';
 let mediaTabsBound = false;
 let coverModulePromise;
+let videoModulePromise;
 
 function selectMediaWorkspace(workspace) {
-  const showCover = workspace === 'cover';
-  currentMediaWorkspace = workspace;
-  $('article-panel').hidden = showCover;
-  $('cover-panel').hidden = !showCover;
-  $('article-tab').setAttribute('aria-pressed', String(!showCover));
-  $('cover-tab').setAttribute('aria-pressed', String(showCover));
-  if (!showCover) return activateArticle();
-  if (!coverModulePromise) {
-    coverModulePromise = import('./cover.js?v=20261104-8').catch(error => {
-      coverModulePromise = undefined;
+  const active = ['article', 'cover', 'video'].includes(workspace) ? workspace : 'article';
+  currentMediaWorkspace = active;
+  $('article-panel').hidden = active !== 'article';
+  $('cover-panel').hidden = active !== 'cover';
+  if ($('video-panel')) $('video-panel').hidden = active !== 'video';
+  $('article-tab').setAttribute('aria-pressed', String(active === 'article'));
+  $('cover-tab').setAttribute('aria-pressed', String(active === 'cover'));
+  if ($('video-tab')) $('video-tab').setAttribute('aria-pressed', String(active === 'video'));
+
+  if (active === 'article') return activateArticle();
+
+  if (active === 'cover') {
+    if (!coverModulePromise) {
+      coverModulePromise = import('./cover.js?v=20261104-8').catch(error => {
+        coverModulePromise = undefined;
+        throw error;
+      });
+    }
+    return coverModulePromise.then(module => module.activateCover()).catch(error => {
+      $('cover-status').textContent = error.message || '封面素材加载失败，请再次点击「图文封面生成」重试。';
+    });
+  }
+
+  if (!videoModulePromise) {
+    videoModulePromise = import('./video.js?v=20261120-1').catch(error => {
+      videoModulePromise = undefined;
       throw error;
     });
   }
-  return coverModulePromise.then(module => module.activateCover()).catch(error => {
-    $('cover-status').textContent = error.message || '封面素材加载失败，请再次点击「图文封面生成」重试。';
+  return videoModulePromise.then(module => module.activateVideo()).catch(error => {
+    const status = $('video-status');
+    if (status) {
+      status.hidden = false;
+      status.className = 'pa-video-alert is-error';
+      status.textContent = error.message || '视频解析模块加载失败，请再次点击「视频无水印解析」重试。';
+    }
   });
 }
 
@@ -724,6 +746,7 @@ export function activate() {
   if (!mediaTabsBound) {
     $('article-tab').onclick = () => selectMediaWorkspace('article').catch(() => {});
     $('cover-tab').onclick = () => selectMediaWorkspace('cover');
+    if ($('video-tab')) $('video-tab').onclick = () => selectMediaWorkspace('video');
     mediaTabsBound = true;
   }
   return selectMediaWorkspace(currentMediaWorkspace);
