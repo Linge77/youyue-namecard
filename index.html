@@ -827,6 +827,35 @@ html[data-login-state='locked'] body{padding:0;background:#fff2ef;}
 @media(max-width:1250px) { .theme-toolbar { flex-wrap:wrap; } .theme-toolbar .login-workspace-actions { margin-left:auto; } .site-tool-nav { order:3; flex:0 0 100%; } #articleView .pa-layout { grid-template-columns:170px minmax(250px,1fr) minmax(320px,1fr);gap:12px; } #articleView .pa-panel-heading { padding:18px 15px; } }
 @media(max-width:1000px) { #articleView .pa-layout { grid-template-columns:minmax(0,1fr) minmax(0,1fr); } #articleView .pa-templates { grid-column:1/-1; display:grid; grid-template-columns:180px minmax(0,1fr); } #articleView .pa-templates .pa-panel-heading { grid-column:1; padding-bottom:5px; } #articleView .pa-search { grid-column:1; grid-row:2; } #articleView .pa-template-list { grid-column:2; grid-row:1/4; display:flex; overflow:auto; padding:12px; gap:10px; } #articleView .pa-template-card { flex:0 0 140px; } #articleView .pa-template-foot { grid-column:1; border:0; padding-top:0; } #articleView .pa-template-foot p { display:none; } #articleView .pa-template-foot .pa-btn { padding:6px; min-height:30px; font-size:10px; } #articleView .pa-width-control { margin-left:0; } }
 @media(max-width:680px) { .site-tool-nav { overflow:auto; padding:4px 2px; } .site-tool-button { flex:0 0 auto; } #articleView h1 { font-size:23px; } #articleView .pa-heading-row { margin:0 0 20px; gap:15px; } #articleView .pa-heading-actions { width:100%; } #articleView .pa-heading-actions .pa-primary { margin-left:auto; } #articleView .pa-layout { display:flex; flex-direction:column; gap:16px; } #articleView .pa-panel { width:100%; border-radius:14px; } #articleView .pa-templates { display:grid; grid-template-columns:120px minmax(0,1fr); } #articleView .pa-search { margin:0 12px 10px; } #articleView .pa-search input { padding:7px; } #articleView .pa-template-foot { padding:0 12px 10px; } #articleView .pa-template-card { flex-basis:128px; } #articleView .pa-template-list { max-height:170px; } #articleView #pa-input { height:320px; padding:18px; font-size:16px; } #articleView .pa-preview-scroll { height:600px; padding:16px 10px 24px; } #articleView .pa-footnote { font-size:10px; } }
+#articleView #pa-video-panel .pa-heading-row { margin:0 0 18px; }
+#articleView .pa-video-badges { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+#articleView .pa-video-badge { padding:4px 10px; border:1px solid var(--border-color); border-radius:999px; background:var(--bg-inner); color:var(--text-muted); font-size:11px; line-height:1.5; }
+#articleView .pa-video-badge.is-ready { border-color:var(--border-highlight); color:var(--text-main); }
+#articleView .pa-video-grid { display:grid; grid-template-columns:minmax(290px,1fr) minmax(320px,1.15fr); gap:18px; align-items:start; }
+#articleView .pa-video-fields { display:grid; gap:12px; padding:0 20px 20px; }
+#articleView .pa-video-textarea { width:100%; min-height:148px; padding:13px 14px; border:1px solid var(--border-color); border-radius:10px; background:var(--bg-input); color:var(--text-main); font-size:13px; line-height:1.7; resize:vertical; outline:none; transition:border-color .18s; }
+#articleView .pa-video-textarea:focus { border-color:var(--accent-red); }
+#articleView .pa-video-textarea::placeholder { color:var(--text-muted); }
+#articleView .pa-video-alert { padding:11px 14px; border:1px solid var(--border-color); border-radius:10px; background:var(--bg-inner); color:var(--text-main); font-size:12px; line-height:1.7; white-space:pre-line; word-break:break-word; }
+#articleView .pa-video-alert.is-error { border-color:var(--accent-red); color:var(--accent-red); background:var(--ui-selected-bg); }
+#articleView .pa-video-alert.is-success { border-color:#10b98166; color:var(--text-main); }
+#articleView .pa-video-stage { padding:20px; background:var(--ui-preview-bg); min-height:280px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; }
+#articleView .pa-video-empty { text-align:center; color:var(--ui-empty-text); font-size:12px; line-height:1.8; padding:32px 16px; border:1px dashed var(--ui-empty-border); border-radius:12px; width:100%; }
+#articleView .pa-video-player-wrap { width:100%; border-radius:10px; overflow:hidden; background:#000; }
+#articleView .pa-video-player-wrap video { display:block; width:100%; max-height:420px; outline:none; }
+#articleView .pa-video-result-title { margin:0; padding:14px 20px 0; font-size:13px; line-height:1.6; color:var(--text-main); word-break:break-word; }
+#articleView .pa-video-actions { display:flex; flex-wrap:wrap; gap:10px; padding:16px 20px 20px; }
+#articleView .pa-video-actions .pa-btn { flex:1 1 160px; text-decoration:none; }
+#articleView .pa-video-gallery { width:100%; display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:10px; }
+#articleView .pa-video-gallery-item { position:relative; border-radius:10px; overflow:hidden; aspect-ratio:1; border:1px solid var(--border-color); background:var(--bg-panel); }
+#articleView .pa-video-gallery-item img { width:100%; height:100%; object-fit:cover; display:block; }
+#articleView .pa-video-gallery-item a { position:absolute; right:6px; bottom:6px; padding:3px 8px; border-radius:6px; background:#000a; color:#fff; font-size:11px; text-decoration:none; }
+#articleView .pa-video-config { padding:0 20px 18px; color:var(--text-muted); font-size:11px; line-height:1.7; }
+#articleView .pa-video-config summary { cursor:pointer; }
+#articleView .pa-video-config-row { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+#articleView .pa-video-config-row input { flex:1 1 190px; min-width:0; height:34px; padding:6px 10px; border:1px solid var(--border-color); border-radius:8px; background:var(--bg-input); color:var(--text-main); font-size:12px; }
+#articleView .pa-video-config-row .pa-btn { min-height:34px; padding:6px 12px; }
+@media(max-width:860px) { #articleView .pa-video-grid { grid-template-columns:minmax(0,1fr); } }
 @media(prefers-reduced-motion:reduce) { #articleView * { transition:none!important; animation:none!important; } }
 
 #mediaGateDialog {
@@ -1303,11 +1332,12 @@ THE SOFTWARE.
 </main>
 <section id="articleView" class="article-workspace" aria-labelledby="pa-heading" hidden>
   <header class="pa-heading-row">
-    <div><span class="pa-eyebrow">MEDIA STUDIO</span><h1 id="pa-heading">新媒体端小工具</h1><p>排版公众号文章，制作配套图文封面。</p></div>
+    <div><span class="pa-eyebrow">MEDIA STUDIO</span><h1 id="pa-heading">新媒体端小工具</h1><p>排版公众号文章，制作配套图文封面，解析无水印短视频。</p></div>
   </header>
   <nav class="pa-media-nav" aria-label="新媒体工具">
     <button type="button" class="pa-btn" id="pa-article-tab" aria-controls="pa-article-panel" aria-pressed="true">公众号排版</button>
     <button type="button" class="pa-btn" id="pa-cover-tab" aria-controls="pa-cover-panel" aria-pressed="false">图文封面生成</button>
+    <button type="button" class="pa-btn" id="pa-video-tab" aria-controls="pa-video-panel" aria-pressed="false">视频无水印解析</button>
   </nav>
   <section id="pa-article-panel" aria-labelledby="pa-article-heading">
   <header class="pa-heading-row">
@@ -1403,6 +1433,64 @@ THE SOFTWARE.
       <section class="pa-panel pa-cover-preview" aria-label="封面预览">
         <div class="pa-panel-heading"><h2>实时预览</h2><span class="pa-count">1296 × 382 px</span></div>
         <div class="pa-cover-stage"><canvas id="pa-cover-canvas" width="1296" height="382" role="img" aria-label="图文封面预览">当前浏览器无法预览封面。</canvas></div>
+      </section>
+    </div>
+  </section>
+  <section id="pa-video-panel" aria-labelledby="pa-video-heading" hidden>
+    <header class="pa-heading-row">
+      <h2 id="pa-video-heading" class="pa-tool-heading">视频无水印解析</h2>
+      <div class="pa-video-badges">
+        <span class="pa-video-badge is-ready">抖音 · 无水印</span>
+        <span class="pa-video-badge is-ready">小红书 · 视频/图集</span>
+        <span class="pa-video-badge">视频号 · 需本地嗅探</span>
+      </div>
+    </header>
+    <div class="pa-video-grid">
+      <section class="pa-panel" aria-label="输入分享链接">
+        <div class="pa-panel-heading">
+          <h2>分享文案 / 链接</h2>
+          <div>
+            <button type="button" id="pa-video-paste" class="pa-text-button">📋 剪贴板粘贴</button>
+            <button type="button" id="pa-video-clear" class="pa-text-button">清空</button>
+          </div>
+        </div>
+        <div class="pa-video-fields">
+          <label for="pa-video-input" class="pa-sr">粘贴抖音或小红书分享链接或整段文案</label>
+          <textarea id="pa-video-input" class="pa-video-textarea" placeholder="直接粘贴从抖音、小红书复制的整段分享文案或链接，系统会自动识别其中的 URL…"></textarea>
+          <button type="button" id="pa-video-submit" class="pa-btn pa-primary"><span>⚡</span> 一键解析提取</button>
+          <div id="pa-video-status" class="pa-video-alert" role="status" aria-live="polite" hidden></div>
+        </div>
+        <details class="pa-help">
+          <summary>支持范围与视频号说明</summary>
+          <p><strong>抖音 / 小红书</strong>：直接复制 App 内分享链接或整段文案粘贴即可提取无水印 MP4 或原图。<br><strong>微信视频号</strong>：因官方对视频流采用私有加密，纯网页端粘贴链接无法直接解密；电脑端需配合微信本地嗅探工具（如 WechatVideoDownload）提取。</p>
+        </details>
+        <details class="pa-video-config">
+          <summary>⚙️ 解析服务接口设置（GitHub 在线版必看）</summary>
+          <p style="margin:6px 0 0;">本地测试默认连接 <code>http://127.0.0.1:8000</code>；部署后端到云端（Render / 公司服务器）后，可在此填入公网接口地址并保存。</p>
+          <div class="pa-video-config-row">
+            <input type="url" id="pa-video-api-input" placeholder="例如 https://your-api.onrender.com" autocomplete="off">
+            <button type="button" id="pa-video-api-save" class="pa-btn">保存地址</button>
+            <button type="button" id="pa-video-api-reset" class="pa-btn">恢复默认</button>
+          </div>
+        </details>
+      </section>
+      <section class="pa-panel" aria-label="提取结果预览">
+        <div class="pa-panel-heading">
+          <h2>提取结果</h2>
+          <span id="pa-video-meta" class="pa-count">等待解析</span>
+        </div>
+        <p id="pa-video-result-title" class="pa-video-result-title" hidden></p>
+        <div class="pa-video-stage">
+          <div id="pa-video-empty" class="pa-video-empty">在左侧粘贴分享链接并点击「一键解析提取」后<br>这里会显示无水印视频预览或高清原图</div>
+          <div id="pa-video-player-wrap" class="pa-video-player-wrap" hidden>
+            <video id="pa-video-player" controls playsinline preload="metadata"></video>
+          </div>
+          <div id="pa-video-gallery" class="pa-video-gallery" hidden></div>
+        </div>
+        <div id="pa-video-actions" class="pa-video-actions" hidden>
+          <a id="pa-video-download" href="#" class="pa-btn pa-primary" download>下载无水印视频 (MP4) <span>↓</span></a>
+          <button type="button" id="pa-video-copy-url" class="pa-btn">复制无水印直链</button>
+        </div>
       </section>
     </div>
   </section>
@@ -2657,7 +2745,7 @@ var MEDIA_GATE_HASH='5207e2660db14f72118a0d4d5f6721c2c4aa341b8a8c32eaa5315c35f31
 var mediaGateUnlocked=false,mediaGateAttempt=0,mediaGateFromClick=false;
 function loadArticleTool(){
   if(articleModule)return Promise.resolve(articleModule);
-  if(!articleModulePromise)articleModulePromise=import(new URL((window.ARTICLE_MODULE_BASE||'assets/article/')+'app.js?v=20261107-2',document.baseURI).href).then(function(module){articleModule=module;return module;}).catch(function(error){articleModulePromise=null;throw error;});
+  if(!articleModulePromise)articleModulePromise=import(new URL((window.ARTICLE_MODULE_BASE||'assets/article/')+'app.js?v=20261120-1',document.baseURI).href).then(function(module){articleModule=module;return module;}).catch(function(error){articleModulePromise=null;throw error;});
   return articleModulePromise;
 }
 async function loadWatermarkTool(){
