@@ -1465,10 +1465,10 @@ THE SOFTWARE.
           <p><strong>抖音 / 小红书</strong>：直接复制 App 内分享链接或整段文案粘贴即可提取无水印 MP4 或原图。<br><strong>微信视频号</strong>：因官方对视频流采用私有加密，纯网页端粘贴链接无法直接解密；电脑端需配合微信本地嗅探工具（如 WechatVideoDownload）提取。</p>
         </details>
         <details class="pa-video-config">
-          <summary>⚙️ 解析服务接口设置（GitHub 在线版必看）</summary>
-          <p style="margin:6px 0 0;">本地测试默认连接 <code>http://127.0.0.1:8000</code>；部署后端到云端（Render / 公司服务器）后，可在此填入公网接口地址并保存。</p>
+          <summary>⚙️ 解析服务接口设置</summary>
+          <p style="margin:6px 0 0;">默认已连接云端解析服务（<code>https://youyue-video-api.vercel.app</code>），全员可直接在线使用；如需切换至本地或私有服务器，可在此修改并保存。</p>
           <div class="pa-video-config-row">
-            <input type="url" id="pa-video-api-input" placeholder="例如 https://your-api.onrender.com" autocomplete="off">
+            <input type="url" id="pa-video-api-input" placeholder="https://youyue-video-api.vercel.app" autocomplete="off">
             <button type="button" id="pa-video-api-save" class="pa-btn">保存地址</button>
             <button type="button" id="pa-video-api-reset" class="pa-btn">恢复默认</button>
           </div>
@@ -2745,7 +2745,7 @@ var MEDIA_GATE_HASH='5207e2660db14f72118a0d4d5f6721c2c4aa341b8a8c32eaa5315c35f31
 var mediaGateUnlocked=false,mediaGateAttempt=0,mediaGateFromClick=false;
 function loadArticleTool(){
   if(articleModule)return Promise.resolve(articleModule);
-  if(!articleModulePromise)articleModulePromise=import(new URL((window.ARTICLE_MODULE_BASE||'assets/article/')+'app.js?v=20261120-1',document.baseURI).href).then(function(module){articleModule=module;return module;}).catch(function(error){articleModulePromise=null;throw error;});
+  if(!articleModulePromise)articleModulePromise=import(new URL((window.ARTICLE_MODULE_BASE||'assets/article/')+'app.js?v=20261120-2',document.baseURI).href).then(function(module){articleModule=module;return module;}).catch(function(error){articleModulePromise=null;throw error;});
   return articleModulePromise;
 }
 async function loadWatermarkTool(){
