@@ -1491,7 +1491,7 @@ THE SOFTWARE.
         <div class="pa-video-stage">
           <div id="pa-video-empty" class="pa-video-empty">在左侧粘贴分享链接并点击「一键解析提取」后<br>这里会显示无水印视频预览或高清原图</div>
           <div id="pa-video-player-wrap" class="pa-video-player-wrap" hidden>
-            <video id="pa-video-player" controls playsinline preload="metadata"></video>
+            <video id="pa-video-player" controls playsinline preload="metadata" referrerpolicy="no-referrer"></video>
           </div>
           <div id="pa-video-gallery" class="pa-video-gallery" hidden></div>
         </div>
@@ -2770,7 +2770,7 @@ var MEDIA_GATE_HASH='5207e2660db14f72118a0d4d5f6721c2c4aa341b8a8c32eaa5315c35f31
 var mediaGateUnlocked=false,mediaGateAttempt=0,mediaGateFromClick=false;
 function loadArticleTool(){
   if(articleModule)return Promise.resolve(articleModule);
-  if(!articleModulePromise)articleModulePromise=import(new URL((window.ARTICLE_MODULE_BASE||'assets/article/')+'app.js?v=20261120-3',document.baseURI).href).then(function(module){articleModule=module;return module;}).catch(function(error){articleModulePromise=null;throw error;});
+  if(!articleModulePromise)articleModulePromise=import(new URL((window.ARTICLE_MODULE_BASE||'assets/article/')+'app.js?v=20261122-1',document.baseURI).href).then(function(module){articleModule=module;return module;}).catch(function(error){articleModulePromise=null;throw error;});
   return articleModulePromise;
 }
 async function loadWatermarkTool(){
