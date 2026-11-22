@@ -144,6 +144,7 @@ function renderResult(data, apiBase) {
         img.src = imgUrl;
         img.alt = `图集第 ${index + 1} 张`;
         img.loading = 'lazy';
+        img.referrerPolicy = 'no-referrer';
         const link = document.createElement('a');
         link.href = imgUrl;
         link.target = '_blank';
