@@ -866,73 +866,6 @@ html[data-login-state='locked'] body{padding:0;background:#fff2ef;}
 @media(max-width:860px) { #articleView .pa-video-grid { grid-template-columns:minmax(0,1fr); } }
 @media(prefers-reduced-motion:reduce) { #articleView * { transition:none!important; animation:none!important; } }
 
-#mediaGateDialog {
-  box-sizing:border-box;
-  width:min(420px,calc(100% - 28px));
-  max-height:calc(100vh - 28px);
-  max-height:calc(100dvh - 28px);
-  margin:auto;
-  padding:25px;
-  border:1px solid var(--border-highlight);
-  border-radius:20px;
-  background:var(--bg-panel);
-  color:var(--text-main);
-  box-shadow:var(--ui-panel-shadow);
-}
-#mediaGateDialog::backdrop { background:#08080bb0; }
-#mediaGateDialog .media-gate-icon {
-  display:grid;
-  place-items:center;
-  width:43px;
-  height:43px;
-  margin-bottom:14px;
-  border-radius:11px;
-  background:var(--bg-inner);
-  color:var(--accent-red);
-}
-#mediaGateDialog .media-gate-icon svg {
-  width:23px;
-  height:23px;
-  fill:none;
-  stroke:currentColor;
-  stroke-width:1.7;
-  stroke-linecap:round;
-  stroke-linejoin:round;
-}
-#mediaGateDialog h2 { margin:0 0 6px; font-size:21px; line-height:1.4; }
-#mediaGateDescription { margin:0 0 20px; color:var(--text-muted); font-size:13px; line-height:1.6; }
-#mediaGateDialog label { display:block; margin-bottom:7px; font-size:13px; font-weight:600; }
-#mediaGatePassword {
-  box-sizing:border-box;
-  width:100%;
-  min-height:43px;
-  padding:9px 12px;
-  border:1px solid var(--border-highlight);
-  border-radius:8px;
-  background:var(--bg-input);
-  color:var(--text-main);
-  font:inherit;
-  font-size:16px;
-}
-#mediaGatePassword[aria-invalid="true"] { border-color:var(--accent-red); }
-#mediaGateError { min-height:19px; margin:6px 0 10px; color:var(--accent-red); font-size:12px; line-height:1.55; }
-#mediaGateDialog .media-gate-actions { display:flex; justify-content:flex-end; gap:8px; }
-#mediaGateDialog button {
-  min-height:41px;
-  padding:9px 15px;
-  border:1px solid var(--border-highlight);
-  border-radius:8px;
-  background:var(--bg-inner);
-  color:var(--text-main);
-  font:inherit;
-  font-size:13px;
-  font-weight:600;
-  cursor:pointer;
-}
-#mediaGateDialog #mediaGateSubmit { border-color:transparent; background:#d51b2a; color:#fff; }
-#mediaGateDialog button:disabled { opacity:.55; cursor:wait; }
-#mediaGateDialog :is(input,button):focus-visible { outline:2px solid var(--ui-focus-ring); outline-offset:2px; }
-
 /* Outer chrome only. The approved mockups mount inside #mk-root's Shadow DOM. */
 #mockupView{display:flex;flex-direction:column;gap:22px;min-width:0;color:var(--text-main)}
 #mockupView[hidden],#mockupView [hidden]{display:none!important}
@@ -1051,22 +984,6 @@ THE SOFTWARE.
     <span class="tool-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z"></path><path d="m4 7.5 8 4.5 8-4.5M12 12v9"></path></svg></span><span class="tool-nav-label">物料样机功能</span>
   </button>
 </nav>
-<dialog id="mediaGateDialog" aria-labelledby="mediaGateTitle" aria-describedby="mediaGateDescription">
-  <div class="media-gate-icon" aria-hidden="true">
-    <svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="11" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 5v2"></path></svg>
-  </div>
-  <h2 id="mediaGateTitle">新媒体端小工具</h2>
-  <p id="mediaGateDescription">输入访问密码，进入公众号排版和封面生成。</p>
-  <form id="mediaGateForm">
-    <label for="mediaGatePassword">访问密码</label>
-    <input id="mediaGatePassword" type="password" autocomplete="off" spellcheck="false" autocapitalize="off" placeholder="请输入访问密码" aria-describedby="mediaGateError" required autofocus>
-    <p id="mediaGateError" role="alert"></p>
-    <div class="media-gate-actions">
-      <button type="button" id="mediaGateCancel">取消</button>
-      <button type="submit" id="mediaGateSubmit">进入工具</button>
-    </div>
-  </form>
-</dialog>
 
   <div class="login-workspace-actions"><span class="login-account">youyuejiaoyu</span><button type="button" class="theme-toggle" id="themeToggle" aria-pressed="true" aria-label="当前为夜间模式，切换到日间模式" onclick="toggleTheme()">
     <span class="theme-toggle-icon" id="themeToggleIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20.2 14.2A8.5 8.5 0 0 1 9.8 3.8a8.5 8.5 0 1 0 10.4 10.4Z"></path></svg></span>
@@ -2764,10 +2681,6 @@ window.ARTICLE_MODULE_BASE='assets/article/';
 /* Shared chrome; both editors stay mounted so switching preserves their state. */
 var currentSiteTool='visual',watermarkModule=null,watermarkModulePromise=null;
 var articleModule=null,articleModulePromise=null;
-// Lightweight GitHub Pages gate. A browser-side verifier cannot enforce private access.
-var MEDIA_GATE_KEY='youyue-media-unlock-v1';
-var MEDIA_GATE_HASH='5207e2660db14f72118a0d4d5f6721c2c4aa341b8a8c32eaa5315c35f31b1a00';
-var mediaGateUnlocked=false,mediaGateAttempt=0,mediaGateFromClick=false;
 function loadArticleTool(){
   if(articleModule)return Promise.resolve(articleModule);
   if(!articleModulePromise)articleModulePromise=import(new URL((window.ARTICLE_MODULE_BASE||'assets/article/')+'app.js?v=20261122-1',document.baseURI).href).then(function(module){articleModule=module;return module;}).catch(function(error){articleModulePromise=null;throw error;});
@@ -2786,89 +2699,9 @@ function flashSiteTool(button){
   button.classList.remove('nav-flash');void button.offsetWidth;button.classList.add('nav-flash');
   window.setTimeout(function(){button.classList.remove('nav-flash');},650);
 }
-function mediaGateSessionToken(){
-  return loginMemorySession ? loginMemorySession.issuedAt+':'+MEDIA_GATE_HASH.slice(0,16) : '';
-}
-function setMediaGateUnlocked(unlocked){
-  mediaGateUnlocked=unlocked;
-  var tab=document.getElementById('articleToolTab');
-  if(unlocked)tab.removeAttribute('aria-haspopup');
-  else tab.setAttribute('aria-haspopup','dialog');
-}
-function showMediaGate(fromClick){
-  var dialog=document.getElementById('mediaGateDialog');
-  mediaGateFromClick=mediaGateFromClick||fromClick;
-  if(dialog.open)return;
-  document.getElementById('mediaGatePassword').value='';
-  document.getElementById('mediaGatePassword').removeAttribute('aria-invalid');
-  document.getElementById('mediaGateError').textContent='';
-  document.getElementById('mediaGateSubmit').disabled=false;
-  dialog.showModal();
-  document.getElementById('mediaGatePassword').focus();
-}
-async function submitMediaGate(event){
-  event.preventDefault();
-  var dialog=document.getElementById('mediaGateDialog');
-  var input=document.getElementById('mediaGatePassword');
-  var submit=document.getElementById('mediaGateSubmit');
-  var errorLabel=document.getElementById('mediaGateError');
-  if(!dialog.open||submit.disabled||!input.value)return;
-  var attempt=++mediaGateAttempt;
-  var digestPending=loginPasswordDigest(input.value);
-  input.value='';
-  submit.disabled=true;
-  errorLabel.textContent='';
-  try{
-    var digest=await digestPending;
-    if(attempt!==mediaGateAttempt||!dialog.open||document.documentElement.dataset.loginState!=='unlocked')return;
-    if(digest!==MEDIA_GATE_HASH){
-      errorLabel.textContent='访问密码不正确，请重新输入。';
-      input.setAttribute('aria-invalid','true');
-      input.focus();
-      return;
-    }
-    setMediaGateUnlocked(true);
-    var token=mediaGateSessionToken();
-    if(token){try{window.sessionStorage.setItem(MEDIA_GATE_KEY,token);}catch(error){}}
-    var fromClick=mediaGateFromClick;
-    mediaGateFromClick=false;
-    dialog.close();
-    selectSiteTool('article',fromClick);
-  }catch(error){
-    if(attempt===mediaGateAttempt&&dialog.open)errorLabel.textContent=error.message||'暂时无法验证，请重试。';
-  }finally{
-    if(attempt===mediaGateAttempt)submit.disabled=false;
-  }
-}
-function initializeMediaGate(){
-  var token=mediaGateSessionToken(), saved=null;
-  try{saved=window.sessionStorage.getItem(MEDIA_GATE_KEY);}catch(error){}
-  setMediaGateUnlocked(Boolean(token&&saved===token));
-  var dialog=document.getElementById('mediaGateDialog');
-  var input=document.getElementById('mediaGatePassword');
-  document.getElementById('mediaGateForm').addEventListener('submit',submitMediaGate);
-  document.getElementById('mediaGateCancel').addEventListener('click',function(){dialog.close();});
-  input.addEventListener('input',function(){
-    input.removeAttribute('aria-invalid');
-    document.getElementById('mediaGateError').textContent='';
-  });
-  dialog.addEventListener('close',function(){
-    if(dialog.open)return;
-    ++mediaGateAttempt;
-    mediaGateFromClick=false;
-    input.value='';
-    if(!mediaGateUnlocked&&document.documentElement.dataset.loginState==='unlocked'){
-      if(location.hash==='#article')history.replaceState(null,'','#'+currentSiteTool);
-      document.getElementById('articleToolTab').focus({preventScroll:true});
-    }
-  });
-}
 function selectSiteTool(key,fromClick){
   if(document.documentElement.dataset.loginState!=='unlocked')return;
   key=['visual','watermark','article','mockup'].includes(key)?key:'visual';
-  if(key==='article'&&!mediaGateUnlocked){showMediaGate(fromClick);return;}
-  var gate=document.getElementById('mediaGateDialog');
-  if(gate.open)gate.close();
   currentSiteTool=key;
   document.getElementById('visualView').hidden=key!=='visual';
   document.getElementById('watermarkView').hidden=key!=='watermark';
@@ -2907,17 +2740,11 @@ function selectSiteTool(key,fromClick){
     });
 }
 function initializeSiteTools(){
-  initializeMediaGate();
   function route(){selectSiteTool(location.hash.slice(1),false);}
   document.getElementById('pa-retry').onclick=function(){selectSiteTool('article',false);};
   window.addEventListener('hashchange',route);window.addEventListener('popstate',route);route();
 }
 function disposeSiteTools(){
-  ++mediaGateAttempt;
-  setMediaGateUnlocked(false);
-  var gate=document.getElementById('mediaGateDialog');
-  if(gate.open)gate.close();
-  try{window.sessionStorage.removeItem(MEDIA_GATE_KEY);}catch(error){}
   if(watermarkModule)watermarkModule.dispose();
   if(articleModule)articleModule.dispose();
   if(typeof disposeMockupTool==='function')disposeMockupTool();
