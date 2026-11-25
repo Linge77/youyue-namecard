@@ -17,7 +17,7 @@ export class RepairEngine {
     return new Promise((resolve,reject)=>{
       try {
         if(!this.worker) {
-          this.worker=new Worker(new URL('./assets/ai/repair-worker.js',import.meta.url));
+          this.worker=new Worker(new URL('./assets/ai/repair-worker.js?v=20261125-cdn1',import.meta.url));
           const worker=this.worker;
           this.worker.onmessage=({data})=>{
             if(this.worker!==worker)return;

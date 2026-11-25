@@ -1,0 +1,22 @@
+{
+  "size": 25888640,
+  "sha256": "07c308cf0fc7e6e8b2065a12ed7fc07e1de8febb7dc7839d7b7f15dd66584df9",
+  "parts": [
+    {
+      "file": "modnet-part-01.bin",
+      "size": 6472160
+    },
+    {
+      "file": "modnet-part-02.bin",
+      "size": 6472160
+    },
+    {
+      "file": "modnet-part-03.bin",
+      "size": 6472160
+    },
+    {
+      "file": "modnet-part-04.bin",
+      "size": 6472160
+    }
+  ]
+}
